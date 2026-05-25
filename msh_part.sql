@@ -7,3 +7,8 @@ CREATE TABLE City (
     province VARCHAR(100)
 );
 
+CREATE TABLE Team (
+    team_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL
+);
+
