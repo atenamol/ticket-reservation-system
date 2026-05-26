@@ -18,15 +18,13 @@ CREATE TABLE User (
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(15) NOT NULL UNIQUE,
-    role VARCHAR(20) NOT NULL,
+    role ENUM('spectator', 'admin') NOT NULL,
     city_id INT,
     password_hash VARCHAR(255) NOT NULL,
-    registered_at TIMESTAMP NOT NULL,
-    account_status VARCHAR(10) NOT NULL,
+    registered_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    account_status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     profile_picture VARCHAR(255),
     FOREIGN KEY (city_id)
         REFERENCES City (city_id)
+        ON DELETE SET NULL
 );
-
-
-
