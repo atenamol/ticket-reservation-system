@@ -34,3 +34,15 @@ CREATE TABLE Ticket (
     FOREIGN KEY (organizer_venue_id) REFERENCES Venue(venue_id)
 );
 
+CREATE TABLE Reservation (
+    reservation_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    ticket_id INT(11) NOT NULL,
+    user_id INT(11) NOT NULL,
+    status ENUM('pending', 'confirmed', 'cancelled', 'expired') DEFAULT 'pending',
+    reserved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+
+
