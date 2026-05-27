@@ -51,7 +51,7 @@ CREATE TABLE Matchh (
     away_team_id INT(11),
     venue_id INT(11) NOT NULL,
     match_date DATETIME,
-    FOREIGN KEY (venue_id) REFERENCES Venue(venue_id) ON DELETE SET NULL,
+    FOREIGN KEY (venue_id) REFERENCES Venue(venue_id) ON DELETE CASCADE,
     FOREIGN KEY (home_team_id) REFERENCES Team(team_id),
     FOREIGN KEY (away_team_id) REFERENCES Team(team_id)
 );
@@ -62,7 +62,7 @@ CREATE TABLE Ticket (
     price DECIMAL(10, 2) CHECK (price >= 0),
     remaining_capacity INT(11) CHECK (remaining_capacity >= 0),
     category ENUM('VIP', 'normal', 'special') NOT NULL,
-    organizer_venue_id INT(11),
+    organizer_venue_id INT(11), 
     FOREIGN KEY (match_id) REFERENCES Matchh(match_id) ON DELETE CASCADE,
     FOREIGN KEY (organizer_venue_id) REFERENCES Venue(venue_id)
 );
@@ -156,7 +156,6 @@ CREATE TABLE BasketballDetail (
     amenities TEXT,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
                               );
-
 -- Indexing
 CREATE INDEX idx_match_date ON Matchh(match_date);
 CREATE INDEX idx_match_venue ON Matchh(venue_id);
@@ -221,98 +220,69 @@ VALUES
 
 (2, 'Aynaz', 'Hosseini', 'aynaz@gmail.com', '09151270125', 'admin', 2, 'hashed_pass_2', 'active'),
 
-(3, 'Reza', 'Karimi', 'reza@gmail.com', '09012379854', 'spectator', 3, 'hashed_pass_3', 'inactive'),
+(3, 'Reza', 'Karimi', 'NULL', '09012379854', 'spectator', 3, 'hashed_pass_3', 'inactive'),
 
-(4, 'Nika', 'Jafari',
-'nika@gmail.com',
-'09010105123',
-'spectator',
-4,
-'hashed_pass_4',
-'active'),
+(4, 'Nika', 'Jafari', 'nika@gmail.com', '09010105123', 'spectator', 4, 'hashed_pass_4', 'active'),
 
-(5, 'Parsa', 'Hosseini',
-'parsa@gmail.com',
-'09031348732',
-'admin',
-5,
-'hashed_pass_5',
-'active'),
+(5, 'Parsa', 'Hosseini', 'parsa@gmail.com', 'NULL', 'admin', 5, 'hashed_pass_5', 'active'),
 
-(6, 'Yasamin', 'adib',
-'yasamin@gmail.com',
-'09052456630',
-'spectator',
-1,
-'hashed_pass_6',
-'active');
+(6, 'Yasamin', 'adib', 'yasamin@gmail.com', '09052456630', 'spectator', 1, 'hashed_pass_6', 'active');
 
-CREATE TABLE FootballDetail (
-    football_detail_id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    ticket_id INT(11),
-    league_name VARCHAR(100),
-    stadium_name VARCHAR(100),
-    seat_section VARCHAR(10),
-    seat_row VARCHAR(10),
-    seat_number INT(11) CHECK (seat_number > 0),
-    ticket_type VARCHAR(20),
-    amenities TEXT,
-    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
-                            );
+INSERT INTO Venue (venue_id, name, city_id, capacity, address, refund_policy_rules) VALUES
+(1, 'Azadi Stadium', 1, 78000, 'Tehran, Azadi Sport Complex', 'Full refund 48h before'),
+(2, 'Imam Reza Stadium', 2, 27000, 'Mashhad, Basij Blvd', 'No refund for group tickets'),
+(3, 'Naghsh-e-Jahan Stadium', 3, 75000, 'Isfahan, Enghelab Sq', 'Refund with 10% fee'),
+(4, 'Hafezieh Stadium', 4, 20000, 'Shiraz, Hafezieh area', 'Only transferable'),
+(5, 'Sardar Jangal Stadium', 5, 15000, 'Rasht, Shohada Sq', 'Refund within 7 days');
 
-CREATE TABLE VolleyballDetail (
-    volleyball_detail_id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    ticket_id INT(11),
-    league_name VARCHAR(100),
-    hall_name VARCHAR(100),
-    seat_section VARCHAR(10),
-    seat_row VARCHAR(10),
-    seat_number INT(11) CHECK (seat_number > 0),
-    ticket_type VARCHAR(20),
-    amenities TEXT,
-    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
-                              );
+INSERT INTO Matchh (match_id, sport_type, home_team_id, away_team_id, venue_id, match_date) VALUES
+(1, 'Football', 1, 2, 1, '2025-06-15 18:30:00'), 
+(2, 'Football', 3, 4, 3, '2025-06-16 20:00:00'),
+(3, 'Football', 5, 1, 5, '2025-06-18 17:00:00'), 
+(4, 'Basketball', 2, 3, 2, '2025-06-20 19:00:00'),
+(5, 'Volleyball', 4, 5, 4, '2025-06-22 16:30:00'); 
 
-CREATE TABLE BasketballDetail (
-    basketball_detail_id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    ticket_id INT(11),
-    league_name VARCHAR(100),
-    hall_name VARCHAR(100),
-    seat_section VARCHAR(10),
-    seat_row VARCHAR(10),
-    seat_number INT(11) CHECK (seat_number > 0),
-    ticket_type VARCHAR(20),
-    amenities TEXT,
-    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
-                              );
+INSERT INTO Ticket (ticket_id, match_id, price, remaining_capacity, category, organizer_venue_id) VALUES
+(1, 1, 250000.00, 1200, 'VIP', 1),
+(2, 1, 80000.00, 5000, 'normal', 1),
+(3, 2, 200000.00, 800, 'special', 3),
+(4, 3, 60000.00, 3000, 'normal', 5),
+(5, 4, 150000.00, 600, 'VIP', 2);
+
+INSERT INTO Reservation (reservation_id, ticket_id, user_id, status, reserved_at, expires_at) VALUES
+(1, 1, 1, 'reserved', '2025-05-01 10:00:00', '2025-05-01 10:10:00'),
+(2, 2, 4, 'paid',    '2025-05-02 14:30:00', '2025-05-03 14:40:00'),
+(3, 3, 6, 'cancelled','2025-05-03 09:15:00', '2025-05-03 09:25:00'),
+(4, 4, 2, 'reserved', '2025-05-04 18:00:00', '2025-05-05 18:10:00'),
+(5, 5, 5, 'paid',     '2025-05-05 12:00:00', '2025-05-06 12:10:00');
 
 INSERT INTO Payment (payment_id, reservation_id, user_id, amount, payment_status, payment_method, refund_amount) VALUES
-(11, 11, 1, 150.00, 'completed', 'CreditCard', 0),
-(12, 12, 3, 200.00, 'completed', 'Online', 0),
-(13, 13, 5, 75.50, 'pending', 'CreditCard', 0),
-(14, 14, 2, 90.00, 'completed', 'Online', 0),
-(15, 15, 4, 110.00, 'failed', 'CreditCard', 0);
+(1, 1, 1, 150.00, 'completed', 'CreditCard', 0),
+(2, 2, 3, 200.00, 'completed', 'Online', 0),
+(3, 3, 5, 75.50, 'pending', 'CreditCard', 0),
+(4, 4, 2, 90.00, 'completed', 'Online', 0),
+(5, 5, 4, 110.00, 'failed', 'CreditCard', 0);
 
 INSERT INTO Report (report_id, user_id, ticket_id, subject, description, status, admin_response) VALUES
-(6, 6, 6, 'Seat Issue', 'Double booked', 'open', NULL),
-(7, 1, 7, 'Refund', 'Not processed', 'in_progress', 'Investigating'),
-(8, 3, 8, 'Quality', 'Poor view', 'closed', 'Apologies sent'),
-(9, 5, 9, 'Payment', 'Charged twice', 'open', NULL),
-(10, 2, 10, 'Other', 'Wrong ticket', 'in_progress', 'Checking records');
+(1, 4, 1, 'Seat Issue', 'Double booked', 'open', NULL),
+(2, 1, 2, 'Refund', 'Not processed', 'in_progress', 'Investigating'),
+(3, 3, 3, 'Quality', 'Poor view', 'closed', 'Apologies sent'),
+(4, 5, 4, 'Payment', 'Charged twice', 'open', NULL),
+(5, 2, 5, 'Other', 'Wrong ticket', 'in_progress', 'Checking records');
 
 INSERT INTO CancellationRequest (cancel_id, reservation_id, user_id, penalty_percent, refund_amount, status, processed_at, admin_id) VALUES
-(6, 11, 1, 5.00, 142.50, 'pending', NULL, NULL),
-(7, 12, 3, 0, 200.00, 'approved', '2026-05-27 10:30:00', 2),
-(8, 13, 5, 15.00, 64.18, 'pending', NULL, NULL),
-(9, 14, 2, 0, 90.00, 'approved', '2026-05-27 11:00:00', 5),
-(10, 15, 4, 10.00, 99.00, 'rejected', '2026-05-27 09:15:00', 2);
+(1, 1, 1, 5.00, 142.50, 'pending', NULL, NULL),
+(2, 2, 3, 0, 200.00, 'approved', '2026-05-27 10:30:00', 2),
+(3, 3, 5, 15.00, 64.18, 'pending', NULL, NULL),
+(4, 4, 2, 0, 90.00, 'approved', '2026-05-27 11:00:00', 5),
+(5, 5, 4, 10.00, 99.00, 'rejected', '2026-05-27 09:15:00', 2);
 
 INSERT INTO FootballDetail (ticket_id, league_name, stadium_name, seat_section, seat_row, seat_number, ticket_type, amenities) VALUES
-(11, 'IPL', 'Azadi', 'A4', '4', 5, 'VIP', 'Lounge, Parking'),
-(12, 'IPL', 'Naghsh', 'B3', '3', 4, 'Standard', 'Wi-Fi'),
-(13, 'IPL', 'Azadi', 'A1', '1', 6, 'VIP', 'Free Food, Parking'),
-(14, 'IPL', 'Naghsh', 'B1', '1', 5, 'Standard', 'Wi-Fi, Parking'),
-(15, 'IPL', 'Azadi', 'A2', '2', 7, 'Premium', 'Lounge, Free Drinks');
+(1, 'IPL', 'Azadi', 'A4', '4', 5, 'VIP', 'Lounge, Parking'),
+(2, 'IPL', 'Naghsh', 'B3', '3', 4, 'Standard', 'Wi-Fi'),
+(3, 'IPL', 'Azadi', 'A1', '1', 6, 'VIP', 'Free Food, Parking'),
+(4, 'IPL', 'Naghsh', 'B1', '1', 5, 'Standard', 'Wi-Fi, Parking'),
+(5, 'IPL', 'Azadi', 'A2', '2', 7, 'Premium', 'Lounge, Free Drinks');
 
 INSERT INTO VolleyballDetail (ticket_id, league_name, hall_name, seat_section, seat_row, seat_number, ticket_type, amenities) VALUES
 (1, 'Super League', 'Azadi Hall', 'A1', '1', 1, 'Standard', 'Parking, Wi-Fi'),
@@ -322,8 +292,8 @@ INSERT INTO VolleyballDetail (ticket_id, league_name, hall_name, seat_section, s
 (5, 'Super League', 'Azadi Hall', 'A1', '1', 2, 'VIP', 'Lounge, Free Food');
 
 INSERT INTO BasketballDetail (ticket_id, league_name, hall_name, seat_section, seat_row, seat_number, ticket_type, amenities) VALUES
-(6, 'NBA', 'Madison Square', 'C3', '7', 3, 'Premium', 'Free Drinks, Parking'),
-(7, 'NBA', 'Staples Center', 'C1', '5', 4, 'Courtside', 'VIP Lounge, Free Food'),
-(8, 'EuroLeague', 'OAKA Hall', 'D3', '5', 3, 'Standard', 'Wi-Fi, Parking'),
-(9, 'NBA', 'Madison Square', 'C2', '6', 5, 'Premium', 'VIP Lounge, Free Drinks'),
-(10, 'EuroLeague', 'OAKA Hall', 'D1', '3', 4, 'Standard', 'Wi-Fi');
+(1, 'NBA', 'Madison Square', 'C3', '7', 3, 'Premium', 'Free Drinks, Parking'),
+(2, 'NBA', 'Staples Center', 'C1', '5', 4, 'Courtside', 'VIP Lounge, Free Food'),
+(3, 'EuroLeague', 'OAKA Hall', 'D3', '5', 3, 'Standard', 'Wi-Fi, Parking'),
+(4, 'NBA', 'Madison Square', 'C2', '6', 5, 'Premium', 'VIP Lounge, Free Drinks'),
+(5, 'EuroLeague', 'OAKA Hall', 'D1', '3', 4, 'Standard', 'Wi-Fi');
