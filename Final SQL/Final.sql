@@ -83,7 +83,7 @@ CREATE TABLE Payment (
     reservation_id INT(11),
     user_id INT(11),
     amount DECIMAL(10, 2) CHECK (amount >= 0),
-    payment_status VARCHAR(20),
+    payment_status ENUM('completed', 'pending', 'failed'),
     payment_method VARCHAR(50),
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     refund_amount DECIMAL(10, 2) DEFAULT 0,
@@ -97,7 +97,7 @@ CREATE TABLE Report (
     ticket_id INT(11),
     subject VARCHAR(200),
     description TEXT,
-    status VARCHAR(20),
+    status ENUM('open', 'closed', 'in_progress'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     admin_response TEXT,
     FOREIGN KEY (user_id) REFERENCES User(user_id),
@@ -111,7 +111,7 @@ CREATE TABLE CancellationRequest (
     requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     penalty_percent DECIMAL(5, 2) CHECK (penalty_percent >= 0),
     refund_amount DECIMAL(10, 2),
-    status VARCHAR(20),
+    status ENUM('pending', 'approved', 'rejected'),
     processed_at TIMESTAMP,
     admin_id INT(11),
     FOREIGN KEY (reservation_id) REFERENCES Reservation(reservation_id) ON DELETE CASCADE,
@@ -126,7 +126,7 @@ CREATE TABLE FootballDetail (
     seat_section VARCHAR(10),
     seat_row VARCHAR(10),
     seat_number INT(11) CHECK (seat_number > 0),
-    ticket_type VARCHAR(20),
+    ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
                             );
@@ -139,7 +139,7 @@ CREATE TABLE VolleyballDetail (
     seat_section VARCHAR(10),
     seat_row VARCHAR(10),
     seat_number INT(11) CHECK (seat_number > 0),
-    ticket_type VARCHAR(20),
+    ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
                               );
@@ -152,7 +152,7 @@ CREATE TABLE BasketballDetail (
     seat_section VARCHAR(10),
     seat_row VARCHAR(10),
     seat_number INT(11) CHECK (seat_number > 0),
-    ticket_type VARCHAR(20),
+    ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
                               );
