@@ -24,6 +24,10 @@ CREATE TABLE User (
     registered_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     account_status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     profile_picture VARCHAR(255),
+    CHECK ((email IS NOT NULL AND email LIKE '%@%.%')
+        OR (phone IS NOT NULL AND phone LIKE '09%'
+        AND LENGTH(phone) = 11
+        AND phone REGEXP '^[0-9]+$')),
     FOREIGN KEY (city_id)
         REFERENCES City (city_id)
         ON DELETE SET NULL
@@ -53,28 +57,10 @@ VALUES
 
 (2, 'Aynaz', 'Hosseini', 'aynaz@gmail.com', '09151270125', 'admin', 2, 'hashed_pass_2', 'active'),
 
-(3, 'Reza', 'Karimi', 'reza@gmail.com', '09012379854', 'spectator', 3, 'hashed_pass_3', 'inactive'),
+(3, 'Reza', 'Karimi', 'NULL', '09012379854', 'spectator', 3, 'hashed_pass_3', 'inactive'),
 
-(4, 'Nika', 'Jafari',
-'nika@gmail.com',
-'09010105123',
-'spectator',
-4,
-'hashed_pass_4',
-'active'),
+(4, 'Nika', 'Jafari', 'nika@gmail.com', '09010105123', 'spectator', 4, 'hashed_pass_4', 'active'),
 
-(5, 'Parsa', 'Hosseini',
-'parsa@gmail.com',
-'09031348732',
-'admin',
-5,
-'hashed_pass_5',
-'active'),
+(5, 'Parsa', 'Hosseini', 'parsa@gmail.com', 'NULL', 'admin', 5, 'hashed_pass_5', 'active'),
 
-(6, 'Yasamin', 'adib',
-'yasamin@gmail.com',
-'09052456630',
-'spectator',
-1,
-'hashed_pass_6',
-'active');
+(6, 'Yasamin', 'adib', 'yasamin@gmail.com', '09052456630', 'spectator', 1, 'hashed_pass_6', 'active');
