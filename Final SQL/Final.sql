@@ -73,7 +73,7 @@ CREATE TABLE Reservation (
     user_id INT(11) NOT NULL,
     status ENUM('reserved', 'paid', 'cancelled') DEFAULT 'reserved',
     reserved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP,
+    expires_at TIMESTAMP CHECK(expired_at > reserved_at),
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
@@ -244,28 +244,49 @@ INSERT INTO Venue (venue_id, name, city_id, capacity, address, refund_policy_rul
 (2, 'Imam Reza Stadium', 2, 27000, 'Mashhad, Basij Blvd', 'No refund for group tickets'),
 (3, 'Naghsh-e-Jahan Stadium', 3, 75000, 'Isfahan, Enghelab Sq', 'Refund with 10% fee'),
 (4, 'Hafezieh Stadium', 4, 20000, 'Shiraz, Hafezieh area', 'Only transferable'),
-(5, 'Sardar Jangal Stadium', 5, 15000, 'Rasht, Shohada Sq', 'Refund within 7 days');
+(5, 'Sardar Jangal Stadium', 5, 15000, 'Rasht, Shohada Sq', 'Refund within 7 days'),
+(6, 'Shahid Bahonar Stadium', 6, 18000, 'Kerman, Bahonar Blvd', 'Refund with 5% fee'), 
+(7, 'Nasiri Stadium', 7, 12000, 'Yazd, Imam St', 'No refund after purchase'), 
+(8, 'Mottaqi Stadium', 8, 22000, 'Sari, Pasdaran Blvd', 'Refund within 72h'), 
+(9, 'Takhti Stadium', 9, 16000, 'Gorgan, Shahid Beheshti St', 'Transferable ticket only'),
+(10, 'Ghadir Stadium', 10, 30000, 'Ahvaz, Golestan Blvd', 'Refund with 10% penalty');
 
 INSERT INTO Matchh (match_id, sport_type, home_team_id, away_team_id, venue_id, match_date) VALUES
 (1, 'Football', 1, 2, 1, '2025-06-15 18:30:00'), 
 (2, 'Football', 3, 4, 3, '2025-06-16 20:00:00'),
 (3, 'Football', 5, 1, 5, '2025-06-18 17:00:00'), 
 (4, 'Basketball', 2, 3, 2, '2025-06-20 19:00:00'),
-(5, 'Volleyball', 4, 5, 4, '2025-06-22 16:30:00'); 
+(5, 'Volleyball', 4, 5, 4, '2025-06-22 16:30:00'),
+(6, 'Football', 6, 7, 6, '2026-07-05 18:00:00'), 
+(7, 'Football', 8, 9, 7, '2026-07-08 20:00:00'), 
+(8, 'Basketball', 10, 2, 8, '2026-07-10 19:30:00'), 
+(9, 'Volleyball', 3, 5, 9, '2026-07-12 17:00:00'), 
+(10, 'Football', 4, 6, 10, '2026-07-15 21:00:00');
+
 
 INSERT INTO Ticket (ticket_id, match_id, price, remaining_capacity, category, organizer_venue_id) VALUES
 (1, 1, 250000.00, 1200, 'VIP', 1),
 (2, 1, 80000.00, 5000, 'normal', 1),
 (3, 2, 200000.00, 800, 'special', 3),
 (4, 3, 60000.00, 3000, 'normal', 5),
-(5, 4, 150000.00, 600, 'VIP', 2);
+(5, 4, 150000.00, 600, 'VIP', 2),
+(6, 6, 90000.00, 2500, 'normal', 6), 
+(7, 7, 220000.00, 700, 'VIP', 7), 
+(8, 8, 180000.00, 500, 'special', 8), 
+(9, 9, 120000.00, 900, 'normal', 9), 
+(10, 10, 300000.00, 400, 'VIP', 10);
 
 INSERT INTO Reservation (reservation_id, ticket_id, user_id, status, reserved_at, expires_at) VALUES
 (1, 1, 1, 'reserved', '2025-05-01 10:00:00', '2025-05-01 10:10:00'),
 (2, 2, 4, 'paid',    '2025-05-02 14:30:00', '2025-05-03 14:40:00'),
 (3, 3, 6, 'cancelled','2025-05-03 09:15:00', '2025-05-03 09:25:00'),
 (4, 4, 2, 'reserved', '2025-05-04 18:00:00', '2025-05-05 18:10:00'),
-(5, 5, 5, 'paid',     '2025-05-05 12:00:00', '2025-05-06 12:10:00');
+(5, 5, 5, 'paid',     '2025-05-05 12:00:00', '2025-05-06 12:10:00'),
+(6, 6, 7, 'reserved', '2026-06-01 10:00:00', '2026-06-01 10:15:00'), 
+(7, 7, 8, 'paid', '2026-06-02 11:30:00', '2026-06-03 11:45:00'), 
+(8, 8, 9, 'reserved', '2026-06-03 14:00:00', '2026-06-03 14:15:00'), 
+(9, 9, 10, 'cancelled', '2026-06-04 16:20:00', '2026-06-04 16:35:00'), 
+(10, 10, 12, 'paid', '2026-06-05 18:10:00', '2026-06-06 18:25:00'); 
 
 INSERT INTO Payment (payment_id, reservation_id, user_id, amount, payment_status, payment_method, refund_amount) VALUES
 (1, 1, 1, 150.00, 'completed', 'CreditCard', 0),
