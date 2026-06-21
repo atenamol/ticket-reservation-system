@@ -17,8 +17,8 @@ CREATE TABLE User (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    phone VARCHAR(15) NOT NULL UNIQUE,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(15) UNIQUE,
     role ENUM('spectator', 'admin') NOT NULL,
     city_id INT,
     password_hash VARCHAR(255) NOT NULL,
@@ -202,7 +202,12 @@ VALUES
 (2, 'Mashhad', 'Razavi Khorasan'),
 (3, 'Isfahan', 'Isfahan'),
 (4, 'Shiraz', 'Fars'),
-(5, 'Rasht', 'Gilan');
+(5, 'Rasht', 'Gilan'),
+(6, 'Kerman', 'Kerman'),
+(7, 'Yazd', 'Yazd'),
+(8, 'Sari', 'Mazandaran'),
+(9, 'Gorgan', 'Golestan'),
+(10, 'Ahvaz', 'Khuzestan');
 
 INSERT INTO Team (team_id, name)
 VALUES
@@ -210,23 +215,29 @@ VALUES
 (2, 'Esteghlal'),
 (3, 'Sepahan'),
 (4, 'Tractor'),
-(5, 'Foolad');
+(5, 'Foolad'),
+(6, 'Malavan'),
+(7, 'Gol Gohar'),
+(8, 'Zob Ahan'),
+(9, 'Peykan'),
+(10, 'Nassaji');
 
 INSERT INTO User
 (user_id, first_name, last_name, email, phone, role, city_id, password_hash, account_status)
 VALUES
 
 (1, 'Ali', 'Ahmadi', 'ali@gmail.com', '09126412825', 'spectator', 1, 'hashed_pass_1', 'active'),
-
 (2, 'Aynaz', 'Hosseini', 'aynaz@gmail.com', '09151270125', 'admin', 2, 'hashed_pass_2', 'active'),
-
-(3, 'Reza', 'Karimi', 'NULL', '09012379854', 'spectator', 3, 'hashed_pass_3', 'inactive'),
-
+(3, 'Reza', 'Karimi', Null , '09012379854', 'spectator', 3, 'hashed_pass_3', 'inactive'),
 (4, 'Nika', 'Jafari', 'nika@gmail.com', '09010105123', 'spectator', 4, 'hashed_pass_4', 'active'),
-
-(5, 'Parsa', 'Hosseini', 'parsa@gmail.com', 'NULL', 'admin', 5, 'hashed_pass_5', 'active'),
-
-(6, 'Yasamin', 'adib', 'yasamin@gmail.com', '09052456630', 'spectator', 1, 'hashed_pass_6', 'active');
+(5, 'Parsa', 'Hosseini', 'parsa@gmail.com', Null, 'admin', 5, 'hashed_pass_5', 'active'),
+(6, 'Yasamin', 'Adib', 'yasamin@gmail.com', '09052456630', 'spectator', 1, 'hashed_pass_6', 'active'),
+(7, 'Atiyeh', 'Saadatzadeh', 'atysaa@gmail.com', '09050125679', 'spectator', 6, 'hashed_pass_7', 'active'),
+(8, 'Sahar', 'Amini', 'saharamini@gmail.com', Null, 'spectator', 9, 'hashed_pass_8', 'active'),
+(9, 'Nima', 'Naseri', 'nimanaseri@gmail.com', Null, 'spectator', 7, 'hashed_pass_9', 'active'),
+(10, 'Milad', 'Karimi', 'miladkarimi@gmail.com', '09017531595', 'admin', 10, 'hashed_pass_10', 'active'),
+(11, 'Paria', 'Raad', 'pariraad@gmail.com', Null, 'spectator', 8, 'hashed_pass_11', 'inactive'),
+(12, 'Saman', 'Taheri', Null, '09034718629', 'spectator', 7, 'hashed_pass_12', 'active');
 
 INSERT INTO Venue (venue_id, name, city_id, capacity, address, refund_policy_rules) VALUES
 (1, 'Azadi Stadium', 1, 78000, 'Tehran, Azadi Sport Complex', 'Full refund 48h before'),
