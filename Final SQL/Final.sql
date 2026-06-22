@@ -62,7 +62,7 @@ CREATE TABLE Ticket (
     price DECIMAL(10, 2) CHECK (price >= 0),
     remaining_capacity INT(11) CHECK (remaining_capacity >= 0),
     category ENUM('VIP', 'normal', 'special') NOT NULL,
-    organizer_venue_id INT(11), 
+    organizer_venue_id INT(11),
     FOREIGN KEY (match_id) REFERENCES Matchh(match_id) ON DELETE CASCADE,
     FOREIGN KEY (organizer_venue_id) REFERENCES Venue(venue_id)
 );
@@ -73,7 +73,7 @@ CREATE TABLE Reservation (
     user_id INT(11) NOT NULL,
     status ENUM('reserved', 'paid', 'cancelled') DEFAULT 'reserved',
     reserved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP CHECK(expired_at > reserved_at),
+    expires_at TIMESTAMP CHECK(expires_at > reserved_at),
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
@@ -115,8 +115,9 @@ CREATE TABLE CancellationRequest (
     processed_at TIMESTAMP,
     admin_id INT(11),
     FOREIGN KEY (reservation_id) REFERENCES Reservation(reservation_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES User(user_id)
-                                 );
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (admin_id) REFERENCES User(user_id)
+);
 
 CREATE TABLE FootballDetail (
     football_detail_id INT(11) PRIMARY KEY AUTO_INCREMENT,
@@ -129,7 +130,7 @@ CREATE TABLE FootballDetail (
     ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
-                            );
+);
 
 CREATE TABLE VolleyballDetail (
     volleyball_detail_id INT(11) PRIMARY KEY AUTO_INCREMENT,
@@ -142,7 +143,7 @@ CREATE TABLE VolleyballDetail (
     ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
-                              );
+);
 
 CREATE TABLE BasketballDetail (
     basketball_detail_id INT(11) PRIMARY KEY AUTO_INCREMENT,
@@ -155,35 +156,40 @@ CREATE TABLE BasketballDetail (
     ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
-                              );
+);
+
+
 -- Indexing
+
+CREATE INDEX idx_user_email ON User(email);
+CREATE INDEX idx_user_phone ON User(phone);
+
 CREATE INDEX idx_match_date ON Matchh(match_date);
 CREATE INDEX idx_match_venue ON Matchh(venue_id);
-
 CREATE INDEX idx_match_sport_venue_date ON Matchh(sport_type, venue_id, match_date);
 
-CREATE INDEX idx_ticket_match ON Ticket(match_id);
 CREATE INDEX idx_ticket_category ON Ticket(category);
 CREATE INDEX idx_ticket_price ON Ticket(price);
 
 CREATE INDEX idx_ticket_match_category_price ON Ticket(match_id, category, price);
 
-CREATE INDEX idx_reservation_user ON Reservation(user_id);
 CREATE INDEX idx_reservation_status ON Reservation(status);
 CREATE INDEX idx_reservation_expires ON Reservation(expires_at);
 
 CREATE INDEX idx_reservation_user_status ON Reservation(user_id, status);
 
 CREATE INDEX idx_payment_user ON Payment(user_id);
-CREATE INDEX idx_payment_reservation ON Payment(reservation_id);
 CREATE INDEX idx_payment_status ON Payment(payment_status);
 CREATE INDEX idx_payment_date ON Payment(transaction_date);
+CREATE INDEX idx_payment_status_date ON Payment(payment_status, transaction_date);
+
 
 CREATE INDEX idx_report_user ON Report(user_id);
 CREATE INDEX idx_report_status ON Report(status);
 
 CREATE INDEX idx_cancel_user ON CancellationRequest(user_id);
 CREATE INDEX idx_cancel_status ON CancellationRequest(status);
+CREATE INDEX idx_cancel_reservation ON CancellationRequest(reservation_id);
 
 CREATE INDEX idx_football_ticket ON FootballDetail(ticket_id);
 CREATE INDEX idx_volleyball_ticket ON VolleyballDetail(ticket_id);
@@ -245,22 +251,22 @@ INSERT INTO Venue (venue_id, name, city_id, capacity, address, refund_policy_rul
 (3, 'Naghsh-e-Jahan Stadium', 3, 75000, 'Isfahan, Enghelab Sq', 'Refund with 10% fee'),
 (4, 'Hafezieh Stadium', 4, 20000, 'Shiraz, Hafezieh area', 'Only transferable'),
 (5, 'Sardar Jangal Stadium', 5, 15000, 'Rasht, Shohada Sq', 'Refund within 7 days'),
-(6, 'Shahid Bahonar Stadium', 6, 18000, 'Kerman, Bahonar Blvd', 'Refund with 5% fee'), 
-(7, 'Nasiri Stadium', 7, 12000, 'Yazd, Imam St', 'No refund after purchase'), 
-(8, 'Mottaqi Stadium', 8, 22000, 'Sari, Pasdaran Blvd', 'Refund within 72h'), 
+(6, 'Shahid Bahonar Stadium', 6, 18000, 'Kerman, Bahonar Blvd', 'Refund with 5% fee'),
+(7, 'Nasiri Stadium', 7, 12000, 'Yazd, Imam St', 'No refund after purchase'),
+(8, 'Mottaqi Stadium', 8, 22000, 'Sari, Pasdaran Blvd', 'Refund within 72h'),
 (9, 'Takhti Stadium', 9, 16000, 'Gorgan, Shahid Beheshti St', 'Transferable ticket only'),
 (10, 'Ghadir Stadium', 10, 30000, 'Ahvaz, Golestan Blvd', 'Refund with 10% penalty');
 
 INSERT INTO Matchh (match_id, sport_type, home_team_id, away_team_id, venue_id, match_date) VALUES
-(1, 'Football', 1, 2, 1, '2025-06-15 18:30:00'), 
+(1, 'Football', 1, 2, 1, '2025-06-15 18:30:00'),
 (2, 'Football', 3, 4, 3, '2025-06-16 20:00:00'),
-(3, 'Football', 5, 1, 5, '2025-06-18 17:00:00'), 
+(3, 'Football', 5, 1, 5, '2025-06-18 17:00:00'),
 (4, 'Basketball', 2, 3, 2, '2025-06-20 19:00:00'),
 (5, 'Volleyball', 4, 5, 4, '2025-06-22 16:30:00'),
-(6, 'Football', 6, 7, 6, '2026-07-05 18:00:00'), 
-(7, 'Football', 8, 9, 7, '2026-07-08 20:00:00'), 
-(8, 'Basketball', 10, 2, 8, '2026-07-10 19:30:00'), 
-(9, 'Volleyball', 3, 5, 9, '2026-07-12 17:00:00'), 
+(6, 'Football', 6, 7, 6, '2026-07-05 18:00:00'),
+(7, 'Football', 8, 9, 7, '2026-07-08 20:00:00'),
+(8, 'Basketball', 10, 2, 8, '2026-07-10 19:30:00'),
+(9, 'Volleyball', 3, 5, 9, '2026-07-12 17:00:00'),
 (10, 'Football', 4, 6, 10, '2026-07-15 21:00:00');
 
 
@@ -270,10 +276,10 @@ INSERT INTO Ticket (ticket_id, match_id, price, remaining_capacity, category, or
 (3, 2, 200000.00, 800, 'special', 3),
 (4, 3, 60000.00, 3000, 'normal', 5),
 (5, 4, 150000.00, 600, 'VIP', 2),
-(6, 6, 90000.00, 2500, 'normal', 6), 
-(7, 7, 220000.00, 700, 'VIP', 7), 
-(8, 8, 180000.00, 500, 'special', 8), 
-(9, 9, 120000.00, 900, 'normal', 9), 
+(6, 6, 90000.00, 2500, 'normal', 6),
+(7, 7, 220000.00, 700, 'VIP', 7),
+(8, 8, 180000.00, 500, 'special', 8),
+(9, 9, 120000.00, 900, 'normal', 9),
 (10, 10, 300000.00, 400, 'VIP', 10);
 
 INSERT INTO Reservation (reservation_id, ticket_id, user_id, status, reserved_at, expires_at) VALUES
@@ -282,18 +288,18 @@ INSERT INTO Reservation (reservation_id, ticket_id, user_id, status, reserved_at
 (3, 3, 6, 'cancelled','2025-05-03 09:15:00', '2025-05-03 09:25:00'),
 (4, 4, 2, 'reserved', '2025-05-04 18:00:00', '2025-05-05 18:10:00'),
 (5, 5, 5, 'paid',     '2025-05-05 12:00:00', '2025-05-06 12:10:00'),
-(6, 6, 7, 'reserved', '2026-06-01 10:00:00', '2026-06-01 10:15:00'), 
-(7, 7, 8, 'paid', '2026-06-02 11:30:00', '2026-06-03 11:45:00'), 
-(8, 8, 9, 'reserved', '2026-06-03 14:00:00', '2026-06-03 14:15:00'), 
-(9, 9, 10, 'cancelled', '2026-06-04 16:20:00', '2026-06-04 16:35:00'), 
-(10, 10, 12, 'paid', '2026-06-05 18:10:00', '2026-06-06 18:25:00'); 
+(6, 6, 7, 'reserved', '2026-06-01 10:00:00', '2026-06-01 10:15:00'),
+(7, 7, 8, 'paid', '2026-06-02 11:30:00', '2026-06-03 11:45:00'),
+(8, 8, 9, 'reserved', '2026-06-03 14:00:00', '2026-06-03 14:15:00'),
+(9, 9, 10, 'cancelled', '2026-06-04 16:20:00', '2026-06-04 16:35:00'),
+(10, 10, 12, 'paid', '2026-06-05 18:10:00', '2026-06-06 18:25:00');
 
 INSERT INTO Payment (payment_id, reservation_id, user_id, amount, payment_status, payment_method, refund_amount) VALUES
 (1, 1, 1, 150.00, 'completed', 'CreditCard', 0),
-(2, 2, 3, 200.00, 'completed', 'Online', 0),
-(3, 3, 5, 75.50, 'pending', 'CreditCard', 0),
-(4, 4, 2, 90.00, 'completed', 'Online', 0),
-(5, 5, 4, 110.00, 'failed', 'CreditCard', 0);
+(2, 2, 4, 200.00, 'completed', 'Online', 0),
+(3, 3, 6, 75.50,  'pending',   'CreditCard', 0),
+(4, 4, 2, 90.00,  'completed', 'Online', 0),
+(5, 5, 5, 110.00, 'failed',    'CreditCard', 0);
 
 INSERT INTO Report (report_id, user_id, ticket_id, subject, description, status, admin_response) VALUES
 (1, 4, 1, 'Seat Issue', 'Double booked', 'open', NULL),
@@ -311,21 +317,21 @@ INSERT INTO CancellationRequest (cancel_id, reservation_id, user_id, penalty_per
 
 INSERT INTO FootballDetail (ticket_id, league_name, stadium_name, seat_section, seat_row, seat_number, ticket_type, amenities) VALUES
 (1, 'IPL', 'Azadi', 'A4', '4', 5, 'VIP', 'Lounge, Parking'),
-(2, 'IPL', 'Naghsh', 'B3', '3', 4, 'Standard', 'Wi-Fi'),
+(2, 'IPL', 'Naghsh', 'B3', '3', 4, 'normal', 'Wi-Fi'),
 (3, 'IPL', 'Azadi', 'A1', '1', 6, 'VIP', 'Free Food, Parking'),
-(4, 'IPL', 'Naghsh', 'B1', '1', 5, 'Standard', 'Wi-Fi, Parking'),
-(5, 'IPL', 'Azadi', 'A2', '2', 7, 'Premium', 'Lounge, Free Drinks');
+(4, 'IPL', 'Naghsh', 'B1', '1', 5, 'normal', 'Wi-Fi, Parking'),
+(5, 'IPL', 'Azadi', 'A2', '2', 7, 'special', 'Lounge, Free Drinks');
 
 INSERT INTO VolleyballDetail (ticket_id, league_name, hall_name, seat_section, seat_row, seat_number, ticket_type, amenities) VALUES
-(1, 'Super League', 'Azadi Hall', 'A1', '1', 1, 'Standard', 'Parking, Wi-Fi'),
+(1, 'Super League', 'Azadi Hall', 'A1', '1', 1, 'normal', 'Parking, Wi-Fi'),
 (2, 'Super League', 'Azadi Hall', 'A2', '2', 2, 'VIP', 'Lounge, Free Drinks'),
-(3, 'Super League', 'Ghadir Hall', 'B1', '1', 1, 'Standard', 'Wi-Fi'),
-(4, 'Super League', 'Ghadir Hall', 'B2', '2', 2, 'Standard', 'Parking'),
+(3, 'Super League', 'Ghadir Hall', 'B1', '1', 1, 'normal', 'Wi-Fi'),
+(4, 'Super League', 'Ghadir Hall', 'B2', '2', 2, 'normal', 'Parking'),
 (5, 'Super League', 'Azadi Hall', 'A1', '1', 2, 'VIP', 'Lounge, Free Food');
 
 INSERT INTO BasketballDetail (ticket_id, league_name, hall_name, seat_section, seat_row, seat_number, ticket_type, amenities) VALUES
-(1, 'NBA', 'Madison Square', 'C3', '7', 3, 'Premium', 'Free Drinks, Parking'),
+(1, 'NBA', 'Madison Square', 'C3', '7', 3, 'special', 'Free Drinks, Parking'),
 (2, 'NBA', 'Staples Center', 'C1', '5', 4, 'Courtside', 'VIP Lounge, Free Food'),
-(3, 'EuroLeague', 'OAKA Hall', 'D3', '5', 3, 'Standard', 'Wi-Fi, Parking'),
-(4, 'NBA', 'Madison Square', 'C2', '6', 5, 'Premium', 'VIP Lounge, Free Drinks'),
-(5, 'EuroLeague', 'OAKA Hall', 'D1', '3', 4, 'Standard', 'Wi-Fi');
+(3, 'EuroLeague', 'OAKA Hall', 'D3', '5', 3, 'normal', 'Wi-Fi, Parking'),
+(4, 'NBA', 'Madison Square', 'C2', '6', 5, 'special', 'VIP Lounge, Free Drinks'),
+(5, 'EuroLeague', 'OAKA Hall', 'D1', '3', 4, 'normal', 'Wi-Fi');
