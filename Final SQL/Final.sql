@@ -1,7 +1,9 @@
 CREATE DATABASE IF NOT EXISTS TicketSystem;
 USE TicketSystem;
 
+
 -- Creating tables
+
 CREATE TABLE City (
     city_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
