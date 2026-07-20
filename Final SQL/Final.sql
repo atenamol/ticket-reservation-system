@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS TicketSystem;
+این درسته؟DROP DATABASE IF EXISTS TicketSystem;
 CREATE DATABASE IF NOT EXISTS TicketSystem;
 USE TicketSystem;
 
@@ -291,14 +291,14 @@ INSERT INTO Reservation (reservation_id, ticket_id, user_id, status, reserved_at
 (5, 5, 5, 'reserved',     '2025-05-05 12:00:00', '2025-05-06 12:10:00'),
 (6, 6, 7, 'cancelled', '2026-06-01 10:00:00', '2026-06-01 10:15:00'),
 (7, 7, 8, 'paid', '2026-06-02 11:30:00', '2026-06-03 11:45:00'),
-(8, 8, 9, 'reserved', '2026-06-03 14:00:00', '2026-06-03 14:15:00'),
+(8, 8, 9, 'paid', '2026-06-03 14:00:00', '2026-06-03 14:15:00'),
 (9, 9, 10, 'cancelled', '2026-06-04 16:20:00', '2026-06-04 16:35:00'),
 (10, 10, 12, 'paid', '2026-06-05 18:10:00', '2026-06-06 18:25:00');
 
 INSERT INTO Payment (payment_id, reservation_id, user_id, amount, payment_status, payment_method, refund_amount) VALUES
 (1, 1, 1, 250000.00, 'completed', 'CreditCard', 0),
 (2, 2, 4, 80000.00, 'completed', 'Online', 0),
-(3, 3, 6, 200000.50,  'pending',   'CreditCard', 0),
+(3, 3, 6, 200000.00,  'pending',   'CreditCard', 0),
 (4, 4, 2, 60000.00,  'completed', 'Online', 0),
 (5, 5, 5, 150000.00, 'failed',    'CreditCard', 0),
 (6, 6, 7, 90000.00, 'completed', 'Online', 0),
@@ -320,11 +320,11 @@ INSERT INTO Report (report_id, user_id, ticket_id, subject, description, status,
 (10, 12, 10, 'Other', 'Match rescheduled, need refund', 'in_progress', 'Checking policy');
 
 INSERT INTO CancellationRequest (cancel_id, reservation_id, user_id, penalty_percent, refund_amount, status, processed_at, admin_id) VALUES
-(1, 1, 1, 5.00, 142.50, 'pending', NULL, NULL),
-(2, 2, 4, 0, 200.00, 'approved', '2026-05-27 10:30:00', 2),
-(3, 3, 6, 15.00, 64.18, 'pending', NULL, NULL),
-(4, 4, 2, 0, 90.00, 'approved', '2026-05-27 11:00:00', 5),
-(5, 5, 5, 10.00, 99.00, 'rejected', '2026-05-27 09:15:00', 2),
+(1, 1, 1, 5.00, 237500.00, 'pending', NULL, NULL),
+(2, 2, 4, 0, 80000.00, 'approved', '2026-05-27 10:30:00', 2),
+(3, 3, 6, 15.00, 170000.00, 'pending', NULL, NULL),
+(4, 4, 2, 0, 60000.00, 'approved', '2026-05-27 11:00:00', 5),
+(5, 5, 5, 10.00, 135000.00, 'rejected', '2026-05-27 09:15:00', 2),
 (6, 6, 7, 0, 90000.00, 'approved', '2026-06-10 09:00:00', 2),
 (7, 7, 8, 5.00, 209000.00, 'pending', NULL, NULL),
 (8, 8, 9, 10.00, 162000.00, 'rejected', '2026-06-11 14:00:00', 10),
