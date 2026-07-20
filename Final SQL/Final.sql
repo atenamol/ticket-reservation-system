@@ -73,9 +73,10 @@ CREATE TABLE Reservation (
     user_id INT(11) NOT NULL,
     status ENUM('reserved', 'paid', 'cancelled') DEFAULT 'reserved',
     reserved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP CHECK(expires_at > reserved_at),
+    expires_at TIMESTAMP,
     FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES User(user_id)
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    CONSTRAINT chk_reservation_expiry CHECK (expires_at > reserved_at)
 );
 
 CREATE TABLE Payment (
