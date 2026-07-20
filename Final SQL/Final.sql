@@ -1,4 +1,4 @@
-این درسته؟DROP DATABASE IF EXISTS TicketSystem;
+DROP DATABASE IF EXISTS TicketSystem;
 CREATE DATABASE IF NOT EXISTS TicketSystem;
 USE TicketSystem;
 
@@ -130,7 +130,8 @@ CREATE TABLE FootballDetail (
     seat_number INT(11) CHECK (seat_number > 0),
     ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
-    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
+    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE,
+    CONSTRAINT unique_seat UNIQUE (league_name, stadium_name, seat_section, seat_row, seat_number)
 );
 
 CREATE TABLE VolleyballDetail (
@@ -143,7 +144,8 @@ CREATE TABLE VolleyballDetail (
     seat_number INT(11) CHECK (seat_number > 0),
     ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
-    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
+    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE,
+    CONSTRAINT unique_seat UNIQUE (league_name, hall_name, seat_section, seat_row, seat_number)
 );
 
 CREATE TABLE BasketballDetail (
@@ -156,7 +158,8 @@ CREATE TABLE BasketballDetail (
     seat_number INT(11) CHECK (seat_number > 0),
     ticket_type ENUM('VIP', 'normal', 'special'),
     amenities TEXT,
-    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE
+    FOREIGN KEY (ticket_id) REFERENCES Ticket(ticket_id) ON DELETE CASCADE,
+    CONSTRAINT unique_seat UNIQUE (league_name, hall_name, seat_section, seat_row, seat_number)
 );
 
 
