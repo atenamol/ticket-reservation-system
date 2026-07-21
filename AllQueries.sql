@@ -253,3 +253,44 @@ GROUP BY
     u.email,
     u.phone
 HAVING COUNT(DISTINCT m.sport_type)=3;
+
+-- Query 19: Delete all cancelled reservations belonging to the user now named 'Reddington' (run after Query 18)
+DELETE r FROM Reservation r
+JOIN User u ON r.user_id = u.user_id
+WHERE u.last_name = 'Reddington'
+  AND r.status = 'cancelled';
+
+
+-- Query 20: Delete all cancelled reservations in the system
+DELETE FROM Reservation
+WHERE status = 'cancelled';
+
+
+-- Query 21: Apply a 10% discount to tickets sold yesterday for matches held at Azadi Stadium
+UPDATE Ticket t
+SET t.price = t.price * 0.9
+WHERE t.ticket_id IN (
+    SELECT ticket_id FROM (
+        SELECT DISTINCT t2.ticket_id
+        FROM Ticket t2
+        JOIN Matchh m ON t2.match_id = m.match_id
+        JOIN Venue v ON m.venue_id = v.venue_id
+        JOIN Reservation r ON r.ticket_id = t2.ticket_id
+        WHERE v.name = 'Azadi Stadium'
+          AND DATE(r.reserved_at) = CURDATE() - INTERVAL 1 DAY
+    ) AS azadi_tickets
+);
+
+-- Query 22: Subject and report count for the most-reported ticket
+SELECT
+    rp.ticket_id,
+    rp.subject,
+    COUNT(*) AS report_count
+FROM Report rp
+WHERE rp.ticket_id = (
+    SELECT ticket_id FROM Report
+    GROUP BY ticket_id
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+)
+GROUP BY rp.ticket_id, rp.subject;
