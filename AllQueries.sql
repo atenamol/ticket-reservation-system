@@ -129,3 +129,127 @@ LEFT JOIN Reservation r
     AND r.status = 'paid'
 GROUP BY m.sport_type
 ORDER BY tickets_sold DESC;
+
+-- Query 8: Top 3 users by recent purchases.
+
+SELECT
+    u.user_id,
+    CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+    COUNT(*) AS total_tickets
+FROM User u
+JOIN Reservation r
+    ON u.user_id = r.user_id
+WHERE r.status = 'paid'
+AND r.reserved_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+GROUP BY u.user_id, u.first_name, u.last_name
+ORDER BY total_tickets DESC
+LIMIT 3;
+
+-- Query 9: Sold tickets by city in Tehran province.
+
+SELECT
+    c.name AS city,
+    m.venue_id,
+    CONCAT(m.home_team_id, '--', m.away_team_id) AS teams_id,
+    COUNT(r.reservation_id) AS sold_tickets
+FROM Reservation r
+JOIN Ticket t
+    ON r.ticket_id = t.ticket_id
+JOIN Matchh m
+    ON t.match_id = m.match_id
+JOIN Venue v
+    ON m.venue_id = v.venue_id
+JOIN City c
+    ON v.city_id = c.city_id
+WHERE
+    r.status = 'paid'
+    AND c.province = 'Tehran'
+GROUP BY c.city_id, c.name;
+
+-- Query 10: City of the oldest purchasing user.
+
+SELECT DISTINCT
+    c.name AS city_name,
+	u.first_name, 
+    u.last_name,
+    u.registered_at
+FROM User u
+JOIN City c
+    ON u.city_id = c.city_id
+JOIN Reservation r
+    ON u.user_id = r.user_id
+WHERE
+    r.status = 'paid'
+    AND u.registered_at =
+    (
+        SELECT MIN(registered_at)
+        FROM User
+    );
+    
+    
+-- Query 11: List all administrators.
+    
+SELECT
+    first_name,
+    last_name
+FROM User
+WHERE role = 'admin';
+    
+-- Query 12: Users with at least two purchases.
+    
+SELECT
+    CONCAT(u.first_name,' ',u.last_name) AS full_name,
+    COUNT(*) AS total_tickets
+FROM User u
+JOIN Reservation r
+    ON u.user_id = r.user_id
+WHERE r.status='paid'
+GROUP BY
+    u.user_id,
+    u.first_name,
+    u.last_name
+HAVING COUNT(*)>=2
+ORDER BY
+    COUNT(*);
+    
+-- Query 13: Users with at most two ticket purchases for each sport.
+
+SELECT
+    CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+    m.sport_type,
+    COUNT(*) AS total_tickets
+FROM User u
+JOIN Reservation r
+    ON u.user_id = r.user_id
+JOIN Ticket t
+    ON r.ticket_id = t.ticket_id
+JOIN Matchh m
+    ON t.match_id = m.match_id
+WHERE r.status = 'paid'
+GROUP BY
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    m.sport_type
+HAVING COUNT(*) <= 2
+ORDER BY
+    COUNT(*);
+    
+    
+-- Query 14: Users who purchased tickets for all sports.
+    
+SELECT
+    COALESCE(u.email,u.phone) AS contact
+FROM User u
+JOIN Reservation r
+    ON u.user_id=r.user_id
+JOIN Ticket t
+    ON r.ticket_id=t.ticket_id
+JOIN Matchh m
+    ON t.match_id=m.match_id
+WHERE r.status='paid'
+GROUP BY
+    u.user_id,
+    u.email,
+    u.phone
+HAVING COUNT(DISTINCT m.sport_type)=3;
