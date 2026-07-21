@@ -254,6 +254,75 @@ GROUP BY
     u.phone
 HAVING COUNT(DISTINCT m.sport_type)=3;
 
+-- Query 15: Tickets purchased today, ordered by purchase time
+SELECT
+    t.ticket_id,
+    m.sport_type,
+    m.match_date,
+    u.first_name,
+    u.last_name,
+    p.amount,
+    p.transaction_date
+FROM Payment p
+JOIN Reservation r ON p.reservation_id = r.reservation_id
+JOIN Ticket t ON r.ticket_id = t.ticket_id
+JOIN Matchh m ON t.match_id = m.match_id
+JOIN User u ON p.user_id = u.user_id
+WHERE p.payment_status = 'completed'
+  AND DATE(p.transaction_date) = CURDATE()
+ORDER BY p.transaction_date;
+
+
+-- Query 16: Second best-selling ticket among all tickets
+SELECT
+    t.ticket_id,
+    m.sport_type,
+    COUNT(r.reservation_id) AS times_sold
+FROM Ticket t
+JOIN Reservation r ON t.ticket_id = r.ticket_id
+JOIN Matchh m ON t.match_id = m.match_id
+GROUP BY t.ticket_id, m.sport_type
+ORDER BY times_sold DESC
+LIMIT 1 OFFSET 1;
+
+-- Query 17 (revised): Admin(s) with the highest approval percentage
+-- among the cancellation requests assigned to them
+SELECT
+    u.user_id AS admin_id,
+    u.first_name,
+    u.last_name,
+    SUM(cr.status = 'approved') AS approved_count,
+    COUNT(*) AS total_handled,
+    ROUND(SUM(cr.status = 'approved') * 100.0 / COUNT(*), 2) AS approval_percentage
+FROM CancellationRequest cr
+JOIN User u ON cr.admin_id = u.user_id
+WHERE cr.admin_id IS NOT NULL
+GROUP BY u.user_id, u.first_name, u.last_name
+HAVING approval_percentage = (
+    SELECT MAX(admin_pct) FROM (
+        SELECT SUM(status = 'approved') * 100.0 / COUNT(*) AS admin_pct
+        FROM CancellationRequest
+        WHERE admin_id IS NOT NULL
+        GROUP BY admin_id
+    ) AS pct_table
+)
+ORDER BY u.user_id;
+
+
+-- Query 18: Rename the user with the most cancelled reservations to 'Reddington'
+UPDATE User
+SET last_name = 'Reddington'
+WHERE user_id = (
+    SELECT user_id FROM (
+        SELECT r.user_id, COUNT(*) AS cancel_count
+        FROM Reservation r
+        WHERE r.status = 'cancelled'
+        GROUP BY r.user_id
+        ORDER BY cancel_count DESC
+        LIMIT 1
+    ) AS top_canceler
+);
+
 -- Query 19: Delete all cancelled reservations belonging to the user now named 'Reddington' (run after Query 18)
 DELETE r FROM Reservation r
 JOIN User u ON r.user_id = u.user_id
