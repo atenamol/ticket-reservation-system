@@ -185,3 +185,71 @@ WHERE
         SELECT MIN(registered_at)
         FROM User
     );
+    
+    
+-- Query 11: List all administrators.
+    
+SELECT
+    first_name,
+    last_name
+FROM User
+WHERE role = 'admin';
+    
+-- Query 12: Users with at least two purchases.
+    
+SELECT
+    CONCAT(u.first_name,' ',u.last_name) AS full_name,
+    COUNT(*) AS total_tickets
+FROM User u
+JOIN Reservation r
+    ON u.user_id = r.user_id
+WHERE r.status='paid'
+GROUP BY
+    u.user_id,
+    u.first_name,
+    u.last_name
+HAVING COUNT(*)>=2
+ORDER BY
+    COUNT(*);
+    
+-- Query 13: Users with at most two ticket purchases for each sport.
+
+SELECT
+    CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+    m.sport_type,
+    COUNT(*) AS total_tickets
+FROM User u
+JOIN Reservation r
+    ON u.user_id = r.user_id
+JOIN Ticket t
+    ON r.ticket_id = t.ticket_id
+JOIN Matchh m
+    ON t.match_id = m.match_id
+WHERE r.status = 'paid'
+GROUP BY
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    m.sport_type
+HAVING COUNT(*) <= 2
+ORDER BY
+    COUNT(*);
+    
+    
+-- Query 14: Users who purchased tickets for all sports.
+    
+SELECT
+    COALESCE(u.email,u.phone) AS contact
+FROM User u
+JOIN Reservation r
+    ON u.user_id=r.user_id
+JOIN Ticket t
+    ON r.ticket_id=t.ticket_id
+JOIN Matchh m
+    ON t.match_id=m.match_id
+WHERE r.status='paid'
+GROUP BY
+    u.user_id,
+    u.email,
+    u.phone
+HAVING COUNT(DISTINCT m.sport_type)=3;
