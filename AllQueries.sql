@@ -79,8 +79,7 @@ WHERE r.status = 'paid'
 		  FROM Reservation
 		  WHERE status = 'paid'
 	  )
-ORDER BY r.reserved_at DESC
-LIMIT 1;
+ORDER BY r.reserved_at DESC;
 
 -- QUERY 6: Users whose total payments exceed the overall average
 SELECT 
