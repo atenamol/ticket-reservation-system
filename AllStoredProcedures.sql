@@ -4,6 +4,7 @@ USE TicketSystem;
 -- the tickets they purchased, ordered by purchase time
 DELIMITER $$
 
+DROP PROCEDURE IF EXISTS GetUserTicketsByContact;
 CREATE PROCEDURE GetUserTicketsByContact(IN p_contact VARCHAR(100))
 BEGIN
     SELECT
@@ -26,6 +27,8 @@ END$$
 
 -- Stored Procedure 2: Given an admin's email or phone, list
 -- the names of users who've had a reservation cancelled by them
+
+DROP PROCEDURE IF EXISTS GetUsersCancelledByAdmin;
 CREATE PROCEDURE GetUsersCancelledByAdmin(IN p_admin_contact VARCHAR(100))
 BEGIN
     SELECT DISTINCT
@@ -153,9 +156,123 @@ END //
 
 DELIMITER ;
 
+-- SP6: Top N users after a given date.
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS GetTopUsersAfterDate;
+CREATE PROCEDURE GetTopUsersAfterDate(
+    IN given_date DATETIME,
+    IN user_limit INT
+)
+BEGIN
+
+SELECT
+    u.user_id,
+    CONCAT(u.first_name,' ',u.last_name) AS full_name,
+    COALESCE(u.email,u.phone) AS contact,
+    COUNT(*) AS total_ticket
+FROM User u
+JOIN Reservation r
+    ON u.user_id=r.user_id
+WHERE
+    r.status='paid'
+    AND r.reserved_at>=given_date
+GROUP BY
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.email,
+    u.phone
+ORDER BY total_ticket DESC
+LIMIT user_limit;
+
+END $$
+
+DELIMITER ;
+
+
+-- SP7: Cancelled reservations by sport.
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS GetCancelledReservationsBySport;
+CREATE PROCEDURE GetCancelledReservationsBySport(
+    IN sport_type ENUM('Football','Basketball','Volleyball')
+)
+BEGIN
+
+SELECT
+    r.reservation_id,
+    t.ticket_id,
+    m.match_id,
+    t.organizer_venue_id,
+    m.sport_type,
+    r.reserved_at,
+    CONCAT(u.first_name,' ',u.last_name) AS full_name,
+    t.category,
+    t.price
+    
+FROM Reservation r
+JOIN Ticket t
+    ON r.ticket_id=t.ticket_id
+JOIN Matchh m
+    ON t.match_id=m.match_id
+JOIN User u
+    ON r.user_id=u.user_id
+WHERE
+    r.status='cancelled'
+    AND m.sport_type=sport_type
+ORDER BY r.reserved_at DESC;
+
+END $$
+
+DELIMITER ;
+
+
+-- SP8: Users with the most reports by subject.
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS GetTopReportersBySubject;
+CREATE PROCEDURE GetTopReportersBySubject(
+    IN report_subject VARCHAR(200)
+)
+BEGIN
+
+SELECT
+    u.user_id,
+    CONCAT(u.first_name,' ',u.last_name) AS full_name,
+    COUNT(*) AS total_reports
+FROM Report rep
+JOIN User u
+    ON rep.user_id=u.user_id
+WHERE rep.subject=report_subject
+GROUP BY
+    u.user_id,
+    u.first_name,
+    u.last_name
+HAVING COUNT(*)=
+(
+    SELECT MAX(report_count)
+    FROM
+    (
+        SELECT COUNT(*) AS report_count
+        FROM Report
+        WHERE subject=report_subject
+        GROUP BY user_id
+    ) AS x
+);
+
+END $$
+
+DELIMITER ;
 
 -- SAMPLE TEST CALLS
 CALL GetTicketsByCity('Tehran');
 CALL SearchTickets('VIP');
 CALL GetUsersFromSameCity('ali@gmail.com');
 CALL SearchTickets('azadi stadium');
+CALL GetTopUsersAfterDate('2026-01-01 00:00:00', 3);
+CALL GetCancelledReservationsBySport('Football');
+CALL GetTopReportersBySubject('Refund');
