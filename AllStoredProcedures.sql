@@ -2,9 +2,10 @@ USE TicketSystem;
 
 -- Stored Procedure 1: Given a user's email or phone, list
 -- the tickets they purchased, ordered by purchase time
-DELIMITER $$
 
 DROP PROCEDURE IF EXISTS GetUserTicketsByContact;
+DELIMITER $$
+
 CREATE PROCEDURE GetUserTicketsByContact(IN p_contact VARCHAR(100))
 BEGIN
     SELECT
@@ -29,6 +30,8 @@ END$$
 -- the names of users who've had a reservation cancelled by them
 
 DROP PROCEDURE IF EXISTS GetUsersCancelledByAdmin;
+DELIMITER $$
+
 CREATE PROCEDURE GetUsersCancelledByAdmin(IN p_admin_contact VARCHAR(100))
 BEGIN
     SELECT DISTINCT
@@ -46,8 +49,8 @@ DELIMITER ;
 
 
 -- Test calls:
-CALL GetUserTicketsByContact('ali@gmail.com');
-CALL GetUsersCancelledByAdmin('aynaz@gmail.com');
+-- CALL GetUserTicketsByContact('ali@gmail.com');
+-- CALL GetUsersCancelledByAdmin('aynaz@gmail.com');
 
 
 -- STORED PROCEDURE 3: Get tickets purchased in a specific city
