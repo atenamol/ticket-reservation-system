@@ -1,0 +1,2 @@
+class TransactionQueries:
+    pass
