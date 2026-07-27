@@ -11,9 +11,6 @@ from app.config import (
 
 
 def get_connection() -> pymysql.connections.Connection:
-    """
-    Create and return a new MySQL database connection.
-    """
 
     connection = pymysql.connect(
         host=DB_HOST,
@@ -27,11 +24,16 @@ def get_connection() -> pymysql.connections.Connection:
 
     return connection
 
-if __name__ == "__main__":
+def commit(connection: pymysql.connections.Connection) -> None:
+    connection.commit()
+
+
+def rollback(connection: pymysql.connections.Connection) -> None:
+    connection.rollback()
+
+
+def close(connection: pymysql.connections.Connection) -> None:
     try:
-        connection = get_connection()
-        print("Connected to MySQL successfully!")
         connection.close()
-    except Exception as e:
-        print("Connection failed!")
-        print(e)
+    except Exception:
+        pass
