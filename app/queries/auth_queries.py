@@ -21,7 +21,8 @@ def get_user_by_email(email: str) -> dict | None:
                     city_id,
                     password_hash,
                     account_status,
-                    profile_picture
+                    profile_picture,
+                    registered_at
                 FROM User
                 WHERE email = %s
                 """,
@@ -51,7 +52,8 @@ def get_user_by_phone(phone: str) -> dict | None:
                     city_id,
                     password_hash,
                     account_status,
-                    profile_picture
+                    profile_picture,
+                    registered_at
                 FROM User
                 WHERE phone = %s
                 """,
@@ -86,7 +88,8 @@ def get_user_by_contact(
                     city_id,
                     password_hash,
                     account_status,
-                    profile_picture
+                    profile_picture,
+                    registered_at
                 FROM User
                 WHERE
                     (%s IS NOT NULL AND email = %s)
@@ -170,7 +173,8 @@ def get_user_by_id(
                     city_id,
                     password_hash,
                     account_status,
-                    profile_picture
+                    profile_picture,
+                    registered_at
                 FROM User
                 WHERE user_id = %s
                 """,
