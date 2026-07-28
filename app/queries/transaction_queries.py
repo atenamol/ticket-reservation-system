@@ -21,6 +21,17 @@ def get_ticket_for_reservation(cursor, ticket_id):
     )
     return cursor.fetchone()
 
+def get_ticket_id_from_reservation(cursor, reservation_id):
+    cursor.execute(
+        """
+        SELECT ticket_id
+        FROM Reservation
+        WHERE reservation_id = %s
+        """,
+        (reservation_id,),
+    )
+    return cursor.fetchone()
+
 
 def create_reservation(cursor, ticket_id, user_id):
     cursor.execute(
@@ -55,6 +66,18 @@ def get_reservation(cursor, reservation_id):
         WHERE reservation_id = %s
         """,
         (reservation_id,),
+    )
+    return cursor.fetchone()
+
+def get_reservation_by_user(cursor, reservation_id, user_id):
+    cursor.execute(
+        """
+        SELECT *
+        FROM Reservation
+        WHERE reservation_id = %s
+          AND user_id = %s
+        """,
+        (reservation_id, user_id),
     )
     return cursor.fetchone()
 
@@ -127,6 +150,7 @@ def mark_reservation_paid(cursor, reservation_id):
         UPDATE Reservation
         SET status = 'paid'
         WHERE reservation_id = %s
+            AND status = 'reserved'
         """,
         (reservation_id,),
     )
@@ -138,6 +162,7 @@ def cancel_reservation(cursor, reservation_id):
         UPDATE Reservation
         SET status = 'cancelled'
         WHERE reservation_id = %s
+            AND status = 'reserved'
         """,
         (reservation_id,),
     )
@@ -239,6 +264,17 @@ def create_cancellation_request(
     )
     return cursor.lastrowid
 
+def get_cancellation_request(cursor, cancel_id):
+    cursor.execute(
+        """
+        SELECT *
+        FROM CancellationRequest
+        WHERE cancel_id = %s
+        """,
+        (cancel_id,),
+    )
+    return cursor.fetchone()
+
 
 def create_report(
     cursor,
@@ -274,3 +310,14 @@ def create_report(
         ),
     )
     return cursor.lastrowid
+
+def get_report(cursor, report_id):
+    cursor.execute(
+        """
+        SELECT *
+        FROM Report
+        WHERE report_id = %s
+        """,
+        (report_id,),
+    )
+    return cursor.fetchone()
