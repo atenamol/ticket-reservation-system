@@ -8,15 +8,16 @@ No ORM.
 
 def get_ticket_for_reservation(cursor, ticket_id):
     cursor.execute(
-        """
-        SELECT
-            ticket_id,
-            price,
-            remaining_capacity,
-            category
-        FROM Ticket
-        WHERE ticket_id = %s
-        """,
+        """SELECT
+            t.ticket_id,
+            t.price,
+            t.remaining_capacity,
+            t.category,
+            m.match_date
+            FROM Ticket t
+            JOIN Matchh m
+                ON t.match_id = m.match_id
+            WHERE t.ticket_id = %s""",
         (ticket_id,),
     )
     return cursor.fetchone()

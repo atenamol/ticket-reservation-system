@@ -65,6 +65,10 @@ class CancellationResponse(BaseModel):
     refund_amount: Decimal
     status: Literal["pending", "approved", "rejected"]
 
+class CancellationPenaltyResponse(BaseModel):
+    penalty_percent: Decimal
+    refund_amount: Decimal
+
 
 # ---------- Report ----------
 
