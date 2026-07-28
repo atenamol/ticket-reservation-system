@@ -90,10 +90,10 @@ def search_tickets(
         sql += " AND (m.home_team_id = %s OR m.away_team_id = %s)"
         params.extend([team_id, team_id])
     if date_from:
-        sql += " AND m.match_date >= %s"
+        sql += " AND DATE(m.match_date) >= %s"
         params.append(date_from)
     if date_to:
-        sql += " AND m.match_date <= %s"
+        sql += " AND DATE(m.match_date) <= %s"
         params.append(date_to)
     if category:
         sql += " AND t.category = %s"
