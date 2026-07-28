@@ -5,6 +5,7 @@ from app.schemas.transaction_schema import (
     ReservationRequest,
     ReservationResponse,
     ReservationHistoryItem,
+    PaymentRequest
 )
 from app.queries import transaction_queries as queries
 from app.schemas.transaction_schema import (
@@ -23,7 +24,8 @@ from app.schemas.transaction_schema import (
 
 class TransactionService:
 
-    #Reservation & User Bookings
+# ---------- Reservation & User Bookings ----------
+
     @staticmethod
     def reserve_ticket(request: ReservationRequest, user_id: int) -> ReservationResponse:
         connection = get_connection()
@@ -171,12 +173,12 @@ class TransactionService:
         finally:
             close(connection)
 
-    #Payment
+# ---------- Payment ----------
+
     @staticmethod
     def pay_for_reservation(
-        reservation_id: int,
+        request: PaymentRequest,
         user_id: int,
-        payment_method: str,
     ) -> PaymentResponse:
 
         connection = get_connection()
@@ -186,7 +188,7 @@ class TransactionService:
 
                 reservation = queries.get_reservation_by_user(
                     cursor,
-                    reservation_id,
+                    request.reservation_id,
                     user_id,
                 )
 
@@ -215,15 +217,15 @@ class TransactionService:
 
                 payment_id = queries.create_payment(
                     cursor,
-                    reservation_id,
+                    request.reservation_id,
                     user_id,
                     ticket["price"],
-                    payment_method,
+                    request.payment_method,
                 )
 
                 queries.mark_reservation_paid(
                     cursor,
-                    reservation_id,
+                    request.reservation_id,
                 )
 
                 payment = queries.get_payment(
@@ -259,7 +261,8 @@ class TransactionService:
             close(connection)
 
 
-    #get_payment for testing
+# ---------- get_payment for testing ----------
+
     @staticmethod
     def get_payment(
         reservation_id: int,
@@ -305,7 +308,7 @@ class TransactionService:
             close(connection)
 
 
-    #Cancellation Penalty & Cancellation Request
+# ---------- Cancellation Penalty & Cancellation Request ----------
 
     #penalties for cancellations:
     #48 hours before match → 10%
@@ -436,7 +439,7 @@ class TransactionService:
             close(connection)
 
 
-    #Report issue
+# ---------- Report issue ----------
     @staticmethod
     def create_report(
         request: ReportRequest,
