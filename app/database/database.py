@@ -24,6 +24,7 @@ def get_connection() -> pymysql.connections.Connection:
 
     return connection
 
+
 def commit(connection: pymysql.connections.Connection) -> None:
     connection.commit()
 
