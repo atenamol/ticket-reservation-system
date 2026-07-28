@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Literal
+from datetime import datetime
 
 from pydantic import (
     BaseModel,
@@ -112,6 +113,9 @@ class SignupRequest(BaseModel):
         if not any(c.isdigit() for c in value):
             raise ValueError("Password must contain at least one digit.")
 
+        if " " in value:
+            raise ValueError("Password cannot contain spaces.")
+
         return value
 
     @model_validator(mode="after")
@@ -122,10 +126,48 @@ class SignupRequest(BaseModel):
 
         return self
 
-# Login Request
+# Login Request with pass
+# API: POST / login
+
+class PasswordLoginRequest(BaseModel):
+    email: EmailStr | None = Field(
+        default=None,
+        description="Email address used for login."
+    )
+
+    phone: str | None = Field(
+        default=None,
+        pattern=r"^09\d{9}$",
+        description="Iranian mobile phone number."
+    )
+
+    password: str = Field(
+        ...,
+        min_length=8,
+        max_length=128,
+        description="User password."
+    )
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "phone": "09123456789",
+                "password": "Password123"
+            }
+        }
+    )
+
+    @model_validator(mode="after")
+    def validate_contact(self):
+        if not self.email and not self.phone:
+            raise ValueError("Either email or phone must be provided.")
+        return self
+
+    
+# Login Request with otp
 # API: POST /login
 
-class LoginRequest(BaseModel):
+class OTPLoginRequest(BaseModel):
     email: EmailStr | None  = Field(
         default=None,
         description="User email used for authentication.",
@@ -164,6 +206,7 @@ class VerifyOTPRequest(BaseModel):
         description="Email address where OTP was sent."
     )
 
+
     phone: str | None = Field(
         default=None,
         pattern=r"^09\d{9}$",
@@ -172,8 +215,7 @@ class VerifyOTPRequest(BaseModel):
 
     otp: str = Field(
         ...,
-        min_length=4,
-        max_length=6,
+        pattern=r"^\d{6}$",
         description="One-time password received by user.",
         examples=["123456"]
     )
@@ -215,6 +257,19 @@ class UpdateProfileRequest(BaseModel):
         description="New last name of user."
     )
 
+    email: EmailStr | None = Field(
+        default=None,
+        description="New email address of the user.",
+        examples=["newemail@gmail.com"]
+    )
+
+    phone: str | None = Field(
+        default=None,
+        pattern=r"^09\d{9}$",
+        description="New Iranian mobile phone number. Format: 09xxxxxxxxx",
+        examples=["09123456789"]
+    )
+
     city_id: int | None = Field(
         default=None,
         description="New city identifier."
@@ -225,7 +280,6 @@ class UpdateProfileRequest(BaseModel):
         max_length=255,
         description="New profile picture path or URL."
     )
-
 
 
     @field_validator("first_name", "last_name")
@@ -243,6 +297,12 @@ class UpdateProfileRequest(BaseModel):
 
         return value
 
+    @model_validator(mode="after")
+    def validate_contact(self):
+            if self.email is None and self.phone is None:
+                return self
+            return self
+
 # Token Response
 
 class TokenResponse(BaseModel):
@@ -259,6 +319,7 @@ class TokenResponse(BaseModel):
 # Message Response
 
 class MessageResponse(BaseModel):
+    success: bool = True
     message: str = Field(
         ...,
         description="Operation result message.",
@@ -304,6 +365,9 @@ class UserResponse(BaseModel):
         description="Profile picture URL or path."
     )
 
+    registered_at: datetime = Field(
+    description="Registration date and time."
+)
 
     model_config = ConfigDict(
         from_attributes=True
@@ -330,5 +394,7 @@ class UserInDB(BaseModel):
     city_id: int | None
 
     account_status: AccountStatus
+
+    registered_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
