@@ -297,12 +297,6 @@ class UpdateProfileRequest(BaseModel):
 
         return value
 
-    @model_validator(mode="after")
-    def validate_contact(self):
-            if self.email is None and self.phone is None:
-                return self
-            return self
-
 # Token Response
 
 class TokenResponse(BaseModel):
