@@ -72,6 +72,9 @@ def decode_access_token(
         if payload.get("sub") is None:
             raise JWTError("Token payload is missing subject.")
 
+        if payload.get("user_id") is None:
+            raise JWTError("Token payload is missing user_id.")
+
         if payload.get("role") is None:
             raise JWTError("Token payload is missing role.")
 
