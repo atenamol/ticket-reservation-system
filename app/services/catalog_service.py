@@ -3,8 +3,8 @@ from app.database.database import close, get_connection
 from app.queries import catalog_queries as q
 from app.schemas.catalog_schema import TicketSearchQuery
 
-
 # Cities
+
 
 def list_cities():
     conn = get_connection()
@@ -18,6 +18,7 @@ def list_cities():
 
 # Venues
 
+
 def list_venues(city_id: int | None = None):
     conn = get_connection()
 
@@ -29,6 +30,7 @@ def list_venues(city_id: int | None = None):
 
 
 # Ticket Search
+
 
 def search_tickets(filters: TicketSearchQuery):
     """
@@ -56,6 +58,7 @@ def search_tickets(filters: TicketSearchQuery):
 
 
 # Ticket Details
+
 
 def get_ticket_detail(ticket_id: int):
     """

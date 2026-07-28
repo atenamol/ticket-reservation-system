@@ -1,18 +1,14 @@
 """
 All raw SQL for the Catalog + Search domain (City, Venue, Ticket, Matchh).
-Every function takes an open pymysql cursor (DictCursor) and returns rows.
-No ORM — matches the project's no-ORM requirement.
 """
 
 
 def get_all_cities(cursor):
-    cursor.execute(
-        """
+    cursor.execute("""
         SELECT city_id, name, province
         FROM City
         ORDER BY name
-        """
-    )
+        """)
     return cursor.fetchall()
 
 
@@ -30,15 +26,13 @@ def get_all_venues(cursor, city_id=None):
             (city_id,),
         )
     else:
-        cursor.execute(
-            """
+        cursor.execute("""
             SELECT v.venue_id, v.name, v.capacity, v.address,
                    v.refund_policy_rules, c.city_id, c.name AS city_name
             FROM Venue v
             JOIN City c ON v.city_id = c.city_id
             ORDER BY v.name
-            """
-        )
+            """)
     return cursor.fetchall()
 
 
@@ -150,21 +144,15 @@ def get_ticket_base(cursor, ticket_id):
 
 
 def get_football_detail(cursor, ticket_id):
-    cursor.execute(
-        "SELECT * FROM FootballDetail WHERE ticket_id = %s", (ticket_id,)
-    )
+    cursor.execute("SELECT * FROM FootballDetail WHERE ticket_id = %s", (ticket_id,))
     return cursor.fetchone()
 
 
 def get_volleyball_detail(cursor, ticket_id):
-    cursor.execute(
-        "SELECT * FROM VolleyballDetail WHERE ticket_id = %s", (ticket_id,)
-    )
+    cursor.execute("SELECT * FROM VolleyballDetail WHERE ticket_id = %s", (ticket_id,))
     return cursor.fetchone()
 
 
 def get_basketball_detail(cursor, ticket_id):
-    cursor.execute(
-        "SELECT * FROM BasketballDetail WHERE ticket_id = %s", (ticket_id,)
-    )
+    cursor.execute("SELECT * FROM BasketballDetail WHERE ticket_id = %s", (ticket_id,))
     return cursor.fetchone()
