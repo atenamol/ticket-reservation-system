@@ -5,21 +5,21 @@ from app.schemas.transaction_schema import (
     ReservationRequest,
     ReservationResponse,
     ReservationHistoryItem,
-    PaymentRequest
-)
-from app.queries import transaction_queries as queries
-from app.schemas.transaction_schema import (
+    PaymentRequest,
     PaymentResponse,
-)
-from datetime import datetime
-from decimal import Decimal
-
-from app.schemas.transaction_schema import (
     CancellationPenaltyResponse,
     CancellationResponse,
     ReportRequest,
     ReportResponse,
+    AdminCancellationItem,
+    AdminReportItem,
+    SuspiciousPaymentItem,
+    MessageResponse,
 )
+from app.queries import transaction_queries as queries
+from datetime import datetime
+from decimal import Decimal
+
 
 
 class TransactionService:
@@ -438,6 +438,81 @@ class TransactionService:
         finally:
             close(connection)
 
+    @staticmethod
+    def get_all_cancellation_requests() -> list[AdminCancellationItem]:
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                return queries.get_all_cancellation_requests(cursor)
+
+        except Exception:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to retrieve cancellation requests.",
+            )
+
+        finally:
+            close(connection)
+
+    @staticmethod
+    def update_cancellation_request(
+        cancel_id: int,
+        status: str,
+        admin_id: int,
+    ):
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                if status == "approved":
+
+                    reservation = queries.get_cancellation_request(
+                        cursor,
+                        cancel_id,
+                    )
+
+                    queries.cancel_reservation(
+                        cursor,
+                        reservation["reservation_id"],
+                    )
+
+                    ticket = queries.get_ticket_id_from_reservation(
+                        cursor,
+                        reservation["reservation_id"],
+                    )
+
+                    queries.increase_capacity(
+                        cursor,
+                        ticket["ticket_id"],
+                    )
+
+                queries.update_cancellation_request(
+                    cursor,
+                    cancel_id,
+                    status,
+                    admin_id,
+                )
+
+                commit(connection)
+
+                return MessageResponse(
+                    message="Cancellation request updated."
+                )
+
+        except Exception:
+            rollback(connection)
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to update cancellation request.",
+            )
+
+        finally:
+            close(connection)
 
 # ---------- Report issue ----------
     @staticmethod
@@ -478,6 +553,79 @@ class TransactionService:
             raise HTTPException(
                 status_code=500,
                 detail="Failed to submit report.",
+            )
+
+        finally:
+            close(connection)
+
+    @staticmethod
+    def get_all_reports() -> list[AdminReportItem]:
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                return queries.get_all_reports(cursor)
+
+        except Exception:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to retrieve reports.",
+            )
+
+        finally:
+            close(connection)
+
+    @staticmethod
+    def update_report(
+        report_id: int,
+        status: str,
+        admin_response: str,
+    ):
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                queries.update_report(
+                    cursor,
+                    report_id,
+                    status,
+                    admin_response,
+                )
+
+                commit(connection)
+
+                return MessageResponse(
+                    message="Report updated."
+                )
+
+        except Exception:
+            rollback(connection)
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to update report.",
+            )
+
+        finally:
+            close(connection)
+
+    @staticmethod
+    def get_suspicious_payments() -> list[SuspiciousPaymentItem]:
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                return queries.get_suspicious_payments(cursor)
+
+        except Exception:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to retrieve suspicious payments.",
             )
 
         finally:

@@ -83,3 +83,47 @@ class ReportResponse(BaseModel):
     status: Literal["open", "closed", "in_progress"]
     created_at: datetime
     admin_response: Optional[str] = None
+
+
+# ---------- Admin ----------
+
+class AdminCancellationUpdateRequest(BaseModel):
+    status: Literal["approved", "rejected"]
+
+
+class AdminCancellationItem(BaseModel):
+    cancel_id: int
+    reservation_id: int
+    user_id: int
+    penalty_percent: Decimal
+    refund_amount: Decimal
+    status: Literal["pending", "approved", "rejected"]
+
+
+class AdminReportUpdateRequest(BaseModel):
+    status: Literal["open", "in_progress", "closed"]
+    admin_response: str
+
+
+class AdminReportItem(BaseModel):
+    report_id: int
+    user_id: int
+    ticket_id: int
+    subject: str
+    description: str
+    status: Literal["open", "in_progress", "closed"]
+    created_at: datetime
+    admin_response: Optional[str]
+
+
+class SuspiciousPaymentItem(BaseModel):
+    payment_id: int
+    reservation_id: int
+    user_id: int
+    amount: Decimal
+    payment_status: Literal["completed", "pending", "failed"]
+    payment_method: str
+    transaction_date: datetime
+
+class MessageResponse(BaseModel):
+    message: str

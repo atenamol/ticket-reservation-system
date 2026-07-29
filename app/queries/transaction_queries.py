@@ -6,6 +6,10 @@ Every function takes an open pymysql DictCursor.
 No ORM.
 """
 
+# ---------- Reservation ----------
+
+
+
 def get_ticket_for_reservation(cursor, ticket_id):
     cursor.execute(
         """SELECT
@@ -168,6 +172,8 @@ def cancel_reservation(cursor, reservation_id):
         (reservation_id,),
     )
 
+# ---------- Payment ----------
+
 
 def create_payment(
     cursor,
@@ -229,6 +235,8 @@ def get_payment_by_reservation(cursor, reservation_id):
     )
     return cursor.fetchone()
 
+# ---------- Cancellation ----------
+
 
 def create_cancellation_request(
     cursor,
@@ -276,6 +284,40 @@ def get_cancellation_request(cursor, cancel_id):
     )
     return cursor.fetchone()
 
+def get_all_cancellation_requests(cursor):
+    cursor.execute(
+        """
+        SELECT *
+        FROM CancellationRequest
+        ORDER BY requested_at DESC
+        """
+    )
+    return cursor.fetchall()
+
+def update_cancellation_request(
+    cursor,
+    cancel_id,
+    status,
+    admin_id,
+):
+    cursor.execute(
+        """
+        UPDATE CancellationRequest
+        SET
+            status = %s,
+            processed_at = NOW(),
+            admin_id = %s
+        WHERE cancel_id = %s
+        """,
+        (
+            status,
+            admin_id,
+            cancel_id,
+        ),
+    )
+
+# ---------- Report ----------
+
 
 def create_report(
     cursor,
@@ -322,3 +364,45 @@ def get_report(cursor, report_id):
         (report_id,),
     )
     return cursor.fetchone()
+
+def get_all_reports(cursor):
+    cursor.execute(
+        """
+        SELECT *
+        FROM Report
+        ORDER BY created_at DESC
+        """
+    )
+    return cursor.fetchall()
+
+def update_report(
+    cursor,
+    report_id,
+    status,
+    admin_response,
+):
+    cursor.execute(
+        """
+        UPDATE Report
+        SET
+            status = %s,
+            admin_response = %s
+        WHERE report_id = %s
+        """,
+        (
+            status,
+            admin_response,
+            report_id,
+        ),
+    )
+
+def get_suspicious_payments(cursor):
+    cursor.execute(
+        """
+        SELECT *
+        FROM Payment
+        WHERE payment_status != 'completed'
+        ORDER BY transaction_date DESC
+        """
+    )
+    return cursor.fetchall()
