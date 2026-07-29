@@ -2,14 +2,18 @@ import os
 
 import redis
 from dotenv import load_dotenv
+from app.config import (
+    REDIS_HOST,
+    REDIS_PORT,
+)
 
 load_dotenv()
 
 redis_client = redis.Redis(
-    host="localhost",
-    port=6379,
+    host=REDIS_HOST,
+    port=REDIS_PORT,
     db=0,
-    decode_responses=True
+    decode_responses=True,
 )
 
 
