@@ -1,6 +1,6 @@
 from pymysql.cursors import DictCursor
 
-from app.database import get_connection
+from app.database.database import get_connection
 from app.schemas.auth_schema import SignupRequest
 
 

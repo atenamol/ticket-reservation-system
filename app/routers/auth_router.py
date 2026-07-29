@@ -12,6 +12,7 @@ from app.schemas.auth_schema import (
     TokenResponse,
     UserResponse,
     MessageResponse,
+    AuthResponse,
 )
 
 from app.services.auth_service import (
@@ -28,22 +29,28 @@ router = APIRouter(
 )
 
 
-@router.post("/signup", response_model=TokenResponse, status_code=201,
+@router.post("/signup", response_model=AuthResponse, status_code=201,
             summary="Register a new user")
 def signup_route(request: SignupRequest):
 
-    token, _ = signup(request)
+    token, user = signup(request)
 
-    return token
+    return AuthResponse(
+        token=token,
+        user=user,
+    )
 
 
-@router.post("/login/password", response_model=TokenResponse, status_code=200,
+@router.post("/login/password", response_model=AuthResponse, status_code=200,
             summary="Login using password")
 def login_password_route(request: PasswordLoginRequest):
 
-    token, _ = login_with_password(request)
+    token, user = login_with_password(request)
 
-    return token
+    return AuthResponse(
+        token=token,
+        user=user,
+    )
 
 
 @router.post("/login/otp", response_model=MessageResponse, status_code=200, 
@@ -53,13 +60,16 @@ def login_otp_route(request: OTPLoginRequest):
     return login_with_otp(request)
 
 
-@router.post("/verify-otp", response_model=TokenResponse, status_code=200, 
+@router.post("/verify-otp", response_model=AuthResponse, status_code=200, 
             summary="Verify OTP")
 def verify_otp_route(request: VerifyOTPRequest):
 
-    token, _ = verify_login_otp(request)
+    token, user = verify_login_otp(request)
 
-    return token
+    return AuthResponse(
+        token=token,
+        user=user,
+    )
 
 
 @router.put("/profile", response_model=UserResponse, status_code=200, 

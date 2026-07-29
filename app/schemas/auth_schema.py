@@ -392,3 +392,7 @@ class UserInDB(BaseModel):
     registered_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class AuthResponse(BaseModel):
+    token: TokenResponse
+    user: UserResponse

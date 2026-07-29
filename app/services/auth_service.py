@@ -32,7 +32,7 @@ from app.utils.otp import (
     send_otp,
 )
 
-from app.database import (
+from app.database.database import (
     get_connection,
     commit,
     rollback,
