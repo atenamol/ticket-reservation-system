@@ -1,93 +1,516 @@
 # Ticket Reservation System
 
+A backend system for managing sports event ticket reservations, developed using **FastAPI**, **MySQL**, and **Redis**.
 
+The system provides secure user authentication with **JWT** and **OTP (SMS/Email)**, ticket search, reservation, payment, cancellation, reporting, and administrative management features.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+# Features
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Authentication
 
-## Add your files
+- User registration
+- Password login
+- OTP login (SMS & Gmail)
+- JWT authentication
+- User profile update
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## Catalog
+
+- Get cities list
+- Get venues list
+- Search tickets
+- View ticket details
+
+## Transactions
+
+- Reserve tickets
+- Pay for reservations
+- View booking history
+- Check cancellation penalty
+- Submit cancellation requests
+- Report ticket issues
+
+## Administration
+
+- View cancellation requests
+- Approve or reject cancellations
+- View user reports
+- Update report status and responses
+- View suspicious payments
+
+---
+
+# Technologies
+
+- Python 3.13+
+- FastAPI
+- MySQL
+- Redis
+- JWT Authentication
+- PyMySQL
+- Pydantic
+- Docker
+- Uvicorn
+
+---
+
+# Project Setup
+
+## 1. Clone the repository
+
+```bash
+git clone https://hamgit.ir/atena-molaee/ticket-reservation-system
+cd ticket-reservation-system
+```
+
+---
+
+## 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 3. Database Setup
+
+Create the database:
+
+```sql
+CREATE DATABASE TicketSystem;
+```
+
+Import the provided SQL script:
 
 ```
-cd existing_repo
-git remote add origin https://hamgit.ir/atena-molaee/ticket-reservation-system.git
-git branch -M main
-git push -uf origin main
+DataBase_Setup.sql
 ```
 
-## Integrate with your tools
+This file creates all required tables, views, triggers, procedures and sample data.
 
-- [ ] [Set up project integrations](https://hamgit.ir/atena-molaee/ticket-reservation-system/-/settings/integrations)
+---
 
-## Collaborate with your team
+## 4. Configure Environment Variables
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+Create a `.env` file using `.env.example` as a template.
 
-## Test and Deploy
+Example:
 
-Use the built-in continuous integration in GitLab.
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=TicketSystem
+DB_USER=root
+DB_PASSWORD=your_database_password
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+SECRET_KEY=your_secret_key
 
-***
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+OTP_EXPIRE_SECONDS=300
 
-# Editing this README
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASSWORD=your_app_password
+EMAIL_FROM=your_email@gmail.com
+```
+---
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## 5. Start Redis
 
-## Suggestions for a good README
+Using Docker:
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```bash
+docker compose up -d
+```
 
-## Name
-Choose a self-explaining name for your project.
+The included `docker-compose.yml` runs Redis on port **6379**.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+---
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+## 6. Run the Server
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### Windows
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```bash
+py -m uvicorn app.main:app --reload
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Linux / macOS
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```bash
+python -m uvicorn app.main:app --reload
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Server:
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+```
+http://127.0.0.1:8000
+```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Swagger Documentation:
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```
+http://127.0.0.1:8000/docs
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+ReDoc Documentation:
 
-## License
-For open source projects, say how it is licensed.
+```
+http://127.0.0.1:8000/redoc
+```
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
+
+# Redis Usage
+
+Redis is used for:
+
+- OTP storage and verification
+- OTP expiration (TTL)
+- OTP verification
+- Caching ticket search results to improve performance and reduce database load
+
+---
+
+# Authentication
+
+Protected endpoints require a JWT access token.
+
+Include it in every authenticated request:
+
+```
+Authorization: Bearer <access_token>
+```
+
+Administrator APIs require a user with the **admin** role.
+
+---
+
+# API Documentation
+
+## Authentication APIs
+
+### POST `/auth/signup`
+
+Registers a new user.
+
+#### Request
+
+- first_name
+- last_name
+- email
+- phone
+- password
+- date_of_birth
+
+#### Response
+
+- JWT access token
+
+---
+
+### POST `/auth/login/password`
+
+Logs in using email/phone and password.
+
+#### Request
+
+- username
+- password
+
+#### Response
+
+- JWT access token
+
+---
+
+### POST `/auth/login/otp`
+
+Generates and sends an OTP.
+
+#### Request
+
+- email or phone
+
+#### Response
+
+- Confirmation message
+
+---
+
+### POST `/auth/verify-otp`
+
+Verifies the OTP.
+
+#### Request
+
+- email/phone
+- otp
+
+#### Response
+
+- JWT access token
+
+---
+
+### PUT `/auth/profile`
+
+Updates user profile.
+
+Authentication required.
+
+---
+
+# Catalog APIs
+
+### GET `/cities`
+
+Returns all available cities.
+
+---
+
+### GET `/venues`
+
+Returns all available venues.
+
+Optional parameter:
+
+- city_id
+
+---
+
+### GET `/tickets/search`
+
+Searches available tickets.
+
+Optional filters:
+
+- sport_type
+- city_id
+- venue_id
+- team_id
+- category
+- date_from
+- date_to
+- min_price
+- max_price
+
+Returns matching tickets.
+
+---
+
+### GET `/tickets/{ticket_id}`
+
+Returns detailed ticket information.
+
+---
+
+# Transaction APIs
+
+### POST `/transactions/reserve`
+
+Reserves a ticket.
+
+#### Request
+
+- ticket_id
+
+#### Response
+
+Reservation information including expiration time.
+
+---
+
+### POST `/transactions/pay`
+
+Pays for a reservation.
+
+#### Request
+
+- reservation_id
+- payment_method
+
+#### Response
+
+Payment information.
+
+---
+
+### GET `/transactions/bookings`
+
+Returns the authenticated user's reservation history.
+
+---
+
+### GET `/transactions/cancellation-penalty/{reservation_id}`
+
+Returns the cancellation penalty and refund amount.
+
+---
+
+### POST `/transactions/cancel`
+
+Creates a cancellation request.
+
+#### Request
+
+- reservation_id
+
+---
+
+### POST `/transactions/report`
+
+Reports a ticket issue.
+
+#### Request
+
+- ticket_id
+- subject
+- description
+
+---
+
+# Administrator APIs
+
+These endpoints require administrator authentication.
+
+### GET `/transactions/admin/cancellations`
+
+Returns all cancellation requests.
+
+---
+
+### PATCH `/transactions/admin/cancellations/{cancel_id}`
+
+Approves or rejects a cancellation request.
+
+#### Request
+
+- status
+
+---
+
+### GET `/transactions/admin/reports`
+
+Returns all user reports.
+
+---
+
+### PATCH `/transactions/admin/reports/{report_id}`
+
+Updates report status and administrator response.
+
+#### Request
+
+- status
+- admin_response
+
+---
+
+### GET `/transactions/admin/payments/suspicious`
+
+Returns pending and failed payments.
+
+---
+
+# Testing the APIs
+
+## Swagger UI
+
+In addition to Postman and cURL, FastAPI automatically provides interactive API documentation through Swagger UI.
+```
+http://127.0.0.1:8000/docs
+```
+
+Swagger provides an interactive interface for testing all APIs.
+
+---
+
+## Postman
+
+1. Create a request.
+2. Choose the HTTP method.
+3. Enter the endpoint URL.
+4. Add headers if authentication is required.
+5. Provide the JSON request body.
+6. Send the request.
+
+---
+
+## cURL Examples
+
+### User Signup
+
+```bash
+curl -X POST http://127.0.0.1:8000/auth/signup \
+-H "Content-Type: application/json" \
+-d '{
+  "first_name":"John",
+  "last_name":"Doe",
+  "email":"john@example.com",
+  "phone":"09123456789",
+  "password":"password123",
+  "date_of_birth":"2000-01-01"
+}'
+```
+
+### Reserve Ticket
+
+```bash
+curl -X POST http://127.0.0.1:8000/transactions/reserve \
+-H "Authorization: Bearer <access_token>" \
+-H "Content-Type: application/json" \
+-d '{
+  "ticket_id":1
+}'
+```
+
+---
+
+# Project Structure
+
+```
+app/
+│
+├── auth/
+├── cache/
+├── database/
+├── queries/
+├── routers/
+├── schemas/
+├── services/
+├── config.py
+└── main.py
+
+docker-compose.yml
+requirements.txt
+.env.example
+DataBase_Setup.sql
+README.md
+```
+
+---
+
+# Notes
+
+- JWT is used for authentication.
+- Redis stores temporary OTP codes with automatic expiration.
+- MySQL stores all persistent application data.
+- FastAPI automatically generates interactive API documentation.
+- Docker Compose is used to deploy Redis.
+
+---
+
+## Team
+
+| Name | HamGit | GitHub |
+|------|--------|--------|
+| **Atena Molaei** | [atena-molaee](https://hamgit.ir/atena-molaee) | [@atenamol](https://github.com/atenamol) |
+| **Zahra Sarvari** | [zizis](https://hamgit.ir/zizis) | [@zizis0-0](https://github.com/zizis0-0) |
+| **Mahshid Sheybani** | [mahishbn](https://hamgit.ir/mahishbn) | [@mahishbn](https://github.com/mahishbn) |
