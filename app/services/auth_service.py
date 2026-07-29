@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-
+from app.cache.profile_cache import set_cached_profile, invalidate_profile
 from app.queries.auth_queries import (
     create_user,
     get_user_by_contact,
@@ -245,6 +245,9 @@ def update_profile(user_id: int, request: UpdateProfileRequest) -> UserResponse:
 
             commit(connection)
 
+            invalidate_profile(user_id)
+            set_cached_profile(user_id, updated_user)
+            
             return UserResponse.model_validate(updated_user)
 
     except Exception:
