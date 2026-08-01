@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Ticket Reservation</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts (Oswald & Chakra Petch) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500&family=Oswald:wght@500&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Design System Custom Font Configurations */
+        .font-oswald {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 500;
+        }
+        .font-chakra {
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 500;
+        }
+        /* Warm Off-White Background */
+        body {
+            background-color: #FBF9F5;
+        }
+    </style>
+</head>
+<body class="font-chakra text-gray-800 min-h-screen flex flex-col justify-between">
+
+<!-- Header / Navigation Placeholder -->
+<header class="p-6">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="/index.html" class="flex items-center gap-2 text-2xl font-oswald tracking-wide text-gray-900">
+            <i data-lucide="ticket" class="w-7 h-7 stroke-[2px] text-[#80B6E9]"></i>
+            <span>TICKET HUB</span>
+        </a>
+    </div>
+</header>
+
+<!-- Main 404 Content -->
+<main class="flex-grow flex items-center justify-center px-4 py-12">
+    <div class="text-center max-w-lg bg-white/60 backdrop-blur-sm p-10 rounded-2xl shadow-sm border border-gray-100">
+
+        <!-- Icon with Brand Accent Palette -->
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[#D9EAFB] flex items-center justify-center text-[#80B6E9]">
+            <i data-lucide="frown" class="w-10 h-10 stroke-[2px]"></i>
+        </div>
+
+        <!-- 404 Headline -->
+        <h1 class="text-7xl font-oswald tracking-wider text-gray-900 mb-2">404</h1>
+        <h2 class="text-2xl font-oswald text-gray-700 mb-4 uppercase">Page Not Found</h2>
+
+        <!-- Description -->
+        <p class="text-gray-600 mb-8 leading-relaxed">
+            Oops! The match page or resource you are looking for doesn't exist or has been moved.
+        </p>
+
+        <!-- Capsule Call to Action Button -->
+        <a href="/index.html" class="inline-flex items-center gap-2 bg-[#80B6E9] hover:bg-[#569CE3] text-white font-chakra px-8 py-3 rounded-full transition-all duration-200 shadow-sm hover:shadow">
+            <i data-lucide="home" class="w-5 h-5 stroke-[2px]"></i>
+            <span>Return to Home</span>
+        </a>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="py-6 text-center text-sm text-gray-500">
+    &copy; 2026 Ticket Hub. All rights reserved.
+</footer>
+
+<!-- Initialize Lucide Icons -->
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>
