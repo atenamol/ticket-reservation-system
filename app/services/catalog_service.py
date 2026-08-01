@@ -103,9 +103,6 @@ def get_ticket_detail(ticket_id: int):
             if extra:
                 detail.update(
                     {
-                        "seat_section": extra.get("seat_section"),
-                        "seat_row": extra.get("seat_row"),
-                        "seat_number": extra.get("seat_number"),
                         "ticket_type": extra.get("ticket_type"),
                         "league_name": extra.get("league_name"),
                         "stadium_or_hall_name": hall_name,
