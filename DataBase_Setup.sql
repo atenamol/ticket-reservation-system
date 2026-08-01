@@ -6,7 +6,7 @@ USE TicketSystem;
 CREATE TABLE City (
     city_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    province VARCHAR(100)
+    province VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Team (
@@ -47,7 +47,7 @@ CREATE TABLE Venue (
 
 CREATE TABLE Matchh (
     match_id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    sport_type ENUM('Volleyball', 'Basketball', 'Football', 'others'),
+    sport_type ENUM('Volleyball', 'Basketball', 'Football'),
     home_team_id INT(11),
     away_team_id INT(11),
     venue_id INT(11) NOT NULL,
