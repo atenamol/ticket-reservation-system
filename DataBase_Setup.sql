@@ -236,18 +236,18 @@ INSERT INTO User
 (user_id, first_name, last_name, email, phone, role, city_id, password_hash, account_status)
 VALUES
 
-(1, 'Ali', 'Ahmadi', 'ali@gmail.com', '09126412825', 'spectator', 1, 'hashed_pass_1', 'active'),
-(2, 'Aynaz', 'Hosseini', 'aynaz@gmail.com', '09151270125', 'admin', 2, 'hashed_pass_2', 'active'),
-(3, 'Reza', 'Karimi', Null , '09012379854', 'spectator', 3, 'hashed_pass_3', 'inactive'),
-(4, 'Nika', 'Jafari', 'nika@gmail.com', '09010105123', 'spectator', 4, 'hashed_pass_4', 'active'),
-(5, 'Parsa', 'Hosseini', 'parsa@gmail.com', Null, 'admin', 5, 'hashed_pass_5', 'active'),
-(6, 'Yasamin', 'Adib', 'yasamin@gmail.com', '09052456630', 'spectator', 1, 'hashed_pass_6', 'active'),
-(7, 'Atiyeh', 'Saadatzadeh', 'atysaa@gmail.com', '09050125679', 'spectator', 6, 'hashed_pass_7', 'active'),
-(8, 'Sahar', 'Amini', 'saharamini@gmail.com', Null, 'spectator', 9, 'hashed_pass_8', 'active'),
-(9, 'Nima', 'Naseri', 'nimanaseri@gmail.com', Null, 'spectator', 7, 'hashed_pass_9', 'active'),
-(10, 'Milad', 'Karimi', 'miladkarimi@gmail.com', '09017531595', 'admin', 10, 'hashed_pass_10', 'active'),
-(11, 'Paria', 'Raad', 'pariraad@gmail.com', Null, 'spectator', 8, 'hashed_pass_11', 'inactive'),
-(12, 'Saman', 'Taheri', Null, '09034718629', 'spectator', 7, 'hashed_pass_12', 'active');
+(1, 'Ali', 'Ahmadi', 'ali@gmail.com', '09126412825', 'spectator', 1, '$2b$12$CVm5D9NR.jl.W5KNm/44F.y7AjaT7JyRsUOuxbS4TipzPND0H6rLG', 'active'),
+(2, 'Aynaz', 'Hosseini', 'aynaz@gmail.com', '09151270125', 'admin', 2, '$2b$12$f.Jb/1pNcjAaCSvoVlyofujBDon99poitqy9.vFcKpacEu.QizxTm', 'active'),
+(3, 'Reza', 'Karimi', Null , '09012379854', 'spectator', 3, '$2b$12$myBJfBr5B4MqJNuFsqOdZuKnOp2CiNZmoUL4NwCDC.V5I8/jzpJNi', 'inactive'),
+(4, 'Nika', 'Jafari', 'nika@gmail.com', '09010105123', 'spectator', 4, '$2b$12$YDTUw48rXAiv2yhw3jy3pesubS.kpOtarMZImMxiMT.jMxXZCsWJ6', 'active'),
+(5, 'Parsa', 'Hosseini', 'parsa@gmail.com', Null, 'admin', 5, '$2b$12$WNY4Tac/zzfimSZlIdUjqe.Q7/haMRyGDrJdfFolhTrbjqq8FMEv6', 'active'),
+(6, 'Yasamin', 'Adib', 'yasamin@gmail.com', '09052456630', 'spectator', 1, '$2b$12$zYl7f8A42Gn4D2MZ/K1npOtUSTvvtLqkOkyrD2y8mjMgnszX/TVPa', 'active'),
+(7, 'Atiyeh', 'Saadatzadeh', 'atysaa@gmail.com', '09050125679', 'spectator', 6, '$2b$12$M.4rVrMprt5nZHN56nFeyOWw3xgJUY7iyXs8u2aGIVdXafjLNKETu', 'active'),
+(8, 'Sahar', 'Amini', 'saharamini@gmail.com', Null, 'spectator', 9, '$2b$12$xFhwMQGJttF.7nt2W6qpG.lHhORRaYFm0QlYS4MXgbb9Jvonak7rW', 'active'),
+(9, 'Nima', 'Naseri', 'nimanaseri@gmail.com', Null, 'spectator', 7, '$2b$12$U5HkTT72wsknydvU7m8i8OugVRJMPfSmFqxK9UKFjQdL8axCFmjnW', 'active'),
+(10, 'Milad', 'Karimi', 'miladkarimi@gmail.com', '09017531595', 'admin', 10, '$2b$12$whv.H67D1KxVCu5l80OLquHpKFIOyE89yWIjW0wi1HWcgUT874YjS', 'active'),
+(11, 'Paria', 'Raad', 'pariraad@gmail.com', Null, 'spectator', 8, '$2b$12$pHo98m3Z21JxxNkgLZsFK.8.gu7T2TckJIPOQ4fJIpFbteedJbZa2', 'inactive'),
+(12, 'Saman', 'Taheri', Null, '09034718629', 'spectator', 7, '$2b$12$HGsoTCOIzotpLoHMOBKWVe9yZHcSPLTmfHttuVkfin1jtf6.VIHnG', 'active');
 
 INSERT INTO Venue (venue_id, name, city_id, capacity, address, refund_policy_rules) VALUES
 (1, 'Azadi Stadium', 1, 78000, 'Tehran, Azadi Sport Complex', 'Full refund 48h before'),
