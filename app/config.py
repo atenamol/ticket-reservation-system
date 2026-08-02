@@ -12,6 +12,9 @@ DB_NAME = os.getenv("DB_NAME")
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
+ELASTIC_HOST = os.getenv("ELASTIC_HOST")
+ELASTIC_INDEX = os.getenv("ELASTIC_INDEX", "tickets")
+
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 30))
