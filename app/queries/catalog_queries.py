@@ -182,6 +182,7 @@ def get_all_tickets_for_indexing(cursor):
         JOIN City c ON v.city_id = c.city_id
         JOIN Team ht ON m.home_team_id = ht.team_id
         JOIN Team at ON m.away_team_id = at.team_id
+        WHERE t.remaining_capacity > 0
         ORDER BY t.ticket_id
         """
     )

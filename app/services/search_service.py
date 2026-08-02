@@ -14,6 +14,16 @@ def search_tickets(filters: dict):
 
     filter_queries = []
 
+    filter_queries.append(
+        {
+            "range": {
+                "remaining_capacity": {
+                    "gt": 0
+                }
+            }
+        }
+    )
+    
     # Sport type
     if filters.get("sport_type"):
         filter_queries.append(
