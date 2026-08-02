@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match & Ticket Reservation</title>
+    
+    <!-- CDN Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Oswald & Chakra Petch -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#FBF9F5',
+                        football: {
+                            light: '#D6F5E3',
+                            bold: '#82D6A5',
+                        },
+                        volleyball: {
+                            light: '#D9EAFB',
+                            bold: '#80B6E9',
+                        },
+                        basketball: {
+                            light: '#FDE2D3',
+                            bold: '#F69664',
+                        }
+                    },
+                    fontFamily: {
+                        chakra: ['"Chakra Petch"', 'sans-serif'],
+                        oswald: ['"Oswald"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#FBF9F5] text-stone-800 antialiased font-chakra min-h-screen flex flex-col justify-between">
+
+    <!-- 1. Header (White Background & Image Logo) -->
+    <header class="bg-white border-b border-stone-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+            
+            <!-- Left Empty Spacer for Balance -->
+            <div class="w-28 sm:w-36"></div>
+
+            <!-- Center: Header Logo Image -->
+            <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
+                <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition transform group-hover:scale-105 duration-200">
+            </a>
+
+            <!-- Right Side: Login / Signup Button -->
+            <div>
+                <a href="login.html" class="bg-[#80B6E9] hover:bg-[#D9EAFB] text-slate-900 font-chakra font-medium text-xs sm:text-sm px-5 sm:px-6 py-2.5 rounded-full transition duration-200 border border-[#80B6E9]/50 shadow-sm">
+                    Login / Signup
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow flex flex-col items-center">
+
+        <!-- 2. Banner Above Search Box (Rectangular 1.6:1 Aspect Ratio, Compact Size) -->
+        <section class="mt-8 mb-6 w-full max-w-[320px] flex justify-center">
+            <div class="w-full h-[200px] rounded-2xl overflow-hidden shadow-sm border border-stone-200/80 bg-white">
+                <img src="assets/images/main-logo.webp" alt="Main Banner" class="w-full h-full object-cover">
+            </div>
+        </section>
+
+        <!-- 3. Search Box Capsule -->
+        <section class="w-full max-w-2xl mb-10 px-2">
+            <form action="search.html" method="GET" class="relative flex items-center">
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Search matches, teams, or venues..." 
+                    class="w-full bg-white border border-stone-300 rounded-full py-3.5 pr-14 pl-6 text-stone-800 placeholder-stone-400 font-chakra font-light text-sm sm:text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-[#80B6E9] transition"
+                >
+                <button type="submit" class="absolute right-3 bg-[#D9EAFB] hover:bg-[#80B6E9] text-slate-800 p-2.5 rounded-full transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z" />
+                    </svg>
+                </button>
+            </form>
+        </section>
+
+        <!-- 4. 3 Sport Category Buttons -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16 w-full max-w-4xl px-2">
+            
+            <!-- Football Card -->
+            <a href="search.html?sport=football" class="relative h-28 sm:h-32 rounded-full overflow-hidden group shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 border border-[#82D6A5]/50">
+                <img src="assets/images/football-icon.webp" alt="Football" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition duration-300 flex items-center justify-center">
+                    <span class="text-white font-chakra font-bold text-xl sm:text-2xl drop-shadow-md">Football</span>
+                </div>
+            </a>
+
+            <!-- Volleyball Card -->
+            <a href="search.html?sport=volleyball" class="relative h-28 sm:h-32 rounded-full overflow-hidden group shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 border border-[#80B6E9]/50">
+                <img src="assets/images/volleyball-icon.webp" alt="Volleyball" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition duration-300 flex items-center justify-center">
+                    <span class="text-white font-chakra font-bold text-xl sm:text-2xl drop-shadow-md">Volleyball</span>
+                </div>
+            </a>
+
+            <!-- Basketball Card -->
+            <a href="search.html?sport=basketball" class="relative h-28 sm:h-32 rounded-full overflow-hidden group shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 border border-[#F69664]/50">
+                <img src="assets/images/basketball-icon.webp" alt="Basketball" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition duration-300 flex items-center justify-center">
+                    <span class="text-white font-chakra font-bold text-xl sm:text-2xl drop-shadow-md">Basketball</span>
+                </div>
+            </a>
+
+        </section>
+
+        <!-- 5. UPCOMING MATCHES Section Title -->
+        <section class="w-full mb-12">
+            <div class="flex items-center justify-between border-b border-stone-300/70 pb-3 mb-8">
+                <h2 class="font-oswald font-medium text-3xl sm:text-4xl text-stone-900 tracking-wide uppercase">
+                    UPCOMING MATCHES
+                </h2>
+            </div>
+
+            <!-- 6. 3 Closest Match Cards -->
+            <div id="upcoming-matches-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                
+                <!-- Match Card 1 (Football) -->
+                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-[#D6F5E3] text-stone-900 font-chakra font-bold text-xs px-3 py-1 rounded-full">Football</span>
+                            <span class="font-chakra text-xs text-stone-500">2026/08/10 - 20:30</span>
+                        </div>
+                        <h3 class="font-oswald font-medium text-xl text-stone-900 mb-2">Team A vs Team B</h3>
+                        <p class="font-chakra text-sm text-stone-500 mb-6 flex items-center gap-1">
+                            📍 Azadi Stadium, Tehran
+                        </p>
+                    </div>
+
+                    <a href="ticket.html?ticket_id=101" class="w-full bg-[#D6F5E3] hover:bg-[#82D6A5] text-stone-900 font-chakra font-medium text-sm py-3 px-5 rounded-2xl flex justify-between items-center transition">
+                        <span>Starting from $40</span>
+                        <span class="text-xs">&rarr;</span>
+                    </a>
+                </div>
+
+                <!-- Match Card 2 (Volleyball) -->
+                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-[#D9EAFB] text-stone-900 font-chakra font-bold text-xs px-3 py-1 rounded-full">Volleyball</span>
+                            <span class="font-chakra text-xs text-stone-500">2026/08/12 - 18:00</span>
+                        </div>
+                        <h3 class="font-oswald font-medium text-xl text-stone-900 mb-2">Team C vs Team D</h3>
+                        <p class="font-chakra text-sm text-stone-500 mb-6 flex items-center gap-1">
+                            📍 Freedom Hall, Tehran
+                        </p>
+                    </div>
+
+                    <a href="ticket.html?ticket_id=102" class="w-full bg-[#D9EAFB] hover:bg-[#80B6E9] text-stone-900 font-chakra font-medium text-sm py-3 px-5 rounded-2xl flex justify-between items-center transition">
+                        <span>Starting from $25</span>
+                        <span class="text-xs">&rarr;</span>
+                    </a>
+                </div>
+
+                <!-- Match Card 3 (Basketball) -->
+                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-[#FDE2D3] text-stone-900 font-chakra font-bold text-xs px-3 py-1 rounded-full">Basketball</span>
+                            <span class="font-chakra text-xs text-stone-500">2026/08/15 - 19:15</span>
+                        </div>
+                        <h3 class="font-oswald font-medium text-xl text-stone-900 mb-2">Team E vs Team F</h3>
+                        <p class="font-chakra text-sm text-stone-500 mb-6 flex items-center gap-1">
+                            📍 Arena Hall, Isfahan
+                        </p>
+                    </div>
+
+                    <a href="ticket.html?ticket_id=103" class="w-full bg-[#FDE2D3] hover:bg-[#F69664] text-stone-900 font-chakra font-medium text-sm py-3 px-5 rounded-2xl flex justify-between items-center transition">
+                        <span>Starting from $35</span>
+                        <span class="text-xs">&rarr;</span>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 7. Footer -->
+    <footer class="bg-[#FBF9F5] text-stone-600 border-t border-stone-300/60 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-chakra text-xs">
+            
+            <div class="flex items-center gap-3">
+                <img src="assets/images/footer-logo.webp" alt="Footer Logo" class="h-8 w-auto">
+                <span>Match Ticket Reservation System</span>
+            </div>
+
+            <div class="flex gap-6 text-stone-500">
+                <a href="index.html" class="hover:text-stone-900 transition">Home</a>
+            </div>
+
+            <div class="text-stone-400">
+                &copy; 2026 All rights reserved.
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- JS Files -->
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>
