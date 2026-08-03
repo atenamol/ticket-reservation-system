@@ -2,7 +2,7 @@ from app.cache import search_cache as cache
 from app.database.database import close, get_connection
 from app.queries import catalog_queries as q
 from app.schemas.catalog_schema import TicketSearchQuery
-
+from app.services.search_service import search_tickets as elastic_search
 # Cities
 
 
@@ -33,6 +33,7 @@ def list_venues(city_id: int | None = None):
 
 
 def search_tickets(filters: TicketSearchQuery):
+
     """
     Search tickets using optional filters.
     Results are cached in Redis.
@@ -41,16 +42,16 @@ def search_tickets(filters: TicketSearchQuery):
     filter_dict = filters.model_dump(exclude_none=True)
 
     cached = cache.get_cached_search(filter_dict)
+
     if cached is not None:
+        print("========== FROM REDIS ==========")
         return cached
 
-    conn = get_connection()
 
-    try:
-        with conn.cursor() as cur:
-            results = q.search_tickets(cur, **filter_dict)
-    finally:
-        close(conn)
+    print("========== FROM ELASTIC ==========")
+
+
+    results = elastic_search(filter_dict)
 
     cache.set_cached_search(filter_dict, results)
 
@@ -103,9 +104,6 @@ def get_ticket_detail(ticket_id: int):
             if extra:
                 detail.update(
                     {
-                        "seat_section": extra.get("seat_section"),
-                        "seat_row": extra.get("seat_row"),
-                        "seat_number": extra.get("seat_number"),
                         "ticket_type": extra.get("ticket_type"),
                         "league_name": extra.get("league_name"),
                         "stadium_or_hall_name": hall_name,

@@ -156,3 +156,35 @@ def get_volleyball_detail(cursor, ticket_id):
 def get_basketball_detail(cursor, ticket_id):
     cursor.execute("SELECT * FROM BasketballDetail WHERE ticket_id = %s", (ticket_id,))
     return cursor.fetchone()
+
+def get_all_tickets_for_indexing(cursor):
+    cursor.execute(
+        """
+        SELECT
+            t.ticket_id,
+            t.price,
+            t.category,
+            t.remaining_capacity,
+            m.match_id,
+            m.sport_type,
+            m.match_date,
+            v.venue_id,
+            v.name AS venue_name,
+            c.city_id,
+            c.name AS city_name,
+            ht.team_id AS home_team_id,
+            ht.name AS home_team,
+            at.team_id AS away_team_id,
+            at.name AS away_team
+        FROM Ticket t
+        JOIN Matchh m ON t.match_id = m.match_id
+        JOIN Venue v ON m.venue_id = v.venue_id
+        JOIN City c ON v.city_id = c.city_id
+        JOIN Team ht ON m.home_team_id = ht.team_id
+        JOIN Team at ON m.away_team_id = at.team_id
+        WHERE t.remaining_capacity > 0
+        ORDER BY t.ticket_id
+        """
+    )
+
+    return cursor.fetchall()
