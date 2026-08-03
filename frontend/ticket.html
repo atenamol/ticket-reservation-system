@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Tickets - TicketHub</title>
+    
+    <!-- CDN Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Oswald & Chakra Petch -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#FBF9F5',
+                        brandBlue: '#80B6E9',
+                        brandBlueDark: '#4A90E2',
+                    },
+                    fontFamily: {
+                        chakra: ['"Chakra Petch"', 'sans-serif'],
+                        oswald: ['"Oswald"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-blue': '0 0 25px -5px rgba(128, 182, 233, 0.4)',
+                        'glow-emerald': '0 0 25px -5px rgba(52, 211, 153, 0.4)',
+                        'glow-orange': '0 0 25px -5px rgba(251, 146, 60, 0.4)',
+                        'glow-card': '0 15px 35px -10px rgba(0, 0, 0, 0.07)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Smooth Custom Transitions */
+        .ticket-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ticket-card:hover {
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body class="bg-[#FBF9F5] text-stone-800 antialiased font-chakra min-h-screen flex flex-col justify-between pb-32 selection:bg-[#80B6E9] selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-30 shadow-sm transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+            
+            <div class="w-28 sm:w-36">
+                <a href="search.html" class="text-stone-600 hover:text-stone-900 font-bold text-xs sm:text-sm flex items-center gap-2 transition group">
+                    <span class="p-2 rounded-full bg-stone-100 group-hover:bg-[#80B6E9] group-hover:text-white transition-all transform group-hover:-translate-x-1 duration-200">&larr;</span> 
+                    <span>Back</span>
+                </a>
+            </div>
+
+            <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
+                <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition transform group-hover:scale-105 duration-200">
+            </a>
+
+            <div>
+                <a href="login.html" class="bg-[#80B6E9] hover:bg-[#6CA2DB] text-slate-900 font-chakra font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-200 shadow-glow-blue hover:shadow-lg active:scale-95 inline-block">
+                    Login / Signup
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow py-8">
+
+        <!-- Global Top Header for Both Sections -->
+        <div class="border-b border-stone-200/80 pb-4 mb-8 flex items-end justify-between">
+            <div>
+                <h2 class="font-oswald text-2xl sm:text-3xl font-bold text-stone-900 uppercase tracking-wide">
+                    Match Pass & Ticket Selection
+                </h2>
+                <p class="text-xs sm:text-sm text-stone-500 font-medium mt-1">
+                    Review match information on the left and select your ticket category on the right.
+                </p>
+            </div>
+            <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-stone-500 bg-white px-3.5 py-1.5 rounded-xl border border-stone-200/90 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Official Reservation
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- Left Col: Ticket Pass (5 Cols) -->
+            <aside class="lg:col-span-5 sticky top-28">
+                
+                <div class="bg-gradient-to-br from-white via-white to-blue-50/40 rounded-3xl border-2 border-stone-200/80 shadow-glow-card p-6 sm:p-8 relative overflow-hidden group transition-all duration-300 hover:border-stone-300">
+                    
+                    <!-- Stub Ticket Decorative Cutouts (Top-Left & Bottom-Left) -->
+                    <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#FBF9F5] border-r-2 border-stone-200/80"></div>
+                    <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#FBF9F5] border-l-2 border-stone-200/80"></div>
+
+                    <!-- Decorative Vibrant Accents -->
+                    <div class="absolute -right-10 -top-10 w-36 h-36 bg-[#80B6E9]/20 rounded-full blur-2xl pointer-events-none group-hover:bg-[#80B6E9]/30 transition duration-500"></div>
+                    <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-400/25 transition duration-500"></div>
+
+                    <!-- Top Badges Row -->
+                    <div class="flex items-center justify-between mb-6 relative z-10">
+                        <span id="match-sport-badge" class="px-3.5 py-1 rounded-xl text-xs font-bold bg-[#80B6E9] text-slate-900 uppercase tracking-wider shadow-sm">
+                            Football
+                        </span>
+                        <span id="match-league" class="text-xs font-bold text-sky-800 bg-sky-100/80 px-3 py-1 rounded-xl border border-sky-200">
+                            Premier League
+                        </span>
+                    </div>
+
+                    <!-- Teams VS Showcase -->
+                    <div class="text-center py-5 border-y-2 border-dashed border-stone-200/90 my-4 relative z-10 bg-white/80 backdrop-blur-sm rounded-2xl px-3 shadow-inner">
+                        <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest block mb-1.5">Official Match Ticket</span>
+                        <h1 class="font-oswald text-xl sm:text-2xl md:text-3xl font-bold text-stone-900 uppercase tracking-wide leading-snug">
+                            <span id="match-home-team" class="text-stone-900">Home Team</span> 
+                            <span class="text-orange-500 italic font-black mx-1 animate-pulse">VS</span> 
+                            <span id="match-away-team" class="text-stone-900">Away Team</span>
+                        </h1>
+                    </div>
+
+                    <!-- Event Meta Info Grid -->
+                    <div class="space-y-3 text-xs sm:text-sm text-stone-700 py-2 relative z-10">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50/90 hover:bg-stone-100/80 transition">
+                            <span class="text-stone-400 font-semibold">Date & Time</span>
+                            <strong id="match-date" class="text-stone-900 font-chakra">Aug 20, 2026 - 19:30</strong>
+                        </div>
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50/90 hover:bg-stone-100/80 transition">
+                            <span class="text-stone-400 font-semibold">Stadium</span>
+                            <strong id="match-venue" class="text-stone-900">Azadi Stadium</strong>
+                        </div>
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50/90 hover:bg-stone-100/80 transition">
+                            <span class="text-stone-400 font-semibold">City</span>
+                            <strong id="match-city" class="text-stone-900">Tehran</strong>
+                        </div>
+                        <div class="pt-2 text-xs">
+                            <span class="text-stone-400 font-semibold block mb-1">Location Address</span>
+                            <span id="match-address" class="text-stone-600 font-medium">Azadi Sport Complex, West Expressway, Tehran</span>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Footer ID -->
+                    <div class="mt-6 pt-4 border-t border-stone-200 flex justify-between items-center text-[11px] text-stone-400 font-bold relative z-10">
+                        <span class="flex items-center gap-1.5 text-emerald-600">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span> Verified Match
+                        </span>
+                        <span>ID: #<strong id="match-id-display" class="text-stone-700">1042</strong></span>
+                    </div>
+
+                </div>
+
+            </aside>
+
+            <!-- Right Col: Ticket Categories Selection (7 Cols) -->
+            <section class="lg:col-span-7">
+
+                <!-- Ticket Zone Cards Grid -->
+                <div class="space-y-4" id="ticket-zones-container">
+
+                    <!-- VIP Card -->
+                    <div class="ticket-card bg-white rounded-3xl p-6 border-2 border-stone-200/90 hover:border-emerald-400 shadow-sm hover:shadow-glow-emerald flex flex-col sm:flex-row sm:items-center justify-between gap-6 group relative overflow-hidden">
+                        
+                        <div class="absolute top-0 right-0 w-2 h-full bg-emerald-400"></div>
+
+                        <div class="space-y-2.5 max-w-sm">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-emerald-600 transition">VIP Section</h3>
+                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wide">Premium</span>
+                            </div>
+                            <p class="text-xs text-stone-500 leading-relaxed">
+                                <strong class="text-stone-700">Amenities:</strong> Prime View, VIP Lounge Access, Free Parking, Catering
+                            </p>
+                            <!-- Capacity Badge with Animated Pulse Circle -->
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-900 text-xs font-bold">
+                                <span class="relative flex h-2.5 w-2.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                </span>
+                                <span>Only <strong>14</strong> tickets left!</span>
+                            </div>
+                        </div>
+
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-4 shrink-0">
+                            <span class="font-oswald text-3xl font-bold text-emerald-900">$75.00</span>
+                            
+                            <!-- Counter -->
+                            <div class="flex items-center gap-3 bg-stone-100/90 p-1.5 rounded-2xl border border-stone-200/80 shadow-inner">
+                                <button type="button" class="w-9 h-9 rounded-xl bg-white text-stone-900 font-extrabold hover:bg-stone-200 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">-</button>
+                                <span class="font-bold text-base w-6 text-center select-none">0</span>
+                                <button type="button" class="w-9 h-9 rounded-xl bg-emerald-400 text-slate-950 font-extrabold hover:bg-emerald-500 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">+</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Normal Card -->
+                    <div class="ticket-card bg-white rounded-3xl p-6 border-2 border-stone-200/90 hover:border-[#80B6E9] shadow-sm hover:shadow-glow-blue flex flex-col sm:flex-row sm:items-center justify-between gap-6 group relative overflow-hidden">
+                        
+                        <div class="absolute top-0 right-0 w-2 h-full bg-[#80B6E9]"></div>
+
+                        <div class="space-y-2.5 max-w-sm">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-[#80B6E9] transition">Normal Tribune</h3>
+                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-sky-100 text-sky-800 uppercase tracking-wide">Popular</span>
+                            </div>
+                            <p class="text-xs text-stone-500 leading-relaxed">
+                                <strong class="text-stone-700">Amenities:</strong> Standard Seating, Access to Food Courts
+                            </p>
+                            <!-- Capacity Badge with Animated Pulse Circle -->
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-sky-50 border border-sky-200/80 text-sky-900 text-xs font-bold">
+                                <span class="relative flex h-2.5 w-2.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500"></span>
+                                </span>
+                                <span><strong>120</strong> tickets available</span>
+                            </div>
+                        </div>
+
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-4 shrink-0">
+                            <span class="font-oswald text-3xl font-bold text-sky-900">$25.00</span>
+                            
+                            <!-- Counter -->
+                            <div class="flex items-center gap-3 bg-stone-100/90 p-1.5 rounded-2xl border border-stone-200/80 shadow-inner">
+                                <button type="button" class="w-9 h-9 rounded-xl bg-white text-stone-900 font-extrabold hover:bg-stone-200 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">-</button>
+                                <span class="font-bold text-base w-6 text-center select-none">0</span>
+                                <button type="button" class="w-9 h-9 rounded-xl bg-[#80B6E9] text-stone-900 font-extrabold hover:bg-[#689ED0] active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">+</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Special / Fan Zone Card -->
+                    <div class="ticket-card bg-white rounded-3xl p-6 border-2 border-stone-200/90 hover:border-orange-400 shadow-sm hover:shadow-glow-orange flex flex-col sm:flex-row sm:items-center justify-between gap-6 group relative overflow-hidden">
+                        
+                        <div class="absolute top-0 right-0 w-2 h-full bg-orange-400"></div>
+
+                        <div class="space-y-2.5 max-w-sm">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-orange-500 transition">Special / Fan Zone</h3>
+                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-orange-100 text-orange-800 uppercase tracking-wide">Atmosphere</span>
+                            </div>
+                            <p class="text-xs text-stone-500 leading-relaxed">
+                                <strong class="text-stone-700">Amenities:</strong> Fan Stand Behind Goal, Free Fan Scarf
+                            </p>
+                            <!-- Capacity Badge with Animated Pulse Circle -->
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-orange-50 border border-orange-200/80 text-orange-900 text-xs font-bold">
+                                <span class="relative flex h-2.5 w-2.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
+                                </span>
+                                <span>Only <strong>5</strong> tickets left!</span>
+                            </div>
+                        </div>
+
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-4 shrink-0">
+                            <span class="font-oswald text-3xl font-bold text-orange-900">$40.00</span>
+                            
+                            <!-- Counter -->
+                            <div class="flex items-center gap-3 bg-stone-100/90 p-1.5 rounded-2xl border border-stone-200/80 shadow-inner">
+                                <button type="button" class="w-9 h-9 rounded-xl bg-white text-stone-900 font-extrabold hover:bg-stone-200 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">-</button>
+                                <span class="font-bold text-base w-6 text-center select-none">0</span>
+                                <button type="button" class="w-9 h-9 rounded-xl bg-orange-400 text-slate-950 font-extrabold hover:bg-orange-500 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">+</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Bottom Dock Bar -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-[0_-10px_30px_rgba(0,0,0,0.08)] py-4 z-40 border-t border-stone-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+            
+            <div class="flex items-center gap-6">
+                <div>
+                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-widest block">Selected</span>
+                    <span id="summary-items" class="text-sm sm:text-base text-stone-900 font-bold">0 Tickets Selected</span>
+                </div>
+                
+                <div class="hidden sm:block h-8 w-px bg-stone-200"></div>
+
+                <div class="hidden sm:block">
+                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-widest block">Total Amount</span>
+                    <span id="summary-total" class="font-oswald text-2xl text-stone-900 font-bold">$0.00</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="sm:hidden text-right">
+                    <span class="text-[10px] text-stone-400 font-bold uppercase block">Total</span>
+                    <span id="summary-total-mobile" class="font-oswald text-lg text-stone-900 font-bold">$0.00</span>
+                </div>
+
+                <button id="btn-proceed-checkout" disabled class="bg-stone-200 text-stone-400 font-chakra font-bold py-3.5 px-6 sm:px-10 rounded-2xl transition-all duration-300 uppercase text-xs sm:text-sm tracking-wider cursor-not-allowed">
+                    Proceed to Checkout
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JS Files -->
+    <script src="js/api.js"></script>
+    <script src="js/ticket.js"></script>
+</body>
+</html>
