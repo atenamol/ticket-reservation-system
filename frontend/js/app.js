@@ -1,4 +1,4 @@
-import { getToken, getUserData, clearAuthData } from './utils/storage.js';
+import { getAccessToken, getUserData, clearAuthData } from './utils/storage.js';
 import { formatStatusText } from './utils/helpers.js';
 
 /**
@@ -10,37 +10,42 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Dynamically updates header navigation based on login status and user role.
+ * Dynamically updates header navigation based on authentication status and backend roles ('spectator' | 'admin').
  */
 function initNavbar() {
-    const token = getToken();
+    const token = getAccessToken();
     const user = getUserData();
 
-    const authGuestLinks = document.querySelectorAll('.auth-guest-only');
-    const authUserLinks = document.querySelectorAll('.auth-user-only');
+    // DOM Elements for conditional visibility
+    const unauthLinks = document.querySelectorAll('.auth-unauthenticated-only');
+    const authLinks = document.querySelectorAll('.auth-logged-in-only');
     const adminLinks = document.querySelectorAll('.auth-admin-only');
+    const spectatorLinks = document.querySelectorAll('.auth-spectator-only');
     const userNameDisplay = document.getElementById('user-display-name');
 
     if (token && user) {
-        // User is logged in
-        authGuestLinks.forEach((el) => el.classList.add('hidden'));
-        authUserLinks.forEach((el) => el.classList.remove('hidden'));
+        // User is Authenticated (Logged in)
+        unauthLinks.forEach((el) => el.classList.add('hidden'));
+        authLinks.forEach((el) => el.classList.remove('hidden'));
 
         if (userNameDisplay) {
             userNameDisplay.textContent = `${user.first_name || 'User'} (${formatStatusText(user.role)})`;
         }
 
-        // Toggle Admin links if role is admin
+        // Role-specific navigation rules according to auth_schema.py (spectator | admin)
         if (user.role === 'admin') {
             adminLinks.forEach((el) => el.classList.remove('hidden'));
-        } else {
+            spectatorLinks.forEach((el) => el.classList.add('hidden'));
+        } else if (user.role === 'spectator') {
             adminLinks.forEach((el) => el.classList.add('hidden'));
+            spectatorLinks.forEach((el) => el.classList.remove('hidden'));
         }
     } else {
-        // User is logged out
-        authGuestLinks.forEach((el) => el.classList.remove('hidden'));
-        authUserLinks.forEach((el) => el.classList.add('hidden'));
+        // Visitor is Unauthenticated (Logged out)
+        unauthLinks.forEach((el) => el.classList.remove('hidden'));
+        authLinks.forEach((el) => el.classList.add('hidden'));
         adminLinks.forEach((el) => el.classList.add('hidden'));
+        spectatorLinks.forEach((el) => el.classList.add('hidden'));
     }
 }
 
@@ -54,8 +59,7 @@ function initLogoutHandler() {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             clearAuthData();
-            // Redirect to home or login page after logout
-            window.location.href = '/index.html';
+            window.location.href = './index.html';
         });
     });
 }

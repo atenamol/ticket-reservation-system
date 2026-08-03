@@ -1,38 +1,46 @@
 /**
  * Global Application Configuration
+ * Contains backend base URL, local storage keys, and API endpoints matching Phase 3 routers.
  */
-
 const CONFIG = {
-  // Base URL for the backend FastAPI server
-  API_BASE_URL: 'http://localhost:8000',
+  API_BASE_URL: "http://localhost:8000",
 
-  // LocalStorage keys for authentication and user data
   STORAGE_KEYS: {
-    AUTH_TOKEN: 'token',
-    REFRESH_TOKEN: 'refresh_token',
-    USER_DATA: 'user_info',
+    ACCESS_TOKEN: "access_token",
+    USER_DATA: "user",
   },
 
-  // API Route endpoints matching FastAPI routers
   ENDPOINTS: {
     AUTH: {
-      LOGIN: '/auth/login',
-      SIGNUP: '/auth/signup',
-      PROFILE: '/auth/profile',
+      SIGNUP: "/auth/signup",
+      PASSWORD_LOGIN: "/auth/login/password",
+      OTP_LOGIN: "/auth/login/otp",
+      VERIFY_OTP: "/auth/verify-otp",
+      PROFILE: "/auth/profile",
     },
     CATALOG: {
-      TICKETS: '/tickets',
-      CATEGORIES: '/categories',
+      CITIES: "/catalog/cities",
+      VENUES: "/catalog/venues",
+      TICKETS_SEARCH: "/catalog/tickets/search",
+      TICKET_DETAIL: (id) => `/catalog/tickets/${id}`,
     },
     TRANSACTIONS: {
-      RESERVATIONS: '/reservations',
-      REPORTS: '/reports',
-      ADMIN_STATS: '/admin/stats',
-    },
-  },
+      RESERVE: "/transactions/reserve",
+      PAY: "/transactions/pay",
+      HISTORY: "/transactions/history",
+      CANCEL: "/transactions/cancel",
+      PENALTY: "/transactions/penalty",
+      REPORT: "/transactions/report",
+    }
+  }
 };
 
-// Freeze object to prevent accidental modifications during runtime
+// Prevent accidental modification of configuration at runtime
 Object.freeze(CONFIG);
 Object.freeze(CONFIG.STORAGE_KEYS);
 Object.freeze(CONFIG.ENDPOINTS);
+Object.freeze(CONFIG.ENDPOINTS.AUTH);
+Object.freeze(CONFIG.ENDPOINTS.CATALOG);
+Object.freeze(CONFIG.ENDPOINTS.TRANSACTIONS);
+
+export default CONFIG;
