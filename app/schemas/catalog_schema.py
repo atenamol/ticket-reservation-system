@@ -71,9 +71,6 @@ class TicketDetailResponse(BaseModel):
     city_name: str
     home_team: str
     away_team: str
-    seat_section: Optional[str] = None
-    seat_row: Optional[str] = None
-    seat_number: Optional[int] = None
     ticket_type: Optional[str] = None
     league_name: Optional[str] = None
     stadium_or_hall_name: Optional[str] = None
