@@ -11,7 +11,7 @@
     <!-- Google Fonts: Oswald & Chakra Petch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 
     <!-- Tailwind Custom Configuration -->
     <script>
@@ -36,158 +36,312 @@
                     fontFamily: {
                         chakra: ['"Chakra Petch"', 'sans-serif'],
                         oswald: ['"Oswald"', 'sans-serif'],
+                    },
+                    keyframes: {
+                        gradientBG: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        }
+                    },
+                    animation: {
+                        'gradient-shift': 'gradientBG 4s ease infinite',
                     }
                 }
             }
         }
     </script>
-</head>
-<body class="bg-[#FBF9F5] text-stone-800 antialiased font-chakra min-h-screen flex flex-col justify-between">
 
-    <!-- 1. Header (White Background & Image Logo) -->
-    <header class="bg-white border-b border-stone-200/80 shadow-sm">
+    <style>
+        /* Custom Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FBF9F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 20px;
+            border: 2px solid #FBF9F5;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #80B6E9;
+        }
+
+        /* Floating Animated Background Shapes */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-25px) rotate(8deg) scale(1.05); }
+        }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Smooth Wave Floating Animation for Sport Category Cards */
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-float-slow {
+            animation: floatSlow 10s ease-in-out infinite;
+        }
+        .animate-spin-slow {
+            animation: spinSlow 35s linear infinite;
+        }
+        .animate-float-card {
+            animation: floatCard 4s ease-in-out infinite;
+        }
+        
+        .animated-gradient-btn {
+            background-size: 200% 200%;
+        }
+    </style>
+</head>
+<body class="bg-[#FBF9F5] text-stone-800 antialiased font-chakra min-h-screen flex flex-col justify-between selection:bg-[#80B6E9] selection:text-white overflow-x-hidden">
+
+    <!-- 1. Header (Floating Glass Header with updated background color and increased transparency) -->
+    <header class="bg-[#FBF9F5]/50 backdrop-blur-xl border-b border-stone-200/50 shadow-sm sticky top-0 z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
             
             <!-- Left Empty Spacer for Balance -->
             <div class="w-28 sm:w-36"></div>
 
-            <!-- Center: Header Logo Image -->
+            <!-- Center Logo -->
             <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
-                <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition transform group-hover:scale-105 duration-200">
+                <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
             </a>
 
-            <!-- Right Side: Login / Signup Button -->
-            <div>
-                <a href="login.html" class="bg-[#80B6E9] hover:bg-[#D9EAFB] text-slate-900 font-chakra font-medium text-xs sm:text-sm px-5 sm:px-6 py-2.5 rounded-full transition duration-200 border border-[#80B6E9]/50 shadow-sm">
-                    Login / Signup
+            <!-- Right Animated Login/Signup Button -->
+            <div class="relative group">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500 animated-gradient-btn animate-gradient-shift"></div>
+                <a href="login.html" class="relative bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] animated-gradient-btn animate-gradient-shift text-slate-950 font-chakra font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-300 shadow-md flex items-center hover:scale-105">
+                    <span>Login / Signup</span>
                 </a>
             </div>
 
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow flex flex-col items-center">
+    <!-- HERO SECTION WITH DYNAMIC ANIMATED SHAPES & COLORS -->
+    <div class="relative w-full overflow-hidden border-b border-stone-200/60 pb-16 pt-8">
+        
+        <!-- Animated Background Color Orbs & Floating Geometric Shapes (Green Orb shifted closer: left-1/3) -->
+        <div class="absolute top-0 left-[35%] -translate-x-1/2 w-[600px] h-[380px] bg-[#82D6A5]/15 blur-[130px] rounded-full pointer-events-none animate-float-slow"></div>
+        <div class="absolute top-20 right-1/4 translate-x-1/2 w-[650px] h-[380px] bg-[#80B6E9]/20 blur-[130px] rounded-full pointer-events-none animate-float-slow" style="animation-delay: 3s;"></div>
+        <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[700px] h-[320px] bg-[#F69664]/15 blur-[130px] rounded-full pointer-events-none animate-float-slow" style="animation-delay: 6s;"></div>
 
-        <!-- 2. Banner Above Search Box (Rectangular 1.6:1 Aspect Ratio, Compact Size) -->
-        <section class="mt-8 mb-6 w-full max-w-[320px] flex justify-center">
-            <div class="w-full h-[200px] rounded-2xl overflow-hidden shadow-sm border border-stone-200/80 bg-white">
-                <img src="assets/images/main-logo.webp" alt="Main Banner" class="w-full h-full object-cover">
+        <!-- Floating Animated Rings and Spheres in Background -->
+        <div class="absolute top-12 left-10 w-24 h-24 border-4 border-[#82D6A5]/30 rounded-full animate-float-slow pointer-events-none"></div>
+        <div class="absolute top-1/2 right-12 w-36 h-36 border-2 border-dashed border-[#80B6E9]/40 rounded-full animate-spin-slow pointer-events-none"></div>
+        <div class="absolute bottom-6 left-1/3 w-16 h-16 bg-[#F69664]/20 backdrop-blur-sm rounded-3xl rotate-12 animate-float-slow pointer-events-none" style="animation-delay: 2s;"></div>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 flex flex-col items-center">
+
+            <!-- 2. Main Banner (With lighter transparent background colors underneath) -->
+            <section class="mt-4 mb-8 w-full max-w-[320px] flex justify-center">
+                <div class="relative w-full h-[200px] rounded-3xl overflow-hidden shadow-xl border-2 border-white/90 bg-white group transition-all duration-500 hover:shadow-2xl hover:shadow-[#80B6E9]/30 hover:border-[#80B6E9]/70">
+                    <img src="assets/images/main-logo.webp" alt="Main Banner" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-[#80B6E9]/8 via-transparent to-[#82D6A5]/8 opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
+                </div>
+            </section>
+
+            <!-- 3. Search Box Capsule -->
+            <section class="w-full max-w-2xl mb-14 px-2">
+                <form action="search.html" method="GET" class="relative flex items-center group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] rounded-full blur opacity-30 group-hover:opacity-75 transition duration-500"></div>
+                    
+                    <input 
+                        type="text" 
+                        name="q" 
+                        placeholder="Search matches, teams, or venues..." 
+                        class="relative w-full bg-white/90 backdrop-blur-md border border-stone-300/80 rounded-full py-4 pr-16 pl-7 text-stone-800 placeholder-stone-400 font-chakra font-normal text-sm sm:text-base shadow-md group-hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#80B6E9] transition-all duration-300"
+                    >
+                    <button type="submit" class="absolute right-2 z-10 bg-gradient-to-r from-[#80B6E9] to-[#82D6A5] text-slate-950 p-3 rounded-full transition-all duration-300 shadow-md hover:scale-110 active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z" />
+                        </svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- 4. 3 Sport Category Buttons (Clean with no emojis) -->
+            <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl px-2">
+                
+                <!-- Football Card -->
+                <a href="search.html?sport=football" class="relative h-28 sm:h-32 rounded-3xl overflow-hidden group shadow-lg hover:shadow-2xl hover:shadow-[#82D6A5]/50 transition-all duration-500 border-2 border-[#82D6A5] animate-float-card">
+                    <img src="assets/images/football-icon.webp" alt="Football" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-stone-900/40 via-stone-900/20 to-[#82D6A5]/30 backdrop-blur-[1px] flex items-center justify-center transition-all duration-300 group-hover:bg-[#82D6A5]/40">
+                        <span class="font-oswald font-extrabold text-2xl sm:text-3xl tracking-wider text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            FOOTBALL
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Volleyball Card -->
+                <a href="search.html?sport=volleyball" class="relative h-28 sm:h-32 rounded-3xl overflow-hidden group shadow-lg hover:shadow-2xl hover:shadow-[#80B6E9]/50 transition-all duration-500 border-2 border-[#80B6E9] animate-float-card" style="animation-delay: 1.2s;">
+                    <img src="assets/images/volleyball-icon.webp" alt="Volleyball" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-stone-900/40 via-stone-900/20 to-[#80B6E9]/30 backdrop-blur-[1px] flex items-center justify-center transition-all duration-300 group-hover:bg-[#80B6E9]/40">
+                        <span class="font-oswald font-extrabold text-2xl sm:text-3xl tracking-wider text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            VOLLEYBALL
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Basketball Card -->
+                <a href="search.html?sport=basketball" class="relative h-28 sm:h-32 rounded-3xl overflow-hidden group shadow-lg hover:shadow-2xl hover:shadow-[#F69664]/50 transition-all duration-500 border-2 border-[#F69664] animate-float-card" style="animation-delay: 2.4s;">
+                    <img src="assets/images/basketball-icon.webp" alt="Basketball" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-stone-900/40 via-stone-900/20 to-[#F69664]/30 backdrop-blur-[1px] flex items-center justify-center transition-all duration-300 group-hover:bg-[#F69664]/40">
+                        <span class="font-oswald font-extrabold text-2xl sm:text-3xl tracking-wider text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            BASKETBALL
+                        </span>
+                    </div>
+                </a>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- LOWER SECTION: UPCOMING MATCHES WITH ULTRA-LUXE GLASS CARDS -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow flex flex-col items-center pt-12 pb-16 relative">
+
+        <!-- Ambient Background Accents for Match Section -->
+        <div class="absolute top-1/2 left-0 w-72 h-72 bg-[#82D6A5]/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-10 right-0 w-72 h-72 bg-[#80B6E9]/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <!-- 5. Section Title -->
+        <section class="w-full mb-10 relative z-10">
+            <div class="flex items-center justify-between border-b-2 border-stone-300/80 pb-4">
+                <div class="flex items-center gap-3">
+                    <span class="w-3.5 h-8 bg-gradient-to-b from-[#80B6E9] to-[#82D6A5] rounded-full animate-pulse"></span>
+                    <h2 class="font-oswald font-bold text-3xl sm:text-4xl text-stone-900 tracking-wider uppercase">
+                        UPCOMING MATCHES
+                    </h2>
+                </div>
             </div>
         </section>
 
-        <!-- 3. Search Box Capsule -->
-        <section class="w-full max-w-2xl mb-10 px-2">
-            <form action="search.html" method="GET" class="relative flex items-center">
-                <input 
-                    type="text" 
-                    name="q" 
-                    placeholder="Search matches, teams, or venues..." 
-                    class="w-full bg-white border border-stone-300 rounded-full py-3.5 pr-14 pl-6 text-stone-800 placeholder-stone-400 font-chakra font-light text-sm sm:text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-[#80B6E9] transition"
-                >
-                <button type="submit" class="absolute right-3 bg-[#D9EAFB] hover:bg-[#80B6E9] text-slate-800 p-2.5 rounded-full transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z" />
-                    </svg>
-                </button>
-            </form>
-        </section>
-
-        <!-- 4. 3 Sport Category Buttons -->
-        <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16 w-full max-w-4xl px-2">
-            
-            <!-- Football Card -->
-            <a href="search.html?sport=football" class="relative h-28 sm:h-32 rounded-full overflow-hidden group shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 border border-[#82D6A5]/50">
-                <img src="assets/images/football-icon.webp" alt="Football" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition duration-300 flex items-center justify-center">
-                    <span class="text-white font-chakra font-bold text-xl sm:text-2xl drop-shadow-md">Football</span>
-                </div>
-            </a>
-
-            <!-- Volleyball Card -->
-            <a href="search.html?sport=volleyball" class="relative h-28 sm:h-32 rounded-full overflow-hidden group shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 border border-[#80B6E9]/50">
-                <img src="assets/images/volleyball-icon.webp" alt="Volleyball" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition duration-300 flex items-center justify-center">
-                    <span class="text-white font-chakra font-bold text-xl sm:text-2xl drop-shadow-md">Volleyball</span>
-                </div>
-            </a>
-
-            <!-- Basketball Card -->
-            <a href="search.html?sport=basketball" class="relative h-28 sm:h-32 rounded-full overflow-hidden group shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 border border-[#F69664]/50">
-                <img src="assets/images/basketball-icon.webp" alt="Basketball" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                <div class="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/30 transition duration-300 flex items-center justify-center">
-                    <span class="text-white font-chakra font-bold text-xl sm:text-2xl drop-shadow-md">Basketball</span>
-                </div>
-            </a>
-
-        </section>
-
-        <!-- 5. UPCOMING MATCHES Section Title -->
-        <section class="w-full mb-12">
-            <div class="flex items-center justify-between border-b border-stone-300/70 pb-3 mb-8">
-                <h2 class="font-oswald font-medium text-3xl sm:text-4xl text-stone-900 tracking-wide uppercase">
-                    UPCOMING MATCHES
-                </h2>
-            </div>
-
-            <!-- 6. 3 Closest Match Cards -->
-            <div id="upcoming-matches-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- 6. GLASSMORPHISM TICKET MATCH CARDS -->
+        <section class="w-full relative z-10">
+            <div id="upcoming-matches-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
                 <!-- Match Card 1 (Football) -->
-                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition duration-300 flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="bg-[#D6F5E3] text-stone-900 font-chakra font-bold text-xs px-3 py-1 rounded-full">Football</span>
-                            <span class="font-chakra text-xs text-stone-500">2026/08/10 - 20:30</span>
+                <div class="relative bg-white/80 backdrop-blur-xl rounded-3xl border border-white shadow-xl hover:shadow-2xl hover:shadow-[#82D6A5]/30 transition-all duration-500 flex flex-col justify-between overflow-hidden group transform hover:-translate-y-2">
+                    <div class="h-2.5 bg-gradient-to-r from-[#D6F5E3] via-[#82D6A5] to-[#D6F5E3] w-full"></div>
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="bg-[#D6F5E3] text-slate-900 font-chakra font-bold text-xs px-4 py-1.5 rounded-full border border-[#82D6A5]/60 shadow-sm">
+                                ⚽ Football
+                            </span>
+                            <span class="font-chakra text-xs font-semibold text-stone-600 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-stone-200/60 shadow-sm flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-[#82D6A5] animate-ping"></span>
+                                2026/08/10 • 20:30
+                            </span>
                         </div>
-                        <h3 class="font-oswald font-medium text-xl text-stone-900 mb-2">Team A vs Team B</h3>
-                        <p class="font-chakra text-sm text-stone-500 mb-6 flex items-center gap-1">
-                            📍 Azadi Stadium, Tehran
+
+                        <div class="text-center my-2 py-4 px-2 bg-white/80 backdrop-blur-md rounded-2xl border border-stone-200/60 shadow-inner group-hover:border-[#82D6A5]/60 transition-colors duration-300">
+                            <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-emerald-800 transition-colors">
+                                Team A <span class="text-[#82D6A5] font-light text-lg mx-1">VS</span> Team B
+                            </h3>
+                        </div>
+
+                        <p class="font-chakra text-sm text-stone-600 flex items-center justify-center gap-1.5 mt-4">
+                            <span>📍</span> Azadi Stadium, Tehran
                         </p>
                     </div>
 
-                    <a href="ticket.html?ticket_id=101" class="w-full bg-[#D6F5E3] hover:bg-[#82D6A5] text-stone-900 font-chakra font-medium text-sm py-3 px-5 rounded-2xl flex justify-between items-center transition">
-                        <span>Starting from $40</span>
-                        <span class="text-xs">&rarr;</span>
-                    </a>
+                    <div class="relative border-b-2 border-dashed border-stone-300/80 my-1">
+                        <div class="absolute -left-3.5 -top-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-r-2 border-stone-300/80"></div>
+                        <div class="absolute -right-3.5 -top-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-l-2 border-stone-300/80"></div>
+                    </div>
+
+                    <div class="p-6 pt-3 bg-white/40">
+                        <a href="ticket.html?ticket_id=101" class="w-full bg-[#D6F5E3] hover:bg-[#82D6A5] text-slate-950 font-chakra font-bold text-sm py-3.5 px-5 rounded-2xl flex justify-between items-center transition-all duration-300 shadow-sm hover:shadow-md border border-[#82D6A5]/60">
+                            <span>Starting from $40</span>
+                            <span class="text-lg transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Match Card 2 (Volleyball) -->
-                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition duration-300 flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="bg-[#D9EAFB] text-stone-900 font-chakra font-bold text-xs px-3 py-1 rounded-full">Volleyball</span>
-                            <span class="font-chakra text-xs text-stone-500">2026/08/12 - 18:00</span>
+                <div class="relative bg-white/80 backdrop-blur-xl rounded-3xl border border-white shadow-xl hover:shadow-2xl hover:shadow-[#80B6E9]/30 transition-all duration-500 flex flex-col justify-between overflow-hidden group transform hover:-translate-y-2">
+                    <div class="h-2.5 bg-gradient-to-r from-[#D9EAFB] via-[#80B6E9] to-[#D9EAFB] w-full"></div>
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="bg-[#D9EAFB] text-slate-900 font-chakra font-bold text-xs px-4 py-1.5 rounded-full border border-[#80B6E9]/60 shadow-sm">
+                                🏐 Volleyball
+                            </span>
+                            <span class="font-chakra text-xs font-semibold text-stone-600 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-stone-200/60 shadow-sm flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-[#80B6E9] animate-ping"></span>
+                                2026/08/12 • 18:00
+                            </span>
                         </div>
-                        <h3 class="font-oswald font-medium text-xl text-stone-900 mb-2">Team C vs Team D</h3>
-                        <p class="font-chakra text-sm text-stone-500 mb-6 flex items-center gap-1">
-                            📍 Freedom Hall, Tehran
+
+                        <div class="text-center my-2 py-4 px-2 bg-white/80 backdrop-blur-md rounded-2xl border border-stone-200/60 shadow-inner group-hover:border-[#80B6E9]/60 transition-colors duration-300">
+                            <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-blue-800 transition-colors">
+                                Team C <span class="text-[#80B6E9] font-light text-lg mx-1">VS</span> Team D
+                            </h3>
+                        </div>
+
+                        <p class="font-chakra text-sm text-stone-600 flex items-center justify-center gap-1.5 mt-4">
+                            <span>📍</span> Freedom Hall, Tehran
                         </p>
                     </div>
 
-                    <a href="ticket.html?ticket_id=102" class="w-full bg-[#D9EAFB] hover:bg-[#80B6E9] text-stone-900 font-chakra font-medium text-sm py-3 px-5 rounded-2xl flex justify-between items-center transition">
-                        <span>Starting from $25</span>
-                        <span class="text-xs">&rarr;</span>
-                    </a>
+                    <div class="relative border-b-2 border-dashed border-stone-300/80 my-1">
+                        <div class="absolute -left-3.5 -top-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-r-2 border-stone-300/80"></div>
+                        <div class="absolute -right-3.5 -top-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-l-2 border-stone-300/80"></div>
+                    </div>
+
+                    <div class="p-6 pt-3 bg-white/40">
+                        <a href="ticket.html?ticket_id=102" class="w-full bg-[#D9EAFB] hover:bg-[#80B6E9] text-slate-950 font-chakra font-bold text-sm py-3.5 px-5 rounded-2xl flex justify-between items-center transition-all duration-300 shadow-sm hover:shadow-md border border-[#80B6E9]/60">
+                            <span>Starting from $25</span>
+                            <span class="text-lg transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Match Card 3 (Basketball) -->
-                <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition duration-300 flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="bg-[#FDE2D3] text-stone-900 font-chakra font-bold text-xs px-3 py-1 rounded-full">Basketball</span>
-                            <span class="font-chakra text-xs text-stone-500">2026/08/15 - 19:15</span>
+                <div class="relative bg-white/80 backdrop-blur-xl rounded-3xl border border-white shadow-xl hover:shadow-2xl hover:shadow-[#F69664]/30 transition-all duration-500 flex flex-col justify-between overflow-hidden group transform hover:-translate-y-2">
+                    <div class="h-2.5 bg-gradient-to-r from-[#FDE2D3] via-[#F69664] to-[#FDE2D3] w-full"></div>
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="bg-[#FDE2D3] text-slate-900 font-chakra font-bold text-xs px-4 py-1.5 rounded-full border border-[#F69664]/60 shadow-sm">
+                                🏀 Basketball
+                            </span>
+                            <span class="font-chakra text-xs font-semibold text-stone-600 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full border border-stone-200/60 shadow-sm flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-[#F69664] animate-ping"></span>
+                                2026/08/15 • 19:15
+                            </span>
                         </div>
-                        <h3 class="font-oswald font-medium text-xl text-stone-900 mb-2">Team E vs Team F</h3>
-                        <p class="font-chakra text-sm text-stone-500 mb-6 flex items-center gap-1">
-                            📍 Arena Hall, Isfahan
+
+                        <div class="text-center my-2 py-4 px-2 bg-white/80 backdrop-blur-md rounded-2xl border border-stone-200/60 shadow-inner group-hover:border-[#F69664]/60 transition-colors duration-300">
+                            <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-orange-800 transition-colors">
+                                Team E <span class="text-[#F69664] font-light text-lg mx-1">VS</span> Team F
+                            </h3>
+                        </div>
+
+                        <p class="font-chakra text-sm text-stone-600 flex items-center justify-center gap-1.5 mt-4">
+                            <span>📍</span> Arena Hall, Isfahan
                         </p>
                     </div>
 
-                    <a href="ticket.html?ticket_id=103" class="w-full bg-[#FDE2D3] hover:bg-[#F69664] text-stone-900 font-chakra font-medium text-sm py-3 px-5 rounded-2xl flex justify-between items-center transition">
-                        <span>Starting from $35</span>
-                        <span class="text-xs">&rarr;</span>
-                    </a>
+                    <div class="relative border-b-2 border-dashed border-stone-300/80 my-1">
+                        <div class="absolute -left-3.5 -top-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-r-2 border-stone-300/80"></div>
+                        <div class="absolute -right-3.5 -top-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-l-2 border-stone-300/80"></div>
+                    </div>
+
+                    <div class="p-6 pt-3 bg-white/40">
+                        <a href="ticket.html?ticket_id=103" class="w-full bg-[#FDE2D3] hover:bg-[#F69664] text-slate-950 font-chakra font-bold text-sm py-3.5 px-5 rounded-2xl flex justify-between items-center transition-all duration-300 shadow-sm hover:shadow-md border border-[#F69664]/60">
+                            <span>Starting from $35</span>
+                            <span class="text-lg transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+                        </a>
+                    </div>
                 </div>
 
             </div>
@@ -201,11 +355,11 @@
             
             <div class="flex items-center gap-3">
                 <img src="assets/images/footer-logo.webp" alt="Footer Logo" class="h-8 w-auto">
-                <span>Match Ticket Reservation System</span>
+                <span class="font-medium text-stone-600">Match Ticket Reservation System</span>
             </div>
 
-            <div class="flex gap-6 text-stone-500">
-                <a href="index.html" class="hover:text-stone-900 transition">Home</a>
+            <div class="flex gap-6 text-stone-500 font-medium">
+                <a href="index.html" class="hover:text-stone-900 transition-colors">Home</a>
             </div>
 
             <div class="text-stone-400">

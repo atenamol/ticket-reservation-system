@@ -39,40 +39,50 @@
     </script>
     
     <style>
-        /* Smooth Custom Transitions */
         .ticket-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .ticket-card:hover {
             transform: translateY(-3px);
         }
+        .animated-gradient-btn {
+        background-size: 200% 200%;
+        }
+        @keyframes gradientBG {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .animate-gradient-shift {
+            animation: gradientBG 4s ease infinite;
+        }
     </style>
 </head>
 <body class="bg-[#FBF9F5] text-stone-800 antialiased font-chakra min-h-screen flex flex-col justify-between pb-32 selection:bg-[#80B6E9] selection:text-white">
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-30 shadow-sm transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
-            
-            <div class="w-28 sm:w-36">
-                <a href="search.html" class="text-stone-600 hover:text-stone-900 font-bold text-xs sm:text-sm flex items-center gap-2 transition group">
-                    <span class="p-2 rounded-full bg-stone-100 group-hover:bg-[#80B6E9] group-hover:text-white transition-all transform group-hover:-translate-x-1 duration-200">&larr;</span> 
-                    <span>Back</span>
-                </a>
-            </div>
+    <header class="bg-[#FBF9F5]/50 backdrop-blur-xl border-b border-stone-200/50 shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
 
-            <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
-                <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition transform group-hover:scale-105 duration-200">
+        <div class="w-28 sm:w-36">
+            <a href="search.html" class="text-stone-600 hover:text-stone-900 font-bold text-xs sm:text-sm flex items-center gap-2 transition group">
+                <span class="p-2 rounded-full bg-stone-100 group-hover:bg-[#80B6E9] group-hover:text-white transition-all transform group-hover:-translate-x-1 duration-200 shadow-sm">&larr;</span> 
+                <span>Back</span>
             </a>
-
-            <div>
-                <a href="login.html" class="bg-[#80B6E9] hover:bg-[#6CA2DB] text-slate-900 font-chakra font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-200 shadow-glow-blue hover:shadow-lg active:scale-95 inline-block">
-                    Login / Signup
-                </a>
-            </div>
-
         </div>
-    </header>
+
+        <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
+            <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+        </a>
+
+        <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500 animated-gradient-btn animate-gradient-shift"></div>
+            <a href="login.html" class="relative bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] animated-gradient-btn animate-gradient-shift text-slate-950 font-chakra font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-300 shadow-md flex items-center hover:scale-105">
+                <span>Login / Signup</span>
+            </a>
+        </div>
+
+    </div>
+</header>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow py-8">
