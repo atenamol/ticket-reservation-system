@@ -365,6 +365,28 @@ def get_report(cursor, report_id):
     )
     return cursor.fetchone()
 
+
+def get_user_reports(cursor, user_id):
+    cursor.execute(
+        """
+        SELECT
+            report_id,
+            ticket_id,
+            subject,
+            description,
+            status,
+            created_at,
+            admin_response
+        FROM Report
+        WHERE user_id = %s
+        ORDER BY created_at DESC, report_id DESC
+        """,
+        (user_id,),
+    )
+
+    return cursor.fetchall()
+
+
 def get_all_reports(cursor):
     cursor.execute(
         """

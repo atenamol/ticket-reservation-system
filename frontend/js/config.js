@@ -18,7 +18,6 @@ const CONFIG = {
       VERIFY_OTP: "/auth/verify-otp",
       PROFILE: "/auth/profile",
       RESET_PASSWORD: "/auth/reset-password",
-      PROFILE: "/auth/profile"
     },
     CATALOG: {
       CITIES: "/catalog/cities",
@@ -29,10 +28,11 @@ const CONFIG = {
     TRANSACTIONS: {
       RESERVE: "/transactions/reserve",
       PAY: "/transactions/pay",
-      HISTORY: "/transactions/history",
+      BOOKINGS: "/transactions/bookings",
       CANCEL: "/transactions/cancel",
-      PENALTY: "/transactions/penalty",
+      PENALTY: "/transactions/cancellation-penalty",
       REPORT: "/transactions/report",
+      REPORTS: "/transactions/reports",
     }
   }
 };

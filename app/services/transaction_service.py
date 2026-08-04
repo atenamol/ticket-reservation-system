@@ -15,6 +15,7 @@ from app.schemas.transaction_schema import (
     AdminReportItem,
     SuspiciousPaymentItem,
     MessageResponse,
+    UserReportItem,
 )
 from app.queries import transaction_queries as queries
 from datetime import datetime
@@ -626,6 +627,35 @@ class TransactionService:
             raise HTTPException(
                 status_code=500,
                 detail="Failed to retrieve suspicious payments.",
+            )
+
+        finally:
+            close(connection)
+
+    @staticmethod
+    def get_user_reports(
+            user_id: int,
+    ) -> list[UserReportItem]:
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                reports = queries.get_user_reports(
+                    cursor,
+                    user_id,
+                )
+
+                return [
+                    UserReportItem(**report)
+                    for report in reports
+                ]
+
+        except Exception:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to retrieve reports.",
             )
 
         finally:

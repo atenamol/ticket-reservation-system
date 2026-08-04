@@ -24,6 +24,7 @@ from app.schemas.transaction_schema import (
     AdminReportItem,
     SuspiciousPaymentItem,
     MessageResponse,
+    UserReportItem,
 )
 
 from app.services.transaction_service import TransactionService
@@ -106,6 +107,17 @@ def report_ticket_issue(
 ):
     return TransactionService.create_report(
         request,
+        current_user["user_id"],
+    )
+
+@router.get(
+    "/reports",
+    response_model=list[UserReportItem],
+)
+def get_my_reports(
+        current_user: dict[str, Any] = Depends(require_spectator),
+):
+    return TransactionService.get_user_reports(
         current_user["user_id"],
     )
 

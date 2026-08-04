@@ -85,6 +85,17 @@ class ReportResponse(BaseModel):
     admin_response: Optional[str] = None
 
 
+class UserReportItem(BaseModel):
+    report_id: int
+    ticket_id: int
+    subject: str
+    description: str
+    status: Literal["open", "in_progress", "closed"]
+    created_at: datetime
+    admin_response: Optional[str]
+
+
+
 # ---------- Admin ----------
 
 class AdminCancellationUpdateRequest(BaseModel):

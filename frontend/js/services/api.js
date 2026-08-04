@@ -168,6 +168,12 @@ export const reportProblem = (reportData) =>
         {method: "POST", body: reportData, auth: true}
     );
 
+export const getUserReports = () =>
+    request(
+        CONFIG.ENDPOINTS.TRANSACTIONS.REPORTS,
+        { auth: true }
+    );
+
 /* ============================================================
     Admin
 ============================================================ */
