@@ -33,7 +33,11 @@ const CONFIG = {
       PENALTY: "/transactions/cancellation-penalty",
       REPORT: "/transactions/report",
       REPORTS: "/transactions/reports",
+      ADMIN_CANCELLATIONS: "/transactions/admin/cancellations",
+      ADMIN_REPORTS: "/transactions/admin/reports",
+      ADMIN_SUSPICIOUS_PAYMENTS: "/transactions/admin/payments/suspicious",
     }
+
   }
 };
 
