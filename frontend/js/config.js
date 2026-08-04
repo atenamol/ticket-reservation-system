@@ -17,6 +17,8 @@ const CONFIG = {
       OTP_LOGIN: "/auth/login/otp",
       VERIFY_OTP: "/auth/verify-otp",
       PROFILE: "/auth/profile",
+      RESET_PASSWORD: "/auth/reset-password",
+      PROFILE: "/auth/profile"
     },
     CATALOG: {
       CITIES: "/catalog/cities",

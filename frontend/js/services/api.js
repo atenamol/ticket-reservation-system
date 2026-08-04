@@ -92,6 +92,15 @@ export const verifyOTP = (otpData) =>
     request(CONFIG.ENDPOINTS.AUTH.VERIFY_OTP, {method: "POST", body: otpData}
     );
 
+export const forgotPassword = (contactData) =>
+    request(CONFIG.ENDPOINTS.AUTH.FORGOT_PASSWORD,
+        {method: "POST", body: contactData});
+
+
+export const resetPassword = (resetData) =>
+    request(CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD,
+        {method: "POST", body: resetData});
+
 export const updateProfile = (profileData) =>
     request(CONFIG.ENDPOINTS.AUTH.PROFILE, 
         {method: "PUT", body: profileData, auth: true}
