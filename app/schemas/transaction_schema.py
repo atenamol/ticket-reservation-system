@@ -74,8 +74,8 @@ class CancellationPenaltyResponse(BaseModel):
 
 class ReportRequest(BaseModel):
     ticket_id: int
-    subject: str
-    description: str
+    subject: str = Field(min_length=3, max_length=200)
+    description: str = Field(min_length=10, max_length=2000)
 
 
 class ReportResponse(BaseModel):
