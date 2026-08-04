@@ -239,6 +239,139 @@ class VerifyOTPRequest(BaseModel):
 
 
 
+# Forgot Password Request
+# API: POST /forgot-password
+
+class ForgotPasswordRequest(BaseModel):
+
+    email: EmailStr | None = Field(
+        default=None,
+        description="Email address used for password reset.",
+        examples=["ali@gmail.com"]
+    )
+
+    phone: str | None = Field(
+        default=None,
+        pattern=r"^09\d{9}$",
+        description="Iranian mobile phone number used for password reset.",
+        examples=["09123456789"]
+    )
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "phone": "09123456789"
+            }
+        }
+    )
+
+    @model_validator(mode="after")
+    def validate_contact(self):
+
+        if not self.email and not self.phone:
+            raise ValueError("Either email or phone must be provided.")
+
+        return self
+
+
+
+# Reset Password Request
+# API: POST /reset-password
+
+class ResetPasswordRequest(BaseModel):
+
+    email: EmailStr | None = Field(
+        default=None,
+        description="Email address used for password reset.",
+        examples=["ali@gmail.com"]
+    )
+
+    phone: str | None = Field(
+        default=None,
+        pattern=r"^09\d{9}$",
+        description="Iranian mobile phone number used for password reset.",
+        examples=["09123456789"]
+    )
+
+    otp: str = Field(
+        ...,
+        pattern=r"^\d{6}$",
+        description="One-time password received by user.",
+        examples=["123456"]
+    )
+
+    new_password: str = Field(
+        ...,
+        min_length=8,
+        max_length=128,
+        description="New password.",
+        examples=["NewPassword123"]
+    )
+
+    confirm_password: str = Field(
+        ...,
+        min_length=8,
+        max_length=128,
+        description="Password confirmation.",
+        examples=["NewPassword123"]
+    )
+
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "phone": "09123456789",
+                "otp": "123456",
+                "new_password": "NewPassword123",
+                "confirm_password": "NewPassword123"
+            }
+        }
+    )
+
+
+    @field_validator("new_password", "confirm_password")
+    @classmethod
+    def validate_password(cls, value):
+
+        if not any(c.isupper() for c in value):
+            raise ValueError(
+                "Password must contain at least one uppercase letter."
+            )
+
+        if not any(c.islower() for c in value):
+            raise ValueError(
+                "Password must contain at least one lowercase letter."
+            )
+
+        if not any(c.isdigit() for c in value):
+            raise ValueError(
+                "Password must contain at least one digit."
+            )
+
+        if " " in value:
+            raise ValueError(
+                "Password cannot contain spaces."
+            )
+
+        return value
+
+
+    @model_validator(mode="after")
+    def validate_reset(self):
+
+        if not self.email and not self.phone:
+            raise ValueError(
+                "Either email or phone must be provided."
+            )
+
+        if self.new_password != self.confirm_password:
+            raise ValueError(
+                "Passwords do not match."
+            )
+
+        return self
+
+    
 # Update Profile
 # API: PUT /profile
 

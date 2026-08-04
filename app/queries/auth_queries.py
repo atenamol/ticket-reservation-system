@@ -181,3 +181,20 @@ def update_user_profile(cursor,
     )
 
     return cursor.rowcount > 0
+
+
+def update_user_password(cursor: DictCursor,
+    user_id: int,
+    password_hash: str,
+) -> bool:
+
+    cursor.execute(
+        """
+        UPDATE User
+        SET password_hash = %s
+        WHERE user_id = %s
+        """,
+        (password_hash, user_id),
+    )
+
+    return cursor.rowcount > 0

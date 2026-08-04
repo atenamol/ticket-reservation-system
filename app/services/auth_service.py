@@ -7,6 +7,7 @@ from app.queries.auth_queries import (
     get_user_by_phone,
     get_user_by_id,
     update_user_profile,
+    update_user_password,
 )
 from app.schemas.auth_schema import (
     SignupRequest,
@@ -17,6 +18,8 @@ from app.schemas.auth_schema import (
     MessageResponse,
     VerifyOTPRequest,
     UpdateProfileRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
 )
 
 from app.auth.security import (
@@ -192,6 +195,77 @@ def verify_login_otp(request: VerifyOTPRequest) -> tuple[TokenResponse, UserResp
 
             return (TokenResponse(access_token=access_token),
                     UserResponse.model_validate(user))
+
+    finally:
+        close(connection)
+
+def forgot_password(request: ForgotPasswordRequest) -> MessageResponse:
+
+    connection = get_connection()
+
+    try:
+        with connection.cursor() as cursor:
+
+            user = get_user_by_contact(cursor=cursor, email=request.email,
+                                        phone=request.phone)
+
+            if user is None:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                    detail="User not found.")
+
+            contact = request.email or request.phone
+
+            otp = generate_otp()
+
+            save_otp(contact=f"reset:{contact}", otp=otp)
+
+            send_otp(destination=contact, otp=otp)
+
+            return MessageResponse(message=f"OTP sent successfully. Code: {otp}")
+
+    finally:
+        close(connection)
+
+
+def reset_password(request: ResetPasswordRequest) -> MessageResponse:
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cursor:
+
+            user = get_user_by_contact(cursor=cursor, email=request.email,
+                                        phone=request.phone)
+
+            if user is None:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                    detail="User not found.")
+
+            contact = request.email or request.phone
+
+            if not verify_otp(contact=f"reset:{contact}", otp=request.otp):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                    detail="Invalid or expired OTP.")
+
+            password_hash = hash_password(request.new_password)
+
+            updated = update_user_password(cursor=cursor, user_id=user["user_id"],
+                                            password_hash=password_hash)
+
+
+            if not updated:
+                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                    detail="Password reset failed.")
+
+            commit(connection)
+
+            return MessageResponse(message="Password reset successfully.")
+
+
+    except Exception:
+        rollback(connection)
+        raise
 
     finally:
         close(connection)
