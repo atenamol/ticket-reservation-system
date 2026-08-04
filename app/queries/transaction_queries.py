@@ -284,6 +284,22 @@ def get_cancellation_request(cursor, cancel_id):
     )
     return cursor.fetchone()
 
+def get_pending_cancellation_by_reservation(
+        cursor,
+        reservation_id,
+):
+    cursor.execute(
+        """
+        SELECT *
+        FROM CancellationRequest
+        WHERE reservation_id = %s
+          AND status = 'pending'
+            LIMIT 1
+        """,
+        (reservation_id,),
+    )
+    return cursor.fetchone()
+
 def get_all_cancellation_requests(cursor):
     cursor.execute(
         """

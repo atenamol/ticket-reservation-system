@@ -403,6 +403,17 @@ class TransactionService:
                         detail="Reservation not found.",
                     )
 
+                existing_request = queries.get_pending_cancellation_by_reservation(
+                    cursor,
+                    reservation_id,
+                )
+
+                if existing_request:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="A cancellation request is already pending.",
+                    )
+
                 penalty_info = TransactionService.check_cancellation_penalty(
                     reservation_id,
                     user_id,
@@ -476,12 +487,26 @@ class TransactionService:
         try:
             with connection.cursor() as cursor:
 
+                request = queries.get_cancellation_request(
+                    cursor,
+                    cancel_id,
+                )
+
+                if request is None:
+                    raise HTTPException(
+                        status_code=404,
+                        detail="Cancellation request not found.",
+                    )
+
+                if request["status"] != "pending":
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Cancellation request has already been processed.",
+                    )
+
                 if status == "approved":
 
-                    reservation = queries.get_cancellation_request(
-                        cursor,
-                        cancel_id,
-                    )
+                    reservation = request
 
                     queries.cancel_reservation(
                         cursor,
