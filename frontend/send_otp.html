@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Password Login | Sports Ticket</title>
+    <title>OTP Login | Sports Ticket</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com">
@@ -31,15 +31,7 @@
             font-weight: 700;
         }
 
-        .card-rounded {
-            border-radius: 16px;
-        }
-        .btn-pill {
-            border-radius: 9999px;
-            transition: all 0.3s ease;
-        }
-
-        /* ===== امواج پس‌زمینه ===== */
+        /* ===== waves ===== */
         .wave {
             position: fixed;
             border-radius: 40% 60% 30% 70% / 50% 40% 60% 50%;
@@ -145,7 +137,7 @@
             filter: blur(30px);
         }
 
-        /* ===== حباب‌های مایع ===== */
+        /* ===== bubbles ===== */
         .bubble {
             position: fixed;
             border-radius: 50%;
@@ -325,7 +317,7 @@
             border-color: rgba(244, 120, 59, 0.15);
         }
 
-        /* ===== کارت شیشه‌ای ===== */
+        /* ===== glass card ===== */
         .glass-card {
             background: rgba(255, 255, 255, 0.45);
             backdrop-filter: blur(24px) saturate(180%);
@@ -355,7 +347,7 @@
             z-index: 0;
         }
 
-        /* ===== انیمیشن‌های دیگر ===== */
+        /* ===== animations ===== */
         @keyframes float {
             0%,
             100% {
@@ -383,7 +375,20 @@
             animation: fadeUp 0.7s ease-out forwards;
         }
 
-        /* ===== اینپوت‌ها ===== */
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        .animate-pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ===== inputs ===== */
         .input-field {
             border-radius: 16px;
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -417,12 +422,11 @@
             transform: scale(1.2) rotate(10deg);
         }
 
-        /* ===== دکمه ورود ===== */
+        /* ===== buttons ===== */
         .btn-primary {
             background: #52C485;
             color: white;
-            font-weight: 700;
-            font-size: 1.125rem;
+            font-weight: 600;
             padding: 14px 0;
             transition: all 0.3s ease;
             box-shadow: 0 8px 24px rgba(82, 196, 133, 0.35);
@@ -430,6 +434,9 @@
             position: relative;
             z-index: 1;
             width: 100%;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
         }
         .btn-primary:hover {
             background: #3fa86b;
@@ -439,19 +446,71 @@
         .btn-primary:active {
             transform: scale(0.96);
         }
-
-        /* ===== لینک فراموشی رمز (نارنجی - فقط در این صفحه) ===== */
-        .forgot-link {
-            color: #F4783B;
-            transition: color 0.3s ease;
-            font-size: 0.875rem;
-        }
-        .forgot-link:hover {
-            color: #e0672a;
-            text-decoration: underline;
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
-        /* ===== لینک‌های دیگر ===== */
+        .btn-secondary {
+            background: #569CE3;
+            color: white;
+            font-weight: 600;
+            padding: 14px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(86, 156, 227, 0.35);
+            border-radius: 9999px;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-secondary:hover {
+            background: #4688cf;
+            transform: scale(1.02);
+            box-shadow: 0 12px 32px rgba(86, 156, 227, 0.5);
+        }
+        .btn-secondary:active {
+            transform: scale(0.96);
+        }
+        .btn-secondary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ===== OTP display box ===== */
+        .otp-display-box {
+            background: rgba(82, 196, 133, 0.1);
+            backdrop-filter: blur(8px);
+            border: 2px dashed rgba(82, 196, 133, 0.4);
+            border-radius: 12px;
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #52C485;
+            letter-spacing: 4px;
+            font-family: 'Lexend', sans-serif;
+            display: none;
+        }
+        .otp-display-box.show {
+            display: block;
+            animation: fadeUp 0.4s ease-out forwards;
+        }
+        .otp-display-box .label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #777;
+            letter-spacing: 0;
+            font-family: 'Chakra Petch', sans-serif;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ===== links ===== */
         .login-link {
             position: relative;
             font-weight: 700;
@@ -475,24 +534,17 @@
             width: 100%;
         }
 
-        .link-hover-slide {
-            transition: all 0.3s ease;
-        }
-        .link-hover-slide:hover {
-            transform: translateX(6px);
-            color: #569CE3;
-        }
-
         .change-method {
             color: #569CE3;
             transition: all 0.3s ease;
+            font-size: 0.875rem;
         }
         .change-method:hover {
             color: #52C485;
             transform: translateX(-4px);
         }
 
-        /* ===== پیام خطا ===== */
+        /* ===== error message ===== */
         .error-message {
             background: rgba(253, 226, 211, 0.4);
             backdrop-filter: blur(4px);
@@ -506,19 +558,39 @@
         .error-message.show {
             display: block;
         }
+
+        /* ===== OTP section ===== */
+        .otp-section {
+            display: none;
+            animation: fadeUp 0.4s ease-out forwards;
+        }
+        .otp-section.show {
+            display: block;
+        }
+
+        .timer-text {
+            font-size: 0.875rem;
+            color: #777;
+            text-align: center;
+            margin-top: 8px;
+        }
+        .timer-text span {
+            color: #F4783B;
+            font-weight: 700;
+        }
     </style>
 </head>
 
 <body class="min-h-screen bg-[#FBF9F5] flex justify-center items-center p-6">
 
-    <!-- ===== امواج پس‌زمینه ===== -->
+    <!-- ===== waves ===== -->
     <div class="wave wave-1"></div>
     <div class="wave wave-2"></div>
     <div class="wave wave-3"></div>
     <div class="wave wave-4"></div>
     <div class="wave wave-5"></div>
 
-    <!-- ===== حباب‌های مایع ===== -->
+    <!-- ===== bubbles ===== -->
     <div class="bubble bubble-1"></div>
     <div class="bubble bubble-2"></div>
     <div class="bubble bubble-3"></div>
@@ -528,29 +600,27 @@
 
     <main class="w-full max-w-md px-4 py-10 z-10 animate-fade-up">
 
-        <!-- ===== لوگو و اسم سایت (تغییر داده شده) ===== -->
+        <!-- ===== Logo & site name ===== -->
         <div class="text-center mb-8">
-            <!-- لوگوی سایت (مستطیلی با گوشه‌های گرد - تصویر کامل دیده میشه) -->
             <img src="assets/images/main-logo.webp"
             alt="Site Logo"
             class="w-32 h-auto mx-auto mb-4 rounded-xl shadow-lg animate-float object-contain" />
 
-            <!-- اسم سایت با باکس محو (بلور) دور و اطراف -->
             <div class="inline-block px-6 py-3 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20">
                 <img src="assets/images/header-logo.webp"
                 alt="Sports Ticket"
                 class="max-w-[200px] h-auto" />
             </div>
 
-            <p class="mt-4 text-gray-500 text-sm">Create your free account</p>
+            <p id="subtitle" class="mt-4 text-gray-500 text-sm">Login with OTP</p>
         </div>
 
-        <!-- کارت شیشه‌ای -->
+        <!-- Glass card -->
         <section class="glass-card p-8 shadow-2xl border border-white/40">
 
-            <form id="password-login-form" class="space-y-5 relative z-10">
+            <form id="otp-login-form" class="space-y-5 relative z-10">
 
-                <!-- ایمیل یا تلفن -->
+                <!-- Email or Phone -->
                 <div class="input-group relative">
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Email or Phone</label>
                     <div class="relative">
@@ -559,33 +629,51 @@
                     </div>
                 </div>
 
-                <!-- رمز عبور -->
-                <div class="input-group relative">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                    <div class="relative">
-                        <i class="bi bi-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 input-icon"></i>
-                        <input id="password" type="password" placeholder="Enter your password" class="input-field pl-11" />
-                    </div>
-                </div>
-
-                <!-- فراموشی رمز -->
-                <div class="text-right">
-                    <a href="send_otp.html?mode=reset" class="forgot-link">Forgot password?</a>
-                </div>
-
-                <!-- پیام خطا -->
-                <p id="error-message" class="error-message"></p>
-
-                <!-- دکمه ورود -->
-                <button type="submit" class="btn-primary">
-                    Login
+                <!-- Send Code button -->
+                <button id="send-code-btn" type="button" class="btn-primary">
+                    <i class="bi bi-send me-2"></i> Send Code
                 </button>
+
+                <!-- OTP display box (for testing) -->
+                <div id="otp-display-box" class="otp-display-box">
+                    <span class="label">🔑 Your verification code</span>
+                    <span id="otp-display-code">------</span>
+                    <span style="font-size:0.7rem; display:block; margin-top:4px; color:#999; font-weight:400;">
+                        (for testing purposes)
+                    </span>
+                </div>
+
+                <!-- OTP section -->
+                <div id="otp-section" class="otp-section space-y-5">
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Verification Code</label>
+                        <div class="relative">
+                            <i class="bi bi-shield-check absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 input-icon"></i>
+                            <input id="otp-code" type="text" maxlength="6" placeholder="Enter 6 digit code"
+                            class="input-field pl-11 number-font" inputmode="numeric" pattern="[0-9]*" />
+                        </div>
+                    </div>
+
+                    <!-- Timer -->
+                    <div class="timer-text">
+                        Resend code in <span id="timer">60</span>s
+                    </div>
+
+                    <!-- Verify button -->
+                    <button id="verify-btn" type="submit" class="btn-secondary">
+                        <i class="bi bi-check-circle me-2"></i> Verify Code
+                    </button>
+                </div>
+
+                <!-- Error message -->
+                <p id="error-message" class="error-message"></p>
 
             </form>
 
-            <!-- لینک‌های پایین -->
-            <div class="text-center mt-7 relative z-10 space-y-3">
-                <a href="login.html" class="change-method inline-block text-sm">
+            <!-- ===== Footer links (controlled by mode) ===== -->
+            <div id="footer-links" class="text-center mt-7 relative z-10 space-y-3">
+                <a href="login.html" class="change-method inline-block">
                     <i class="bi bi-arrow-left me-1"></i> Change login method
                 </a>
                 <p class="text-gray-600">
@@ -599,7 +687,184 @@
         </section>
     </main>
 
-    <script src="js/login-password.js">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== Read mode parameter from URL =====
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode'); // 'reset' or null (default login)
+
+            // ===== Elements =====
+            const footerLinks = document.getElementById('footer-links');
+            const subtitle = document.getElementById('subtitle');
+            const sendBtn = document.getElementById('send-code-btn');
+
+            // ===== Adjust UI based on mode =====
+            if (mode === 'reset') {
+                footerLinks.style.display = 'none';
+                subtitle.textContent = 'Reset Password with OTP';
+                sendBtn.innerHTML = '<i class="bi bi-send me-2"></i> Get Recovery Code';
+            } else {
+                footerLinks.style.display = 'block';
+                subtitle.textContent = 'Login with OTP';
+                sendBtn.innerHTML = '<i class="bi bi-send me-2"></i> Send Code';
+            }
+
+            // ===== OTP logic (same as before, with English texts) =====
+            const form = document.getElementById('otp-login-form');
+            const identifierInput = document.getElementById('identifier');
+            const otpSection = document.getElementById('otp-section');
+            const otpInput = document.getElementById('otp-code');
+            const verifyBtn = document.getElementById('verify-btn');
+            const errorMsg = document.getElementById('error-message');
+            const timerDisplay = document.getElementById('timer');
+            const otpDisplayBox = document.getElementById('otp-display-box');
+            const otpDisplayCode = document.getElementById('otp-display-code');
+
+            let timerInterval = null;
+            let timeLeft = 60;
+
+            function showError(message) {
+                errorMsg.textContent = message;
+                errorMsg.classList.add('show');
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                }, 5000);
+            }
+
+            function startTimer() {
+                timeLeft = 60;
+                timerDisplay.textContent = timeLeft;
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Please wait...';
+
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        sendBtn.disabled = false;
+                        sendBtn.innerHTML = (mode === 'reset') ?
+                            '<i class="bi bi-send me-2"></i> Resend Recovery Code' :
+                            '<i class="bi bi-send me-2"></i> Resend Code';
+                        document.querySelector('.timer-text').style.display = 'none';
+                    }
+                }, 1000);
+            }
+
+            sendBtn.addEventListener('click', async function() {
+                const identifier = identifierInput.value.trim();
+                if (!identifier) {
+                    showError('Please enter your email or phone number');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('YOUR_API_ENDPOINT/send-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ identifier: identifier })
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const code = data.otp_code || data.code || data.otp || '123456';
+                        otpDisplayCode.textContent = code;
+                        otpDisplayBox.classList.add('show');
+                        otpInput.value = code;
+                        otpSection.classList.add('show');
+                        document.querySelector('.timer-text').style.display = 'block';
+                        startTimer();
+
+                        sendBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i> Code Sent!';
+                        setTimeout(() => {
+                            if (!sendBtn.disabled) {
+                                sendBtn.innerHTML = (mode === 'reset') ?
+                                    '<i class="bi bi-send me-2"></i> Resend Recovery Code' :
+                                    '<i class="bi bi-send me-2"></i> Resend Code';
+                            }
+                        }, 2000);
+                        setTimeout(() => otpInput.focus(), 300);
+                    } else {
+                        showError(data.message || 'Failed to send code');
+                    }
+                } catch (error) {
+                    console.warn('API not available, using test code:', error);
+                    const testCode = Math.floor(100000 + Math.random() * 900000).toString();
+                    otpDisplayCode.textContent = testCode;
+                    otpDisplayBox.classList.add('show');
+                    otpInput.value = testCode;
+                    otpSection.classList.add('show');
+                    document.querySelector('.timer-text').style.display = 'block';
+                    startTimer();
+                    sendBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i> Test code sent';
+                    setTimeout(() => {
+                        if (!sendBtn.disabled) {
+                            sendBtn.innerHTML = (mode === 'reset') ?
+                                '<i class="bi bi-send me-2"></i> Resend Recovery Code' :
+                                '<i class="bi bi-send me-2"></i> Resend Code';
+                        }
+                    }, 2000);
+                    setTimeout(() => otpInput.focus(), 300);
+                }
+            });
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const code = otpInput.value.trim();
+                if (!code || code.length < 6) {
+                    showError('Please enter a valid 6-digit code');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('YOUR_API_ENDPOINT/verify-otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            identifier: identifierInput.value.trim(),
+                            otp: code
+                        })
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        verifyBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i> Verified!';
+                        verifyBtn.disabled = true;
+                        setTimeout(() => {
+                            window.location.href = (mode === 'reset') ? 'reset-password.html' : 'index.html';
+                        }, 1000);
+                    } else {
+                        showError(data.message || 'Invalid verification code');
+                    }
+                } catch (error) {
+                    console.warn('API not available, simulating verification:', error);
+                    verifyBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i> Verified! (Test)';
+                    verifyBtn.disabled = true;
+                    setTimeout(() => {
+                        window.location.href = (mode === 'reset') ? 'reset-password.html' : 'index.html';
+                    }, 1000);
+                }
+            });
+
+            identifierInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendBtn.click();
+                }
+            });
+
+            otpInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    verifyBtn.click();
+                }
+            });
+
+            otpInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+            });
+        });
     </script>
 
 </body>
