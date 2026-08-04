@@ -137,6 +137,8 @@ def decrease_capacity(cursor, ticket_id):
         (ticket_id,),
     )
 
+    return cursor.rowcount
+
 
 def increase_capacity(cursor, ticket_id):
     cursor.execute(

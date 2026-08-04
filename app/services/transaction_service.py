@@ -63,10 +63,16 @@ class TransactionService:
                         detail="You already have an active reservation for this ticket.",
                     )
 
-                queries.decrease_capacity(
+                updated = queries.decrease_capacity(
                     cursor,
                     request.ticket_id,
                 )
+
+                if updated == 0:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Ticket is sold out.",
+                    )
 
                 reservation_id = queries.create_reservation(
                     cursor,
