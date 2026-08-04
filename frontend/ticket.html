@@ -148,14 +148,22 @@
                         </div>
                     </div>
 
-                    <!-- Ticket Footer ID -->
+                    <!-- Ticket Footer ID & Report Button -->
                     <div class="mt-6 pt-4 border-t border-stone-200 flex justify-between items-center text-[11px] text-stone-400 font-bold relative z-10">
-                        <span class="flex items-center gap-1.5 text-emerald-600">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span> Verified Match
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="flex items-center gap-1.5 text-emerald-600">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span> Verified Match
+                            </span>
+                            <!-- Report Button -->
+                            <button type="button" id="btn-report-ticket" class="text-rose-500 hover:text-rose-700 hover:underline flex items-center gap-1 transition">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                                <span>Report Issue</span>
+                            </button>
+                        </div>
                         <span>ID: #<strong id="match-id-display" class="text-stone-700">1042</strong></span>
                     </div>
-
                 </div>
 
             </aside>

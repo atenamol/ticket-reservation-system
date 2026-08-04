@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Issue - TicketHub</title>
+    
+    <!-- CDN Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Oswald & Chakra Petch -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#FBF9F5',
+                        blueMain: '#80B6E9',
+                        blueLight: '#D9EAFB',
+                        greenMain: '#82D6A5',
+                        greenLight: '#D6F5E3',
+                        orangeMain: '#F69664',
+                        orangeLight: '#FDE8D3',
+                    },
+                    fontFamily: {
+                        chakra: ['"Chakra Petch"', 'sans-serif'],
+                        oswald: ['"Oswald"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'ticket': '0 20px 40px -15px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0,0,0,0.04)',
+                        'layer': '-8px 8px 0px 0px rgba(128, 182, 233, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* پس‌زمینه بسیار نرم و ملایم */
+        .bg-[#FBF9F5] {
+            background-color: #FBF9F5;
+            background-image: 
+                linear-gradient(rgba(128, 182, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(128, 182, 233, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .text-outline {
+            -webkit-text-stroke: 1.5px rgba(128, 182, 233, 0.18);
+            color: transparent;
+        }
+
+        /* انیمیشن چرخش نوری فوق‌العاده محو */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.10; transform: scale(1); }
+            50% { opacity: 0.18; transform: scale(1.05); }
+        }
+        .animate-glow {
+            animation: pulseGlow 10s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-[#FBF9F5] text-stone-800 antialiased font-chakra min-h-screen flex flex-col justify-between selection:bg-[#80B6E9] selection:text-white relative overflow-x-hidden">
+
+    <!-- Dynamic Ultra-Subtle Background Elements -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+        
+        <!-- Subtle Ambient Color Glow Orbs -->
+        <div class="absolute -top-32 -left-32 w-[500px] h-[500px] bg-[#80B6E9] rounded-full blur-[140px] opacity-12 animate-glow"></div>
+        <div class="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-[#F69664] rounded-full blur-[140px] opacity-10 animate-glow" style="animation-delay: 5s;"></div>
+
+        <!-- Decorative Ticket Watermark Side Text -->
+        <div class="absolute left-6 top-1/2 -translate-y-1/2 hidden xl:block">
+            <div class="font-oswald text-7xl font-bold text-outline -rotate-90 tracking-widest opacity-40">
+                TICKET
+            </div>
+        </div>
+        <div class="absolute right-6 top-1/2 -translate-y-1/2 hidden xl:block">
+            <div class="font-oswald text-7xl font-bold text-outline rotate-90 tracking-widest opacity-40">
+                SUPPORT
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-30 shadow-sm transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+            
+            <div class="w-28 sm:w-36">
+                <a href="javascript:history.back()" class="text-stone-600 hover:text-stone-900 font-bold text-xs sm:text-sm flex items-center gap-2 transition group">
+                    <span class="p-2 rounded-full bg-stone-100 group-hover:bg-[#80B6E9] group-hover:text-white transition-all transform group-hover:-translate-x-1 duration-200 shadow-sm">&larr;</span> 
+                    <span>Back</span>
+                </a>
+            </div>
+
+            <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
+                <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition transform group-hover:scale-105 duration-200">
+            </a>
+
+            <div>
+                <a href="login.html" class="bg-[#80B6E9] hover:bg-[#6CA2DB] text-slate-900 font-chakra font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow active:scale-95 inline-block">
+                    Login / Signup
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow py-12 relative z-10">
+
+        <!-- Outer Decorative Layer for 3D Effect -->
+        <div class="relative">
+            <!-- Background Accent Layer -->
+            <div class="absolute inset-0 bg-[#D9EAFB] rounded-3xl transform translate-x-2 translate-y-2.5 -rotate-1 border border-[#80B6E9]/40"></div>
+
+            <!-- Main Card -->
+            <div class="bg-white rounded-3xl border border-stone-200 shadow-ticket p-6 sm:p-10 relative overflow-hidden">
+                
+                <!-- Ticket Notch Visual Cutouts (Top-Left & Top-Right) -->
+                <div class="absolute top-12 -left-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-r border-stone-200 hidden sm:block"></div>
+                <div class="absolute top-12 -right-3 w-6 h-6 bg-[#FBF9F5] rounded-full border-l border-stone-200 hidden sm:block"></div>
+
+                <!-- Top Header & Tabs -->
+                <div class="border-b border-dashed border-stone-300 pb-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D9EAFB] text-[#4A90E2] text-xs font-bold mb-2">
+                            <span class="w-2 h-2 rounded-full bg-[#80B6E9]"></span> Help Desk
+                        </div>
+                        <h1 class="font-oswald text-2xl sm:text-3xl font-bold text-stone-900 uppercase tracking-wide">
+                            Report & Support
+                        </h1>
+                    </div>
+
+                    <!-- Clean Pill Tabs -->
+                    <div class="flex items-center p-1 bg-stone-100 rounded-2xl self-start sm:self-auto border border-stone-200">
+                        <button type="button" id="tab-btn-new" onclick="switchTab('new')" class="px-5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm">
+                            Submit Issue
+                        </button>
+                        <button type="button" id="tab-btn-history" onclick="switchTab('history')" class="px-5 py-2 rounded-xl text-xs font-bold transition-all text-stone-500 hover:text-stone-900">
+                            History <span class="bg-[#F69664] text-white text-[10px] px-2 py-0.5 rounded-full ml-1 font-bold">2</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 1: New Report Form -->
+                <div id="tab-content-new">
+                    <form id="report-form" class="space-y-6">
+                        
+                        <!-- Ticket ID -->
+                        <div>
+                            <label for="ticket-id" class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">
+                                Associated Ticket ID
+                            </label>
+                            <input type="text" id="ticket-id" name="ticketId" readonly class="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-stone-700 font-chakra font-bold text-sm cursor-not-allowed" value="Fetching ID...">
+                        </div>
+
+                        <!-- Issue Category -->
+                        <!-- Issue Subject / Category (Text Input) -->
+                        <div>
+                            <label for="issue-type" class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">
+                                Subject / Issue Category <span class="text-[#F69664]">*</span>
+                            </label>
+                            <input type="text" id="issue-type" name="issueType" required 
+                                placeholder="e.g. Discrepancy in ticket price, Gate access issue..." 
+                                class="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-stone-800 font-medium text-sm focus:outline-none focus:border-[#80B6E9] focus:ring-2 focus:ring-[#80B6E9]/30 transition-all">
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label for="description" class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">
+                                Description <span class="text-[#F69664]">*</span>
+                            </label>
+                            <textarea id="description" name="description" rows="4" required placeholder="Provide details about the problem..." class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 text-stone-800 font-medium text-sm focus:outline-none focus:border-[#80B6E9] focus:ring-2 focus:ring-[#80B6E9]/30 transition-all resize-none"></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-2 flex justify-end">
+                            <button type="submit" class="bg-[#F69664] hover:bg-[#e8814d] text-white font-chakra font-bold text-xs sm:text-sm px-8 py-3.5 rounded-2xl transition-all shadow-md active:scale-95 uppercase tracking-wider flex items-center gap-2">
+                                Send Report
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- SECTION 2: History List -->
+                <div id="tab-content-history" class="hidden space-y-4">
+                    
+                    <!-- Item 1: Resolved -->
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 space-y-3 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-[#82D6A5]"></div>
+                        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-stone-200/60 pb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-stone-700">#R-8092</span>
+                                <span class="text-xs text-stone-400">| Match Ticket #1042</span>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#D6F5E3] text-[#276e44]">
+                                Resolved
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-600 font-medium">
+                            The stadium address on the ticket pass shows Azadi West Expressway, but the entry gate specifies Gate 2.
+                        </p>
+                        <div class="bg-white border border-stone-200 rounded-xl p-3 text-xs text-stone-700">
+                            <span class="font-bold text-[#80B6E9] block mb-1">Support Reply:</span>
+                            Gate 2 is the main entry for Normal Tribune ticket holders. The pass details have been refreshed.
+                        </div>
+                    </div>
+
+                    <!-- Item 2: In Review -->
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 space-y-3 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-[#F69664]"></div>
+                        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-stone-200/60 pb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-stone-700">#R-8104</span>
+                                <span class="text-xs text-stone-400">| Match Ticket #1042</span>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#FDE8D3] text-[#b8501b]">
+                                In Review
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-600 font-medium">
+                            Payment failed during VIP selection but seats were temporarily locked.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ticketId = urlParams.get('ticketId');
+            const ticketInput = document.getElementById('ticket-id');
+            ticketInput.value = ticketId ? '#' + ticketId : 'Not Specified';
+        });
+
+        function switchTab(tab) {
+            const tabNew = document.getElementById('tab-content-new');
+            const tabHistory = document.getElementById('tab-content-history');
+            const btnNew = document.getElementById('tab-btn-new');
+            const btnHistory = document.getElementById('tab-btn-history');
+
+            if (tab === 'new') {
+                tabNew.classList.remove('hidden');
+                tabHistory.classList.add('hidden');
+                btnNew.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm';
+                btnHistory.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all text-stone-500 hover:text-stone-900';
+            } else {
+                tabNew.classList.add('hidden');
+                tabHistory.classList.remove('hidden');
+                btnHistory.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm';
+                btnNew.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all text-stone-500 hover:text-stone-900';
+            }
+        }
+    </script>
+
+</body>
+</html>
