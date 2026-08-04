@@ -14,7 +14,8 @@ from app.schemas.auth_schema import (
     MessageResponse,
     AuthResponse,
     ForgotPasswordRequest,
-    ResetPasswordRequest
+    ResetPasswordRequest,
+    VerifyResetOTPRequest
 )
 
 from app.services.auth_service import (
@@ -24,7 +25,9 @@ from app.services.auth_service import (
     verify_login_otp,
     update_profile,
     forgot_password,
-    reset_password
+    reset_password,
+    verify_otp_code,
+    verify_reset_otp
 )
 
 router = APIRouter(
@@ -63,18 +66,16 @@ def login_otp_route(request: OTPLoginRequest):
 
     return login_with_otp(request)
 
+@router.post(
+    "/verify-otp",
+    status_code=200,
+    summary="Verify OTP"
+)
+def verify_otp_route(
+    request: VerifyOTPRequest
+):
 
-@router.post("/verify-otp", response_model=AuthResponse, status_code=200, 
-            summary="Verify OTP")
-def verify_otp_route(request: VerifyOTPRequest):
-
-    token, user = verify_login_otp(request)
-
-    return AuthResponse(
-        token=token,
-        user=user,
-    )
-
+    return verify_otp_code(request)
 
 @router.put("/profile", response_model=UserResponse, status_code=200, 
             summary="Update profile")
@@ -90,8 +91,14 @@ def forgot_password_route(request: ForgotPasswordRequest):
 
     return forgot_password(request)
 
-@router.post("/reset-password", response_model=MessageResponse, 
-            status_code=200, summary="Reset password")
-def reset_password_route(request: ResetPasswordRequest):
+@router.post(
+    "/reset-password",
+    response_model=MessageResponse,
+    status_code=200,
+    summary="Reset password"
+)
+def reset_password_route(
+    request: ResetPasswordRequest
+):
 
     return reset_password(request)

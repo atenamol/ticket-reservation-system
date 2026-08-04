@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from app.cache import redis_client
 from app.cache.profile_cache import set_cached_profile, invalidate_profile
 from app.queries.auth_queries import (
     create_user,
@@ -20,6 +21,7 @@ from app.schemas.auth_schema import (
     UpdateProfileRequest,
     ForgotPasswordRequest,
     ResetPasswordRequest,
+    AuthResponse
 )
 
 from app.auth.security import (
@@ -161,43 +163,109 @@ def login_with_otp(request: OTPLoginRequest) -> MessageResponse:
 
 
 # verify otp
-
-def verify_login_otp(request: VerifyOTPRequest) -> tuple[TokenResponse, UserResponse]:
+def verify_otp_code(request: VerifyOTPRequest):
 
     connection = get_connection()
 
     try:
         with connection.cursor() as cursor:
 
-            user = get_user_by_contact(cursor=cursor, email=request.email, phone=request.phone)
+            user = get_user_by_contact(
+                cursor=cursor,
+                email=request.email,
+                phone=request.phone
+            )
 
             if user is None:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                    detail="User not found.")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="User not found."
+                )
+
 
             if user["account_status"] != "active":
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                                    detail="Your account is inactive.")
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Your account is inactive."
+                )
+
 
             contact = request.email or request.phone
 
-            if not verify_otp(contact, request.otp):
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                        detail="Invalid or expired OTP.")
 
-            access_token = create_access_token(
-                {
-                    "sub": user["email"] or user["phone"],
-                    "user_id": user["user_id"],
-                    "role": user["role"],
-                }
-            )
+            # =========================
+            # Login OTP
+            # =========================
 
-            return (TokenResponse(access_token=access_token),
-                    UserResponse.model_validate(user))
+            if request.purpose == "login":
+
+                if not verify_otp(
+                    contact=contact,
+                    otp=request.otp
+                ):
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Invalid or expired OTP."
+                    )
+
+
+                access_token = create_access_token(
+                    {
+                        "sub": user["email"] or user["phone"],
+                        "user_id": user["user_id"],
+                        "role": user["role"],
+                    }
+                )
+
+
+                return AuthResponse(
+                    token=TokenResponse(
+                        access_token=access_token
+                    ),
+                    user=UserResponse.model_validate(user)
+                )
+
+
+            # =========================
+            # Reset Password OTP
+            # =========================
+
+            elif request.purpose == "reset":
+
+
+                if not verify_otp(
+                    contact=f"reset:{contact}",
+                    otp=request.otp
+                ):
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Invalid or expired OTP."
+                    )
+
+
+                redis_client.setex(
+                    f"reset_verified:{user['user_id']}",
+                    300,
+                    "true"
+                )
+
+
+                return MessageResponse(
+                    message="OTP verified successfully."
+                )
+
+
+            else:
+
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid OTP purpose."
+                )
+
 
     finally:
         close(connection)
+
 
 def forgot_password(request: ForgotPasswordRequest) -> MessageResponse:
 
@@ -235,28 +303,38 @@ def reset_password(request: ResetPasswordRequest) -> MessageResponse:
 
         with connection.cursor() as cursor:
 
-            user = get_user_by_contact(cursor=cursor, email=request.email,
-                                        phone=request.phone)
+            user = get_user_by_id(
+                cursor=cursor,
+                user_id=request.user_id
+            )
 
             if user is None:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                     detail="User not found.")
 
-            contact = request.email or request.phone
+            verified = redis_client.get(
+                f"reset_verified:{user['user_id']}"
+            )
 
-            if not verify_otp(contact=f"reset:{contact}", otp=request.otp):
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                    detail="Invalid or expired OTP.")
 
+            if verified != "true":
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="OTP verification required."
+                )
+            
             password_hash = hash_password(request.new_password)
 
             updated = update_user_password(cursor=cursor, user_id=user["user_id"],
                                             password_hash=password_hash)
 
-
             if not updated:
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                     detail="Password reset failed.")
+
+            redis_client.delete(
+                f"reset_verified:{user['user_id']}"
+            )
 
             commit(connection)
 

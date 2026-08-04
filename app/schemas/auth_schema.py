@@ -199,13 +199,12 @@ class OTPLoginRequest(BaseModel):
 
 # Verify OTP Request
 # API: POST /verify-otp
-
 class VerifyOTPRequest(BaseModel):
+
     email: EmailStr | None = Field(
         default=None,
         description="Email address where OTP was sent."
     )
-
 
     phone: str | None = Field(
         default=None,
@@ -220,24 +219,32 @@ class VerifyOTPRequest(BaseModel):
         examples=["123456"]
     )
 
+    purpose: Literal["login", "reset"] = Field(
+        ...,
+        description="OTP usage type: login or password reset."
+    )
+
+
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "phone": "09123456789",
-                "otp": "123456"
+                "otp": "123456",
+                "purpose": "login"
             }
         }
     )
+
 
     @model_validator(mode="after")
     def validate_contact(self):
 
         if not self.email and not self.phone:
-            raise ValueError("Either email or phone must be provided.")
+            raise ValueError(
+                "Either email or phone must be provided."
+            )
 
         return self
-
-
 
 # Forgot Password Request
 # API: POST /forgot-password
@@ -274,30 +281,14 @@ class ForgotPasswordRequest(BaseModel):
         return self
 
 
-
 # Reset Password Request
 # API: POST /reset-password
 
 class ResetPasswordRequest(BaseModel):
 
-    email: EmailStr | None = Field(
-        default=None,
-        description="Email address used for password reset.",
-        examples=["ali@gmail.com"]
-    )
-
-    phone: str | None = Field(
-        default=None,
-        pattern=r"^09\d{9}$",
-        description="Iranian mobile phone number used for password reset.",
-        examples=["09123456789"]
-    )
-
-    otp: str = Field(
+    user_id: int = Field(
         ...,
-        pattern=r"^\d{6}$",
-        description="One-time password received by user.",
-        examples=["123456"]
+        description="User identifier after OTP verification."
     )
 
     new_password: str = Field(
@@ -320,8 +311,7 @@ class ResetPasswordRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "phone": "09123456789",
-                "otp": "123456",
+                "user_id": 1,
                 "new_password": "NewPassword123",
                 "confirm_password": "NewPassword123"
             }
@@ -359,18 +349,12 @@ class ResetPasswordRequest(BaseModel):
     @model_validator(mode="after")
     def validate_reset(self):
 
-        if not self.email and not self.phone:
-            raise ValueError(
-                "Either email or phone must be provided."
-            )
-
         if self.new_password != self.confirm_password:
             raise ValueError(
                 "Passwords do not match."
             )
 
         return self
-
     
 # Update Profile
 # API: PUT /profile
