@@ -13,6 +13,8 @@ from app.schemas.auth_schema import (
     UserResponse,
     MessageResponse,
     AuthResponse,
+    ForgotPasswordRequest,
+    ResetPasswordRequest
 )
 
 from app.services.auth_service import (
@@ -21,6 +23,8 @@ from app.services.auth_service import (
     login_with_otp,
     verify_login_otp,
     update_profile,
+    forgot_password,
+    reset_password
 )
 
 router = APIRouter(
@@ -78,3 +82,16 @@ def update_profile_route(request: UpdateProfileRequest,
                         current_user: dict[str, Any] = Depends(get_current_user)):
 
     return update_profile(user_id=current_user["user_id"], request=request)
+
+
+@router.post("/forgot-password", response_model=MessageResponse, 
+            status_code=200, summary="Send password reset OTP")
+def forgot_password_route(request: ForgotPasswordRequest):
+
+    return forgot_password(request)
+
+@router.post("/reset-password", response_model=MessageResponse, 
+            status_code=200, summary="Reset password")
+def reset_password_route(request: ResetPasswordRequest):
+
+    return reset_password(request)
