@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile | Sports Ticket</title>
+
+    <!-- CDN Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#FBF9F5',
+                        football: { light: '#D6F5E3', bold: '#82D6A5' },
+                        volleyball: { light: '#D9EAFB', bold: '#80B6E9' },
+                        basketball: { light: '#FDE2D3', bold: '#F69664' }
+                    },
+                    fontFamily: {
+                        chakra: ['"Chakra Petch"', 'sans-serif'],
+                        oswald: ['"Oswald"', 'sans-serif'],
+                    },
+                    keyframes: {
+                        gradientBG: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        floatSlow: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg) scale(1)' },
+                            '50%': { transform: 'translateY(-25px) rotate(8deg) scale(1.05)' },
+                        },
+                        spinSlow: {
+                            'from': { transform: 'rotate(0deg)' },
+                            'to': { transform: 'rotate(360deg)' },
+                        },
+                        fadeUp: {
+                            '0%': { opacity: 0, transform: 'translateY(40px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        'gradient-shift': 'gradientBG 4s ease infinite',
+                        'float-slow': 'floatSlow 10s ease-in-out infinite',
+                        'spin-slow': 'spinSlow 35s linear infinite',
+                        'fade-up': 'fadeUp 0.7s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FBF9F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 20px;
+            border: 2px solid #FBF9F5;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #80B6E9;
+        }
+
+        /* ===== استایل‌های شیشه‌ای ===== */
+        .animated-gradient-btn {
+            background-size: 200% 200%;
+        }
+
+        /* ===== دکمه Back ===== */
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #4a4a4a;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+            padding: 8px 14px;
+            border-radius: 40px;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: #FFD6B0;
+            color: #3d2b1f;
+            transform: translateX(-2px);
+        }
+        .back-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* ===== انیمیشن لیبل‌ها ===== */
+        .input-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            transition: all 0.3s ease;
+            margin-bottom: 4px;
+        }
+        .input-group label.label-lg {
+            font-size: 1.1rem;
+            color: #52C485;
+        }
+        .input-group:focus-within label {
+            color: #52C485;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #80B6E9;
+            box-shadow: 0 0 0 4px rgba(128, 182, 233, 0.2);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            .header-custom {
+                height: 64px !important;
+                padding: 0 16px !important;
+                border-radius: 16px !important;
+            }
+            .header-logo img {
+                height: 32px !important;
+            }
+            .back-btn {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+            }
+            .back-btn i {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#FBF9F5] text-stone-800 antialiased font-chakra min-h-screen flex flex-col selection:bg-[#80B6E9] selection:text-white overflow-x-hidden">
+
+    <!-- ===== اورب‌های رنگی پس‌زمینه (مثل ایندکس) ===== -->
+    <div class="fixed top-0 left-[35%] -translate-x-1/2 w-[600px] h-[380px] bg-[#82D6A5]/15 blur-[130px] rounded-full pointer-events-none animate-float-slow"></div>
+    <div class="fixed top-20 right-1/4 translate-x-1/2 w-[650px] h-[380px] bg-[#80B6E9]/20 blur-[130px] rounded-full pointer-events-none animate-float-slow" style="animation-delay: 3s;"></div>
+    <div class="fixed -bottom-10 left-1/2 -translate-x-1/2 w-[700px] h-[320px] bg-[#F69664]/15 blur-[130px] rounded-full pointer-events-none animate-float-slow" style="animation-delay: 6s;"></div>
+
+    <!-- ===== اشکال شناور تزئینی (مثل ایندکس) ===== -->
+    <div class="fixed top-12 left-10 w-24 h-24 border-4 border-[#82D6A5]/30 rounded-full animate-float-slow pointer-events-none"></div>
+    <div class="fixed top-1/2 right-12 w-36 h-36 border-2 border-dashed border-[#80B6E9]/40 rounded-full animate-spin-slow pointer-events-none"></div>
+    <div class="fixed bottom-6 left-1/3 w-16 h-16 bg-[#F69664]/20 backdrop-blur-sm rounded-3xl rotate-12 animate-float-slow pointer-events-none" style="animation-delay: 2s;"></div>
+
+    <!-- ===== هدر شیشه‌ای (دقیقاً مثل ایندکس) ===== -->
+    <header class="bg-[#FBF9F5]/50 backdrop-blur-xl border-b border-stone-200/50 shadow-sm sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+            
+            <!-- سمت چپ: دکمه Back -->
+            <div class="w-28 sm:w-36 flex items-center">
+                <a href="index.html" class="back-btn">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+
+            <!-- وسط: لوگو -->
+            <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
+                <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+            </a>
+
+            <!-- سمت راست: خالی (برای تعادل) -->
+            <div class="w-28 sm:w-36"></div>
+
+        </div>
+    </header>
+
+    <!-- ===== محتوای اصلی با انیمیشن fade-up ===== -->
+    <main class="flex-grow flex items-center justify-center px-4 py-8 sm:py-12 animate-fade-up">
+        <div class="w-full max-w-3xl">
+
+            <!-- هدر پروفایل -->
+            <section class="text-center mb-8">
+                <div class="relative w-32 mx-auto mb-4">
+                    <img src="assets/images/profile.png" id="profile-image" alt="Profile" class="w-32 h-32 rounded-full object-cover shadow-xl ring-4 ring-white/80" />
+                    <label for="profile-upload" class="absolute bottom-0 right-0 bg-gradient-to-r from-[#82D6A5] to-[#80B6E9] w-10 h-10 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg hover:scale-110 transition-all duration-300 ring-2 ring-white/80">
+                        <i class="bi bi-camera-fill text-sm"></i>
+                    </label>
+                    <input type="file" id="profile-upload" accept="image/*" hidden />
+                </div>
+                <h1 id="user-name" class="font-oswald font-bold text-4xl sm:text-5xl text-stone-900 tracking-wide">User Name</h1>
+                <p class="text-stone-500 mt-1 flex items-center justify-center gap-2">
+                    <i class="bi bi-person-badge"></i> Spectator
+                </p>
+            </section>
+
+            <!-- کارت پروفایل (گلاس‌مورفیسم با نوار رنگی) -->
+            <section class="relative bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 shadow-xl hover:shadow-2xl hover:shadow-[#80B6E9]/20 transition-all duration-500 p-6 sm:p-8 -translate-y-1 hover:-translate-y-2">
+                
+                <!-- نوار رنگی بالا (مثل کارت‌های مسابقه) -->
+                <div class="absolute -top-0.5 left-4 right-4 h-2.5 bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] rounded-t-full"></div>
+
+                <h2 class="font-oswald font-bold text-2xl sm:text-3xl text-stone-900 mb-6 flex items-center gap-3">
+                    <i class="bi bi-person-circle text-[#80B6E9]"></i> Personal Information
+                </h2>
+
+                <div class="space-y-5">
+                    <div class="input-group">
+                        <label for="first-name" id="label-first-name">First Name</label>
+                        <input id="first-name" class="input-field" />
+                    </div>
+                    <div class="input-group">
+                        <label for="last-name" id="label-last-name">Last Name</label>
+                        <input id="last-name" class="input-field" />
+                    </div>
+                    <div class="input-group">
+                        <label for="email" id="label-email">Email</label>
+                        <input id="email" class="input-field" type="email" />
+                    </div>
+                    <div class="input-group">
+                        <label for="phone" id="label-phone">Phone</label>
+                        <input id="phone" class="input-field" type="tel" />
+                    </div>
+                    <div class="input-group">
+                        <label for="city" id="label-city">City</label>
+                        <input id="city" class="input-field" />
+                    </div>
+                </div>
+
+                <!-- دکمه Save با گرادیانت متحرک (دقیقاً مثل دکمه‌های ایندکس) -->
+                <div class="mt-8">
+                    <button id="save-btn" class="relative w-full bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] animated-gradient-btn animate-gradient-shift text-slate-950 font-chakra font-bold text-sm sm:text-base py-3.5 px-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 border border-white/20">
+                        <i class="bi bi-check-circle"></i> Save Changes
+                    </button>
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== فوتر (مثل ایندکس) ===== -->
+    <footer class="bg-[#FBF9F5]/80 backdrop-blur-sm text-stone-600 border-t border-stone-300/60 py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-chakra text-xs">
+            <div class="flex items-center gap-3">
+                <img src="assets/images/footer-logo.webp" alt="Footer Logo" class="h-8 w-auto" />
+                <span class="font-medium text-stone-600">Match Ticket Reservation System</span>
+            </div>
+            <div class="flex gap-6 text-stone-500 font-medium">
+                <a href="index.html" class="hover:text-stone-900 transition-colors">Home</a>
+                <a href="#" class="hover:text-stone-900 transition-colors">Privacy</a>
+            </div>
+            <div class="text-stone-400">&copy; 2026 All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- ===== اسکریپت ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const upload = document.getElementById("profile-upload");
+            const image = document.getElementById("profile-image");
+            upload.addEventListener("change", function() {
+                const file = this.files[0];
+                if (!file) return;
+                image.src = URL.createObjectURL(file);
+            });
+
+            const userData = {
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john.doe@example.com',
+                phone: '09123456789',
+                city: 'Tehran',
+                displayName: 'John Doe'
+            };
+
+            const firstNameInput = document.getElementById('first-name');
+            const lastNameInput = document.getElementById('last-name');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const cityInput = document.getElementById('city');
+            const userNameDisplay = document.getElementById('user-name');
+            const saveBtn = document.getElementById('save-btn');
+
+            const labelFirst = document.getElementById('label-first-name');
+            const labelLast = document.getElementById('label-last-name');
+            const labelEmail = document.getElementById('label-email');
+            const labelPhone = document.getElementById('label-phone');
+            const labelCity = document.getElementById('label-city');
+
+            function loadUserData() {
+                firstNameInput.value = userData.firstName || '';
+                lastNameInput.value = userData.lastName || '';
+                emailInput.value = userData.email || '';
+                phoneInput.value = userData.phone || '';
+                cityInput.value = userData.city || '';
+                userNameDisplay.textContent = userData.displayName || 'User Name';
+            }
+            loadUserData();
+
+            function saveChanges() {
+                userData.firstName = firstNameInput.value.trim();
+                userData.lastName = lastNameInput.value.trim();
+                userData.email = emailInput.value.trim();
+                userData.phone = phoneInput.value.trim();
+                userData.city = cityInput.value.trim();
+                userData.displayName = userData.firstName + ' ' + userData.lastName;
+                userNameDisplay.textContent = userData.displayName;
+                console.log('Saved user data:', userData);
+                alert('اطلاعات با موفقیت ذخیره شد!');
+            }
+
+            saveBtn.addEventListener('click', saveChanges);
+
+            function setupLabelZoom(input, label) {
+                input.addEventListener('focus', function() {
+                    label.classList.add('label-lg');
+                });
+                input.addEventListener('blur', function() {
+                    label.classList.remove('label-lg');
+                });
+            }
+            setupLabelZoom(firstNameInput, labelFirst);
+            setupLabelZoom(lastNameInput, labelLast);
+            setupLabelZoom(emailInput, labelEmail);
+            setupLabelZoom(phoneInput, labelPhone);
+            setupLabelZoom(cityInput, labelCity);
+        });
+    </script>
+
+</body>
+</html>
