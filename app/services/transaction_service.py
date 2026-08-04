@@ -211,6 +211,12 @@ class TransactionService:
                         detail="Cancelled reservations cannot be paid.",
                     )
 
+                if reservation["expires_at"] < datetime.now():
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Reservation has expired.",
+                    )
+
                 ticket = queries.get_ticket_for_reservation(
                     cursor,
                     reservation["ticket_id"],
