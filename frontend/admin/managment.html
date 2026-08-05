@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Transaction & Reservation Management | TicketHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Lexend:wght@700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Custom Config for Design Specs -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBg: '#FBF9F5',
+                        sportsGreen: '#86EFAC',
+                        sportsBlue: '#93C5FD',
+                        sportsOrange: '#FDBA74',
+                    },
+                    fontFamily: {
+                        heading: ['Oswald', 'sans-serif'],
+                        price: ['Lexend', 'sans-serif'],
+                        body: ['Chakra Petch', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brandBg font-body text-slate-800 min-h-screen flex flex-col">
+
+<!-- Header Navigation -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="dashboard.html" class="flex items-center gap-3">
+            <img src="../assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 w-auto">
+            <span class="text-xs font-semibold uppercase bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full border border-slate-200">
+                Admin Console
+            </span>
+        </a>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i>
+                <span>Authorized Admin</span>
+            </div>
+            <button id="logout-btn" class="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-full transition">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                Logout
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Main Container -->
+<main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">
+
+    <!-- Page Header & Metrics Summary -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="font-heading text-3xl md:text-4xl uppercase tracking-wide text-slate-900">
+                Transactions & Support Dashboard
+            </h1>
+            <p class="text-slate-500 text-sm mt-1">
+                Review ticket cancellation approvals, resolve customer reports, and monitor flagged transactions.
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-slate-200 mb-6 gap-2 overflow-x-auto">
+        <button id="tab-btn-cancellations" onclick="switchTab('cancellations')"
+                class="tab-btn active-tab flex items-center gap-2 py-3 px-5 font-heading text-lg tracking-wide rounded-t-2xl border-b-2 border-slate-900 text-slate-900 bg-white shadow-sm transition">
+            <i data-lucide="ticket-x" class="w-5 h-5 text-red-500"></i>
+            Cancellations
+            <span id="badge-cancellations-count" class="ml-1 px-2 py-0.5 text-xs font-price bg-red-100 text-red-700 rounded-full">0</span>
+        </button>
+
+        <button id="tab-btn-reports" onclick="switchTab('reports')"
+                class="tab-btn flex items-center gap-2 py-3 px-5 font-heading text-lg tracking-wide rounded-t-2xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
+            <i data-lucide="life-buoy" class="w-5 h-5 text-blue-500"></i>
+            User Reports
+            <span id="badge-reports-count" class="ml-1 px-2 py-0.5 text-xs font-price bg-blue-100 text-blue-700 rounded-full">0</span>
+        </button>
+
+        <button id="tab-btn-payments" onclick="switchTab('payments')"
+                class="tab-btn flex items-center gap-2 py-3 px-5 font-heading text-lg tracking-wide rounded-t-2xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-amber-500"></i>
+            Suspicious Payments
+            <span id="badge-payments-count" class="ml-1 px-2 py-0.5 text-xs font-price bg-amber-100 text-amber-700 rounded-full">0</span>
+        </button>
+    </div>
+
+    <!-- Global Table Controls (Search & Filter) -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div class="relative w-full sm:w-96">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input type="text" id="global-search" placeholder="Search by ID, User, or Subject..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-full text-sm focus:ring-2 focus:ring-slate-900 outline-none">
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+            <select id="status-filter" class="w-full sm:w-auto border border-slate-200 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-slate-50">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="open">Open</option>
+                <option value="in_progress">In Progress</option>
+                <option value="closed">Closed</option>
+            </select>
+            <button onclick="refreshActiveTab()" class="text-sm font-semibold flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white transition whitespace-nowrap">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- TAB 1: CANCELLATION REQUESTS -->
+    <section id="tab-cancellations" class="tab-content block">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold uppercase text-slate-500 tracking-wider">
+                        <th class="p-4">Cancel ID</th>
+                        <th class="p-4">User</th>
+                        <th class="p-4">Reservation ID</th>
+                        <th class="p-4">Penalty</th>
+                        <th class="p-4">Refund</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4 text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="cancellations-tbody" class="divide-y divide-slate-100 text-sm">
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            <div class="flex flex-col items-center gap-2">
+                                <i data-lucide="loader-2" class="w-6 h-6 animate-spin text-slate-400"></i>
+                                <span>Loading cancellation requests...</span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 2: USER TICKET REPORTS -->
+    <section id="tab-reports" class="tab-content hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold uppercase text-slate-500 tracking-wider">
+                        <th class="p-4">Report ID</th>
+                        <th class="p-4">User</th>
+                        <th class="p-4">Ticket ID</th>
+                        <th class="p-4">Subject</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4">Created</th>
+                        <th class="p-4 text-right">Resolve</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reports-tbody" class="divide-y divide-slate-100 text-sm">
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            <div class="flex flex-col items-center gap-2">
+                                <i data-lucide="loader-2" class="w-6 h-6 animate-spin text-slate-400"></i>
+                                <span>Loading reports...</span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 3: SUSPICIOUS PAYMENTS -->
+    <section id="tab-payments" class="tab-content hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold uppercase text-slate-500 tracking-wider">
+                        <th class="p-4">Payment ID</th>
+                        <th class="p-4">User</th>
+                        <th class="p-4">Reservation ID</th>
+                        <th class="p-4">Amount</th>
+                        <th class="p-4">Method</th>
+                        <th class="p-4">Date</th>
+                        <th class="p-4 text-right">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="payments-tbody" class="divide-y divide-slate-100 text-sm">
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            <div class="flex flex-col items-center gap-2">
+                                <i data-lucide="loader-2" class="w-6 h-6 animate-spin text-slate-400"></i>
+                                <span>Loading payment logs...</span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ================= MODAL: CANCELLATION REVIEW ================= -->
+<div id="cancellation-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-lg w-full p-6 m-4 relative">
+        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+            <h3 class="font-heading text-2xl uppercase text-slate-900">Review Cancellation #<span id="modal-cancel-id">--</span></h3>
+            <button onclick="closeCancellationModal()" class="text-slate-400 hover:text-slate-600 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="py-4 space-y-3 text-sm text-slate-600">
+            <div class="flex justify-between border-b border-slate-50 pb-2">
+                <span class="font-medium text-slate-500">User:</span>
+                <span id="modal-cancel-user" class="font-semibold text-slate-800">--</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-50 pb-2">
+                <span class="font-medium text-slate-500">Reservation ID:</span>
+                <span id="modal-cancel-reservation" class="font-price font-semibold text-slate-800">--</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-50 pb-2">
+                <span class="font-medium text-slate-500">Penalty Fee:</span>
+                <span id="modal-cancel-penalty" class="font-price text-red-600 font-semibold">--</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-50 pb-2">
+                <span class="font-medium text-slate-500">Refund Amount:</span>
+                <span id="modal-cancel-refund" class="font-price text-emerald-600 font-semibold">--</span>
+            </div>
+        </div>
+
+        <form id="cancellation-form" class="mt-4 space-y-4">
+            <input type="hidden" id="modal-cancel-id-input">
+            <div>
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Decision</label>
+                <select id="modal-cancel-status" class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-slate-50">
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeCancellationModal()" class="flex-1 py-2.5 rounded-full border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition">
+                    Cancel
+                </button>
+                <button type="submit" class="flex-1 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition">
+                    Save Decision
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= MODAL: REPORT RESOLUTION ================= -->
+<div id="report-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-lg w-full p-6 m-4 relative">
+        <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+            <h3 class="font-heading text-2xl uppercase text-slate-900">Resolve Report #<span id="modal-report-id">--</span></h3>
+            <button onclick="closeReportModal()" class="text-slate-400 hover:text-slate-600 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="py-4 space-y-3 text-sm text-slate-600">
+            <div class="flex justify-between border-b border-slate-50 pb-2">
+                <span class="font-medium text-slate-500">User:</span>
+                <span id="modal-report-user" class="font-semibold text-slate-800">--</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-50 pb-2">
+                <span class="font-medium text-slate-500">Ticket ID:</span>
+                <span id="modal-report-ticket" class="font-price font-semibold text-slate-800">--</span>
+            </div>
+            <div class="border-b border-slate-50 pb-2">
+                <span class="font-medium text-slate-500 block mb-1">Subject:</span>
+                <span id="modal-report-subject" class="font-semibold text-slate-800">--</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                <span class="font-medium text-slate-500 block text-xs uppercase mb-1">Description:</span>
+                <p id="modal-report-description" class="text-slate-700 text-sm whitespace-pre-wrap">--</p>
+            </div>
+        </div>
+
+        <form id="report-form" class="mt-2 space-y-4">
+            <input type="hidden" id="modal-report-id-input">
+            <div>
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Update Status</label>
+                <select id="modal-report-status" class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-slate-50">
+                    <option value="open">Open</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="closed">Closed</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Admin Response</label>
+                <textarea id="modal-report-response" rows="3" required placeholder="Type your response to the user..." class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-slate-50"></textarea>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeReportModal()" class="flex-1 py-2.5 rounded-full border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition">
+                    Cancel
+                </button>
+                <button type="submit" class="flex-1 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition">
+                    Update Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('border-slate-900', 'text-slate-900', 'bg-white', 'shadow-sm');
+            btn.classList.add('border-transparent', 'text-slate-500');
+        });
+
+        document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+        activeBtn.classList.remove('border-transparent', 'text-slate-500');
+        activeBtn.classList.add('border-slate-900', 'text-slate-900', 'bg-white', 'shadow-sm');
+    }
+</script>
+<script src="../js/admin.js"></script>
+</body>
+</html>
