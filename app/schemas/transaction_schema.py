@@ -106,6 +106,7 @@ class AdminCancellationItem(BaseModel):
     cancel_id: int
     reservation_id: int
     user_id: int
+    user_name: str
     penalty_percent: Decimal
     refund_amount: Decimal
     status: Literal["pending", "approved", "rejected"]
@@ -119,6 +120,7 @@ class AdminReportUpdateRequest(BaseModel):
 class AdminReportItem(BaseModel):
     report_id: int
     user_id: int
+    user_name: str
     ticket_id: int
     subject: str
     description: str
@@ -131,6 +133,7 @@ class SuspiciousPaymentItem(BaseModel):
     payment_id: int
     reservation_id: int
     user_id: int
+    user_name: str
     amount: Decimal
     payment_status: Literal["completed", "pending", "failed"]
     payment_method: str
