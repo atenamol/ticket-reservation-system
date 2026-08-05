@@ -61,22 +61,23 @@
 
     <!-- Header -->
     <header class="bg-[#FBF9F5]/50 backdrop-blur-xl border-b border-stone-200/50 shadow-sm sticky top-0 z-50 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
 
-        <div class="w-28 sm:w-36">
+        <div class="w-24 sm:w-36">
             <a href="search.html" class="text-stone-600 hover:text-stone-900 font-bold text-xs sm:text-sm flex items-center gap-2 transition group">
                 <span class="p-2 rounded-full bg-stone-100 group-hover:bg-[#80B6E9] group-hover:text-white transition-all transform group-hover:-translate-x-1 duration-200 shadow-sm">&larr;</span> 
                 <span>Back</span>
             </a>
         </div>
 
-        <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
-            <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+        <!-- Center Logo -->
+        <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group max-w-[120px] sm:max-w-none">
+            <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-18 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
         </a>
-
-        <div class="relative group">
+        <!-- Right Animated Login/Signup Button -->
+        <div class="relative group w-auto flex justify-end">
             <div class="absolute -inset-0.5 bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500 animated-gradient-btn animate-gradient-shift"></div>
-            <a href="login.html" class="relative bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] animated-gradient-btn animate-gradient-shift text-slate-950 font-chakra font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-300 shadow-md flex items-center hover:scale-105">
+            <a href="login.html" class="relative bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] animated-gradient-btn animate-gradient-shift text-slate-950 font-chakra font-bold text-[10px] sm:text-sm px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 shadow-md flex items-center hover:scale-105 whitespace-nowrap">
                 <span>Login / Signup</span>
             </a>
         </div>
@@ -106,7 +107,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
             <!-- Left Col: Ticket Pass (5 Cols) -->
-            <aside class="lg:col-span-5 sticky top-28">
+            <aside class="lg:col-span-5 lg:sticky lg:top-28">
                 
                 <div class="bg-gradient-to-br from-white via-white to-blue-50/40 rounded-3xl border-2 border-stone-200/80 shadow-glow-card p-6 sm:p-8 relative overflow-hidden group transition-all duration-300 hover:border-stone-300">
                     
@@ -194,6 +195,7 @@
                                 <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-emerald-600 transition">VIP Section</h3>
                                 <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wide">Premium</span>
                             </div>
+                            <p class="text-xs font-bold text-stone-400 font-mono">ID: #VIP-801</p>
                             <p class="text-xs text-stone-500 leading-relaxed">
                                 <strong class="text-stone-700">Amenities:</strong> Prime View, VIP Lounge Access, Free Parking, Catering
                             </p>
@@ -207,15 +209,9 @@
                             </div>
                         </div>
 
-                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-4 shrink-0">
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-2 shrink-0">
                             <span class="font-oswald text-3xl font-bold text-emerald-900">$75.00</span>
-                            
-                            <!-- Counter -->
-                            <div class="flex items-center gap-3 bg-stone-100/90 p-1.5 rounded-2xl border border-stone-200/80 shadow-inner">
-                                <button type="button" class="w-9 h-9 rounded-xl bg-white text-stone-900 font-extrabold hover:bg-stone-200 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">-</button>
-                                <span class="font-bold text-base w-6 text-center select-none">0</span>
-                                <button type="button" class="w-9 h-9 rounded-xl bg-emerald-400 text-slate-950 font-extrabold hover:bg-emerald-500 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">+</button>
-                            </div>
+                            <span class="selection-indicator text-xs font-bold text-stone-400 bg-stone-100 px-3 py-1.5 rounded-xl transition">Click to Select</span>
                         </div>
 
                     </div>
@@ -230,6 +226,7 @@
                                 <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-[#80B6E9] transition">Normal Tribune</h3>
                                 <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-sky-100 text-sky-800 uppercase tracking-wide">Popular</span>
                             </div>
+                            <p class="text-xs font-bold text-stone-400 font-mono">ID: #NOR-802</p>
                             <p class="text-xs text-stone-500 leading-relaxed">
                                 <strong class="text-stone-700">Amenities:</strong> Standard Seating, Access to Food Courts
                             </p>
@@ -243,15 +240,9 @@
                             </div>
                         </div>
 
-                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-4 shrink-0">
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-2 shrink-0">
                             <span class="font-oswald text-3xl font-bold text-sky-900">$25.00</span>
-                            
-                            <!-- Counter -->
-                            <div class="flex items-center gap-3 bg-stone-100/90 p-1.5 rounded-2xl border border-stone-200/80 shadow-inner">
-                                <button type="button" class="w-9 h-9 rounded-xl bg-white text-stone-900 font-extrabold hover:bg-stone-200 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">-</button>
-                                <span class="font-bold text-base w-6 text-center select-none">0</span>
-                                <button type="button" class="w-9 h-9 rounded-xl bg-[#80B6E9] text-stone-900 font-extrabold hover:bg-[#689ED0] active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">+</button>
-                            </div>
+                            <span class="selection-indicator text-xs font-bold text-stone-400 bg-stone-100 px-3 py-1.5 rounded-xl transition">Click to Select</span>
                         </div>
 
                     </div>
@@ -266,6 +257,7 @@
                                 <h3 class="font-oswald font-bold text-2xl text-stone-900 group-hover:text-orange-500 transition">Special / Fan Zone</h3>
                                 <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-orange-100 text-orange-800 uppercase tracking-wide">Atmosphere</span>
                             </div>
+                            <p class="text-xs font-bold text-stone-400 font-mono">ID: #FAN-803</p>
                             <p class="text-xs text-stone-500 leading-relaxed">
                                 <strong class="text-stone-700">Amenities:</strong> Fan Stand Behind Goal, Free Fan Scarf
                             </p>
@@ -279,15 +271,9 @@
                             </div>
                         </div>
 
-                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-4 shrink-0">
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-4 sm:pt-0 gap-2 shrink-0">
                             <span class="font-oswald text-3xl font-bold text-orange-900">$40.00</span>
-                            
-                            <!-- Counter -->
-                            <div class="flex items-center gap-3 bg-stone-100/90 p-1.5 rounded-2xl border border-stone-200/80 shadow-inner">
-                                <button type="button" class="w-9 h-9 rounded-xl bg-white text-stone-900 font-extrabold hover:bg-stone-200 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">-</button>
-                                <span class="font-bold text-base w-6 text-center select-none">0</span>
-                                <button type="button" class="w-9 h-9 rounded-xl bg-orange-400 text-slate-950 font-extrabold hover:bg-orange-500 active:scale-95 transition-all shadow-sm flex items-center justify-center text-lg">+</button>
-                            </div>
+                            <span class="selection-indicator text-xs font-bold text-stone-400 bg-stone-100 px-3 py-1.5 rounded-xl transition">Click to Select</span>
                         </div>
 
                     </div>
