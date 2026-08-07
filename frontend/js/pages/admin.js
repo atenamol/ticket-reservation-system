@@ -1,440 +1,1300 @@
-import { requireAdmin } from '../utils/authGuard.js';
-import {
-    getCancellationRequests, updateCancellation,
-    getReports, updateReport, getSuspiciousPayments
-} from '../services/api.js';
-import {
-    formatCurrency, formatDate,
-    getStatusBadgeClass, formatStatusText
-} from '../utils/helpers.js';
+import { requireAdmin } from "../utils/authGuard.js";
 
-// --- Global State ---
-let state = {
+import {
+    getCancellationRequests,
+    updateCancellation,
+    getReports,
+    updateReport,
+    getSuspiciousPayments
+} from "../services/api.js";
+
+import {
+    formatCurrency,
+    formatDate,
+    getStatusBadgeClass,
+    formatStatusText
+} from "../utils/helpers.js";
+
+/* ==========================================================
+   GLOBAL STATE
+========================================================== */
+
+const state = {
     cancellations: [],
     reports: [],
     payments: [],
-    activeTab: 'cancellations'
+    activeTab: "cancellations"
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+/* ==========================================================
+   STARTUP
+========================================================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
     if (!requireAdmin()) return;
 
-    // Issue 5: Global Logout Handler
-    document.querySelectorAll('#logout-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.location.href = '../index.html'; // Adjust based on your auth setup
-        });
-    });
+    setupLogout();
 
-    const isManagementPage = document.getElementById('cancellations-tbody') !== null;
+    const managementPage =
+        document.getElementById("cancellations-tbody") !== null;
 
-    if (isManagementPage) {
+    if (managementPage)
         initManagementPage();
-    } else {
+    else
         initDashboardPage();
-    }
+
 });
 
-// Comprehensive metrics calculation from dynamic database results
-// Calculate metrics directly matching transaction_schema.py
-function calculateMetrics(cancellations, reports, payments) {
-    return {
-        // Cancellations (AdminCancellationItem.status)
-        pendingCancellations: cancellations.filter(c => c.status === 'pending').length,
-        approvedCancellations: cancellations.filter(c => c.status === 'approved').length,
-        rejectedCancellations: cancellations.filter(c => c.status === 'rejected').length,
-        totalCancellations: cancellations.length,
+/* ==========================================================
+   LOGOUT
+========================================================== */
 
-        // Reports (AdminReportItem.status)
-        openReports: reports.filter(r => r.status === 'open').length,
-        inProgressReports: reports.filter(r => r.status === 'in_progress').length,
-        closedReports: reports.filter(r => r.status === 'closed').length,
-        totalReports: reports.length,
+function setupLogout() {
 
-        // Suspicious Payments (SuspiciousPaymentItem.payment_status)
-        pendingPayments: payments.filter(p => p.payment_status === 'pending').length,
-        completedPayments: payments.filter(p => p.payment_status === 'completed').length,
-        failedPayments: payments.filter(p => p.payment_status === 'failed').length,
-        totalSuspicious: payments.length
-    };
+    document
+        .querySelectorAll("#logout-btn")
+        .forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+
+                window.location.href = "../index.html";
+
+            });
+
+        });
+
 }
 
-/* ============================================================
-    Dashboard Page Logic
-============================================================ */
-// Helper for safe text updates
-function updateDOMElement(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value !== undefined && value !== null ? value : '--';
-}
+/* ==========================================================
+   DASHBOARD
+========================================================== */
 
 async function initDashboardPage() {
-    await loadDashboardData();
-    // Issue 7: Auto-refresh every 30 seconds
-    setInterval(loadDashboardData, 30000);
+
+    await loadDashboard();
+
+    setInterval(loadDashboard, 30000);
+
 }
 
-export async function loadDashboardData() {
+async function loadDashboard() {
+
     try {
-        const [cancellations, reports, payments] = await Promise.all([
-            getCancellationRequests().catch(() => []),
-            getReports().catch(() => []),
-            getSuspiciousPayments().catch(() => [])
-        ]);
 
-        const metrics = calculateMetrics(cancellations, reports, payments);
+        const [
+            cancellations,
+            reports,
+            payments
+        ] = await Promise.all([
 
-        // Header / Main Card Counts
-        updateDOMElement('cancel-main-count', metrics.pendingCancellations);
-        updateDOMElement('reports-main-count', metrics.openReports);
-        updateDOMElement('payments-main-count', metrics.totalSuspicious);
-
-        // Macro Overview Totals
-        updateDOMElement('stat-total-cancellations', metrics.totalCancellations);
-        updateDOMElement('stat-total-reports', metrics.totalReports);
-        updateDOMElement('stat-total-payments', metrics.totalSuspicious);
-
-        // Reports Breakdown
-        updateDOMElement('report-sub-open', metrics.openReports);
-        updateDOMElement('report-sub-inprogress', metrics.inProgressReports);
-        updateDOMElement('report-sub-closed', metrics.closedReports);
-
-        // Cancellations Breakdown
-        updateDOMElement('cancel-sub-pending', metrics.pendingCancellations);
-        updateDOMElement('cancel-sub-approved', metrics.approvedCancellations);
-        updateDOMElement('cancel-sub-rejected', metrics.rejectedCancellations);
-
-        // Payments Breakdown
-        updateDOMElement('payment-sub-pending', metrics.pendingPayments);
-        updateDOMElement('payment-sub-completed', metrics.completedPayments);
-        updateDOMElement('payment-sub-failed', metrics.failedPayments);
-
-    } catch (error) {
-        console.error("Failed to load dashboard metrics:", error);
-    }
-}
-
-function renderActivityFeed(cancellations, reports, payments) {
-    const feedContainer = document.getElementById('activity-feed');
-    if (!feedContainer) return;
-
-    const activities = [
-        ...reports.map(r => ({ type: 'report', title: 'Report Submitted', desc: `Report #${r.report_id}`, icon: 'messages-square', bg: '#D9EAFB', text: '#80B6E9' })),
-        ...cancellations.map(c => ({ type: 'cancellation', title: 'Cancellation Requested', desc: `Cancel #${c.cancel_id}`, icon: 'ticket-x', bg: '#D6F5E3', text: '#4AA96C' })),
-        ...payments.map(p => ({ type: 'payment', title: 'Suspicious Payment', desc: `Transaction #${p.payment_id}`, icon: 'shield-alert', bg: '#FDE2D3', text: '#F69664' }))
-    ];
-
-    // Take the 4 most recent events (assuming they are appended to the arrays over time)
-    const recentActivities = activities.slice(0, 4);
-
-    if (recentActivities.length === 0) {
-        feedContainer.innerHTML = `<p class="text-sm text-stone-500">No recent activity found.</p>`;
-        return;
-    }
-
-    feedContainer.innerHTML = recentActivities.map(act => `
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: ${act.bg}; color: ${act.text}">
-                <i data-lucide="${act.icon}" class="w-4 h-4"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-stone-800 truncate">${act.title}</p>
-                <p class="text-xs text-stone-400">${act.desc}</p>
-            </div>
-        </div>
-    `).join('');
-
-    if (window.lucide) window.lucide.createIcons(); // Render newly injected icons
-}
-
-/* ============================================================
-    Management Page Logic
-============================================================ */
-function initManagementPage() {
-    document.getElementById('global-search')?.addEventListener('input', renderActiveTab);
-    document.getElementById('status-filter')?.addEventListener('change', renderActiveTab);
-
-    // Issue 6: Parse URL parameters to open specific tabs automatically
-    const urlParams = new URLSearchParams(window.location.search);
-    const requestedTab = urlParams.get('tab');
-    if (requestedTab && ['cancellations', 'reports', 'payments'].includes(requestedTab)) {
-        state.activeTab = requestedTab;
-        if (typeof window.switchTab === 'function') {
-            window.switchTab(requestedTab);
-        }
-    }
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const tabId = e.currentTarget.id.replace('tab-btn-', '');
-            state.activeTab = tabId;
-            renderActiveTab();
-        });
-    });
-
-    document.getElementById('cancellation-form')?.addEventListener('submit', handleCancellationSubmit);
-    document.getElementById('report-form')?.addEventListener('submit', handleReportSubmit);
-
-    refreshAllData();
-
-    // Issue 7: Auto-refresh every 30 seconds
-    setInterval(refreshAllData, 30000);
-}
-
-async function refreshAllData() {
-    try {
-        const [cancellations, reports, payments] = await Promise.all([
             getCancellationRequests(),
             getReports(),
             getSuspiciousPayments()
+
         ]);
 
-        state.cancellations = cancellations || [];
-        state.reports = reports || [];
-        state.payments = payments || [];
+        const metrics =
+            calculateMetrics(
+                cancellations,
+                reports,
+                payments
+            );
 
-        // Leverage the DRY calculateMetrics function
-        const metrics = calculateMetrics(state.cancellations, state.reports, state.payments);
-        updateDOMElement('badge-cancellations-count', metrics.pendingCancellations);
-        updateDOMElement('badge-reports-count', metrics.openReports);
-        updateDOMElement('badge-payments-count', metrics.totalSuspicious);
+        updateText("cancel-main-count",
+            metrics.pendingCancellations);
+
+        updateText("reports-main-count",
+            metrics.openReports);
+
+        updateText("payments-main-count",
+            metrics.totalPayments);
+
+        updateText("stat-total-cancellations",
+            metrics.totalCancellations);
+
+        updateText("stat-total-reports",
+            metrics.totalReports);
+
+        updateText("stat-total-payments",
+            metrics.totalPayments);
+
+        updateText("cancel-sub-pending",
+            metrics.pendingCancellations);
+
+        updateText("cancel-sub-approved",
+            metrics.approvedCancellations);
+
+        updateText("cancel-sub-rejected",
+            metrics.rejectedCancellations);
+
+        updateText("report-sub-open",
+            metrics.openReports);
+
+        updateText("report-sub-inprogress",
+            metrics.inProgressReports);
+
+        updateText("report-sub-closed",
+            metrics.closedReports);
+
+        updateText("payment-sub-pending",
+            metrics.pendingPayments);
+
+        updateText("payment-sub-completed",
+            metrics.completedPayments);
+
+        updateText("payment-sub-failed",
+            metrics.failedPayments);
+
+        renderActivityFeed(
+            cancellations,
+            reports,
+            payments
+        );
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+    }
+
+}
+
+/* ==========================================================
+   METRICS
+========================================================== */
+
+function calculateMetrics(
+    cancellations,
+    reports,
+    payments
+) {
+
+    return {
+
+        totalCancellations:
+        cancellations.length,
+
+        pendingCancellations:
+        cancellations.filter(c =>
+            c.status === "pending").length,
+
+        approvedCancellations:
+        cancellations.filter(c =>
+            c.status === "approved").length,
+
+        rejectedCancellations:
+        cancellations.filter(c =>
+            c.status === "rejected").length,
+
+        totalReports:
+        reports.length,
+
+        openReports:
+        reports.filter(r =>
+            r.status === "open").length,
+
+        inProgressReports:
+        reports.filter(r =>
+            r.status === "in_progress").length,
+
+        closedReports:
+        reports.filter(r =>
+            r.status === "closed").length,
+
+        totalPayments:
+        payments.length,
+
+        pendingPayments:
+        payments.filter(p =>
+            p.payment_status === "pending").length,
+
+        completedPayments:
+        payments.filter(p =>
+            p.payment_status === "completed").length,
+
+        failedPayments:
+        payments.filter(p =>
+            p.payment_status === "failed").length
+
+    };
+
+}
+
+/* ==========================================================
+   ACTIVITY FEED
+========================================================== */
+
+function renderActivityFeed(
+    cancellations,
+    reports,
+    payments
+) {
+
+    const container =
+        document.getElementById("activity-feed");
+
+    if (!container)
+        return;
+
+    const activity = [];
+
+    reports.forEach(r => {
+
+        activity.push({
+
+            icon: "messages-square",
+            color: "#80B6E9",
+            bg: "#D9EAFB",
+
+            title: "New Report",
+
+            text:
+                `Report #${r.report_id}`
+
+        });
+
+    });
+
+    cancellations.forEach(c => {
+
+        activity.push({
+
+            icon: "ticket-x",
+            color: "#4AA96C",
+            bg: "#D6F5E3",
+
+            title: "Cancellation Request",
+
+            text:
+                `Cancellation #${c.cancel_id}`
+
+        });
+
+    });
+
+    payments.forEach(p => {
+
+        activity.push({
+
+            icon: "shield-alert",
+            color: "#F69664",
+            bg: "#FDE2D3",
+
+            title: "Suspicious Payment",
+
+            text:
+                `Payment #${p.payment_id}`
+
+        });
+
+    });
+
+    const recent = activity.slice(0, 5);
+
+    if (!recent.length) {
+
+        container.innerHTML = `
+            <p class="text-sm text-slate-500">
+                No recent activity.
+            </p>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML = recent.map(item => `
+
+<div class="flex items-center gap-3">
+
+<div
+class="w-10 h-10 rounded-full flex items-center justify-center"
+style="
+background:${item.bg};
+color:${item.color};
+">
+
+<i
+data-lucide="${item.icon}"
+class="w-5 h-5">
+</i>
+
+</div>
+
+<div>
+
+<p class="font-semibold">
+${item.title}
+</p>
+
+<p class="text-xs text-slate-500">
+${item.text}
+</p>
+
+</div>
+
+</div>
+
+`).join("");
+
+    if (window.lucide)
+        lucide.createIcons();
+
+}
+
+/* ==========================================================
+   SMALL HELPERS
+========================================================== */
+
+function updateText(id, value) {
+
+    const el =
+        document.getElementById(id);
+
+    if (el)
+        el.textContent = value;
+
+}
+
+/* ==========================================================
+   MANAGEMENT PAGE
+========================================================== */
+
+function initManagementPage() {
+
+    const search =
+        document.getElementById("global-search");
+
+    const filter =
+        document.getElementById("status-filter");
+
+    search?.addEventListener(
+        "input",
+        renderActiveTab
+    );
+
+    filter?.addEventListener(
+        "change",
+        renderActiveTab
+    );
+
+    document
+        .querySelectorAll(".tab-btn")
+        .forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                const tab =
+                    btn.id.replace(
+                        "tab-btn-",
+                        ""
+                    );
+
+                switchTab(tab);
+
+            });
+
+        });
+
+    document
+        .getElementById("cancellation-form")
+        ?.addEventListener(
+            "submit",
+            handleCancellationSubmit
+        );
+
+    document
+        .getElementById("report-form")
+        ?.addEventListener(
+            "submit",
+            handleReportSubmit
+        );
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const requested =
+        params.get("tab");
+
+    if (
+        requested &&
+        [
+            "cancellations",
+            "reports",
+            "payments"
+        ].includes(requested)
+    ) {
+
+        state.activeTab =
+            requested;
+
+        switchTab(requested);
+
+    }
+
+    refreshAllData();
+
+    setInterval(
+        refreshAllData,
+        30000
+    );
+
+}
+
+/* ==========================================================
+   LOAD MANAGEMENT DATA
+========================================================== */
+
+async function refreshAllData() {
+
+    try {
+
+        const [
+            cancellations,
+            reports,
+            payments
+        ] = await Promise.all([
+
+            getCancellationRequests(),
+
+            getReports(),
+
+            getSuspiciousPayments()
+
+        ]);
+
+        state.cancellations =
+            cancellations || [];
+
+        state.reports =
+            reports || [];
+
+        state.payments =
+            payments || [];
+
+        updateBadges();
 
         renderActiveTab();
-    } catch (error) {
-        console.error("Error refreshing data:", error);
+
     }
+
+    catch (err) {
+
+        console.error(err);
+
+    }
+
 }
 
-function renderActiveTab() {
-    switch (state.activeTab) {
-        case "cancellations":
-            renderCancellations();
-            break;
+/* ==========================================================
+   BADGES
+========================================================== */
 
-        case "reports":
-            renderReports();
-            break;
+function updateBadges() {
 
-        case "payments":
-            renderPayments();
-            break;
-    }
+    updateText(
+
+        "badge-cancellations-count",
+
+        state.cancellations.filter(
+
+            c => c.status === "pending"
+
+        ).length
+
+    );
+
+    updateText(
+
+        "badge-reports-count",
+
+        state.reports.filter(
+
+            r => r.status === "open"
+
+        ).length
+
+    );
+
+    updateText(
+
+        "badge-payments-count",
+
+        state.payments.length
+
+    );
+
 }
 
-function filterItems(items) {
+/* ==========================================================
+   TAB SWITCHING
+========================================================== */
+
+window.switchTab = switchTab;
+
+function switchTab(tab) {
+
+    state.activeTab = tab;
+
+    document
+        .querySelectorAll(".tab-content")
+        .forEach(section => {
+
+            section.classList.add("hidden");
+
+        });
+
+    document
+        .querySelectorAll(".tab-btn")
+        .forEach(btn => {
+
+            btn.classList.remove(
+
+                "border-slate-900",
+                "text-slate-900",
+                "bg-white",
+                "shadow-sm"
+
+            );
+
+            btn.classList.add(
+
+                "border-transparent",
+                "text-slate-500"
+
+            );
+
+        });
+
+    document
+        .getElementById(
+            `tab-${tab}`
+        )
+        ?.classList.remove(
+        "hidden"
+    );
+
+    document
+        .getElementById(
+            `tab-btn-${tab}`
+        )
+        ?.classList.remove(
+
+        "border-transparent",
+        "text-slate-500"
+
+    );
+
+    document
+        .getElementById(
+            `tab-btn-${tab}`
+        )
+        ?.classList.add(
+
+        "border-slate-900",
+        "text-slate-900",
+        "bg-white",
+        "shadow-sm"
+
+    );
+
+    renderActiveTab();
+
+}
+
+/* ==========================================================
+   FILTERING
+========================================================== */
+
+function getFilteredItems(items) {
+
     const search =
-        (document.getElementById("global-search")?.value || "")
-            .toLowerCase();
+
+        document
+            .getElementById(
+                "global-search"
+            )
+            ?.value
+            .toLowerCase()
+            .trim()
+
+        || "";
 
     const status =
-        document.getElementById("status-filter")?.value || "all";
+
+        document
+            .getElementById(
+                "status-filter"
+            )
+            ?.value
+
+        || "all";
 
     return items.filter(item => {
 
-        const matchesStatus =
-            status === "all" ||
-            item.status === status ||
+        const statusMatch =
+
+            status === "all"
+
+            ||
+
+            item.status === status
+
+            ||
+
             item.payment_status === status;
 
-        const matchesSearch =
+        const searchMatch =
+
             JSON.stringify(item)
+
                 .toLowerCase()
+
                 .includes(search);
 
-        return matchesStatus && matchesSearch;
+        return (
+
+            statusMatch
+
+            &&
+
+            searchMatch
+
+        );
+
     });
+
 }
+
+/* ==========================================================
+   ACTIVE TAB RENDER
+========================================================== */
+
+function renderActiveTab() {
+
+    switch (
+
+        state.activeTab
+
+        ) {
+
+        case "cancellations":
+
+            renderCancellations();
+
+            break;
+
+        case "reports":
+
+            renderReports();
+
+            break;
+
+        case "payments":
+
+            renderPayments();
+
+            break;
+
+    }
+
+}
+
+/* ==========================================================
+   GLOBAL REFRESH BUTTON
+========================================================== */
+
+window.refreshActiveTab =
+    refreshAllData;
+
+/* ==========================================================
+   CANCELLATION TABLE
+========================================================== */
 
 function renderCancellations() {
 
     const tbody =
-        document.getElementById("cancellations-tbody");
+        document.getElementById(
+            "cancellations-tbody"
+        );
 
     if (!tbody) return;
 
-    const data = filterItems(state.cancellations);
-
-    if (!data.length) {
-        tbody.innerHTML =
-            `<tr>
-                <td colspan="7" class="p-6 text-center text-slate-400">
-                    No cancellation requests.
-                </td>
-            </tr>`;
-        return;
-    }
-
-    tbody.innerHTML = data.map(item => `
-<tr>
-<td class="p-4">${item.cancel_id}</td>
-<td class="p-4">${item.user_name ?? item.user_id}</td>
-<td class="p-4">${item.reservation_id}</td>
-<td class="p-4">${formatCurrency(item.penalty_amount)}</td>
-<td class="p-4">${formatCurrency(item.refund_amount)}</td>
-<td class="p-4">
-<span class="${getStatusBadgeClass(item.status)}">
-${formatStatusText(item.status)}
-</span>
-</td>
-<td class="p-4 text-right">
-<button
-class="review-cancel px-3 py-1 rounded bg-slate-900 text-white"
-data-id="${item.cancel_id}">
-Review
-</button>
-</td>
-</tr>
-`).join("");
-
-    document.querySelectorAll(".review-cancel")
-        .forEach(btn => {
-            btn.onclick = () =>
-                openCancellationModal(
-                    Number(btn.dataset.id)
-                );
-        });
-}
-
-function renderReports() {
-
-    const tbody =
-        document.getElementById("reports-tbody");
-
-    if (!tbody) return;
-
-    const data = filterItems(state.reports);
-
-    if (!data.length) {
-        tbody.innerHTML =
-            `<tr>
-                <td colspan="7" class="p-6 text-center text-slate-400">
-                    No reports found.
-                </td>
-            </tr>`;
-        return;
-    }
-
-    tbody.innerHTML = data.map(item => `
-<tr>
-<td class="p-4">${item.report_id}</td>
-<td class="p-4">${item.user_name ?? item.user_id}</td>
-<td class="p-4">${item.ticket_id}</td>
-<td class="p-4">${item.subject}</td>
-<td class="p-4">
-<span class="${getStatusBadgeClass(item.status)}">
-${formatStatusText(item.status)}
-</span>
-</td>
-<td class="p-4">${formatDate(item.created_at)}</td>
-<td class="p-4 text-right">
-<button
-class="review-report px-3 py-1 rounded bg-slate-900 text-white"
-data-id="${item.report_id}">
-Open
-</button>
-</td>
-</tr>
-`).join("");
-
-    document.querySelectorAll(".review-report")
-        .forEach(btn => {
-            btn.onclick = () =>
-                openReportModal(
-                    Number(btn.dataset.id)
-                );
-        });
-}
-
-async function handleReportSubmit(e) {
-    e.preventDefault();
-
-    const id = document.getElementById("report-id").value;
-    const status = document.getElementById("report-status").value;
-
-    try {
-        await updateReport(id, { status });
-
-        await refreshAllData();
-
-        e.target.reset();
-
-        alert("Report updated successfully.");
-    } catch (err) {
-        alert(err.message);
-    }
-}
-
-/* ============================================================
-   PAYMENTS
-============================================================ */
-
-function renderPayments() {
-    const tbody = document.getElementById("payments-tbody");
-    if (!tbody) return;
-
-    const rows = getFilteredItems(
-        state.payments,
-        ["payment_id", "user_name", "gateway", "reference_number"]
-    );
+    const rows =
+        getFilteredItems(
+            state.cancellations
+        );
 
     if (!rows.length) {
+
         tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center py-6 text-stone-500">
-                    No suspicious payments found.
-                </td>
-            </tr>
-        `;
+<tr>
+<td colspan="7"
+class="p-8 text-center text-slate-400">
+No cancellation requests found.
+</td>
+</tr>
+`;
+
         return;
     }
 
     tbody.innerHTML = rows.map(item => `
-        <tr>
-            <td>${item.payment_id}</td>
-            <td>${item.user_name ?? "-"}</td>
-            <td>${formatCurrency(item.amount)}</td>
-            <td>${item.gateway ?? "-"}</td>
-            <td>
-                <span class="${getStatusBadgeClass(item.payment_status)}">
-                    ${formatStatusText(item.payment_status)}
-                </span>
-            </td>
-            <td>${formatDate(item.payment_date)}</td>
-        </tr>
-    `).join("");
+
+<tr>
+
+<td class="p-4 font-price">
+${item.cancel_id}
+</td>
+
+<td class="p-4">
+${item.user_name ?? item.user_id}
+</td>
+
+<td class="p-4">
+${item.reservation_id}
+</td>
+
+<td class="p-4 text-red-600">
+${formatCurrency(item.penalty_amount)}
+</td>
+
+<td class="p-4 text-emerald-600">
+${formatCurrency(item.refund_amount)}
+</td>
+
+<td class="p-4">
+
+<span class="${getStatusBadgeClass(item.status)}">
+
+${formatStatusText(item.status)}
+
+</span>
+
+</td>
+
+<td class="p-4 text-right">
+
+<button
+class="review-cancel
+px-3
+py-1
+rounded-lg
+bg-slate-900
+hover:bg-slate-800
+text-white"
+
+data-id="${item.cancel_id}">
+
+Review
+
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+    document
+        .querySelectorAll(".review-cancel")
+        .forEach(btn => {
+
+            btn.onclick = () => {
+
+                const id =
+                    Number(btn.dataset.id);
+
+                const request =
+                    state.cancellations.find(
+
+                        c =>
+                            c.cancel_id === id
+
+                    );
+
+                openCancellationModal(
+                    request
+                );
+
+            };
+
+        });
+
 }
 
-/* ============================================================
-   TAB SWITCHING
-============================================================ */
+/* ==========================================================
+   REPORT TABLE
+========================================================== */
 
-window.switchTab = function(tab) {
+function renderReports() {
 
-    state.activeTab = tab;
+    const tbody =
+        document.getElementById(
+            "reports-tbody"
+        );
 
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.remove("active");
-    });
+    if (!tbody) return;
+
+    const rows =
+        getFilteredItems(
+            state.reports
+        );
+
+    if (!rows.length) {
+
+        tbody.innerHTML = `
+<tr>
+<td colspan="7"
+class="p-8 text-center text-slate-400">
+No reports found.
+</td>
+</tr>
+`;
+
+        return;
+
+    }
+
+    tbody.innerHTML = rows.map(item => `
+
+<tr>
+
+<td class="p-4">
+${item.report_id}
+</td>
+
+<td class="p-4">
+${item.user_name ?? item.user_id}
+</td>
+
+<td class="p-4">
+${item.ticket_id}
+</td>
+
+<td class="p-4">
+${item.subject}
+</td>
+
+<td class="p-4">
+
+<span class="${getStatusBadgeClass(item.status)}">
+
+${formatStatusText(item.status)}
+
+</span>
+
+</td>
+
+<td class="p-4">
+
+${formatDate(item.created_at)}
+
+</td>
+
+<td class="p-4 text-right">
+
+<button
+class="review-report
+px-3
+py-1
+rounded-lg
+bg-slate-900
+hover:bg-slate-800
+text-white"
+
+data-id="${item.report_id}">
+
+Open
+
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
 
     document
-        .getElementById(`tab-btn-${tab}`)
-        ?.classList.add("active");
+        .querySelectorAll(".review-report")
+        .forEach(btn => {
+
+            btn.onclick = () => {
+
+                const id =
+                    Number(btn.dataset.id);
+
+                const report =
+                    state.reports.find(
+
+                        r =>
+                            r.report_id === id
+
+                    );
+
+                openReportModal(
+                    report
+                );
+
+            };
+
+        });
+
+}
+
+/* ==========================================================
+   SUSPICIOUS PAYMENTS
+========================================================== */
+
+function renderPayments() {
+
+    const tbody =
+        document.getElementById(
+            "payments-tbody"
+        );
+
+    if (!tbody) return;
+
+    const rows =
+        getFilteredItems(
+            state.payments
+        );
+
+    if (!rows.length) {
+
+        tbody.innerHTML = `
+<tr>
+<td colspan="7"
+class="p-8 text-center text-slate-400">
+No suspicious payments found.
+</td>
+</tr>
+`;
+
+        return;
+
+    }
+
+    tbody.innerHTML = rows.map(item => `
+
+<tr>
+
+<td class="p-4">
+${item.payment_id}
+</td>
+
+<td class="p-4">
+${item.user_name ?? "-"}
+</td>
+
+<td class="p-4">
+${item.reservation_id ?? "-"}
+</td>
+
+<td class="p-4">
+${formatCurrency(item.amount)}
+</td>
+
+<td class="p-4">
+${item.gateway ?? "-"}
+</td>
+
+<td class="p-4">
+${formatDate(item.payment_date)}
+</td>
+
+<td class="p-4">
+
+<span class="${getStatusBadgeClass(item.payment_status)}">
+
+${formatStatusText(item.payment_status)}
+
+</span>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+/* ==========================================================
+   CANCELLATION MODAL
+========================================================== */
+
+function openCancellationModal(request) {
+
+    if (!request) return;
+
+    document.getElementById("modal-cancel-id").textContent =
+        request.cancel_id;
+
+    document.getElementById("modal-cancel-id-input").value =
+        request.cancel_id;
+
+    document.getElementById("modal-cancel-user").textContent =
+        request.user_name ?? request.user_id;
+
+    document.getElementById("modal-cancel-reservation").textContent =
+        request.reservation_id;
+
+    document.getElementById("modal-cancel-penalty").textContent =
+        formatCurrency(request.penalty_amount);
+
+    document.getElementById("modal-cancel-refund").textContent =
+        formatCurrency(request.refund_amount);
+
+    document.getElementById("modal-cancel-status").value =
+        request.status === "pending"
+            ? "approved"
+            : request.status;
 
     document
-        .getElementById("cancellations-section")
-        ?.classList.add("hidden");
+        .getElementById("cancellation-modal")
+        .classList.remove("hidden");
+
+}
+
+function closeCancellationModal() {
 
     document
-        .getElementById("reports-section")
-        ?.classList.add("hidden");
+        .getElementById("cancellation-modal")
+        .classList.add("hidden");
+
+}
+
+window.closeCancellationModal =
+    closeCancellationModal;
+
+
+/* ==========================================================
+   REPORT MODAL
+========================================================== */
+
+function openReportModal(report) {
+
+    if (!report) return;
+
+    document.getElementById("modal-report-id").textContent =
+        report.report_id;
+
+    document.getElementById("report-id").value =
+        report.report_id;
+
+    document.getElementById("modal-report-user").textContent =
+        report.user_name ?? report.user_id;
+
+    document.getElementById("modal-report-ticket").textContent =
+        report.ticket_id;
+
+    document.getElementById("modal-report-subject").textContent =
+        report.subject;
+
+    document.getElementById("modal-report-description").textContent =
+        report.description ?? "-";
+
+    document.getElementById("report-status").value =
+        report.status;
+
+    document.getElementById("report-response").value =
+        report.admin_response ?? "";
 
     document
-        .getElementById("payments-section")
-        ?.classList.add("hidden");
+        .getElementById("report-modal")
+        .classList.remove("hidden");
+
+}
+
+function closeReportModal() {
 
     document
-        .getElementById(`${tab}-section`)
-        ?.classList.remove("hidden");
+        .getElementById("report-modal")
+        .classList.add("hidden");
 
-    renderActiveTab();
-};
+}
+
+window.closeReportModal =
+    closeReportModal;
+
+
+/* ==========================================================
+   CLICK OUTSIDE TO CLOSE
+========================================================== */
+
+document.addEventListener("click", e => {
+
+    if (
+        e.target.id === "cancellation-modal"
+    ) {
+        closeCancellationModal();
+    }
+
+    if (
+        e.target.id === "report-modal"
+    ) {
+        closeReportModal();
+    }
+
+});
+
+
+/* ==========================================================
+   ESC KEY CLOSE
+========================================================== */
+
+document.addEventListener("keydown", e => {
+
+    if (e.key !== "Escape")
+        return;
+
+    closeCancellationModal();
+
+    closeReportModal();
+
+});
+
+/* ==========================================================
+   CANCELLATION SUBMIT
+========================================================== */
+
+async function handleCancellationSubmit(e) {
+
+    e.preventDefault();
+
+    const id =
+        document.getElementById(
+            "modal-cancel-id-input"
+        ).value;
+
+    const status =
+        document.getElementById(
+            "modal-cancel-status"
+        ).value;
+
+    try {
+
+        await updateCancellation(id, {
+            status
+        });
+
+        closeCancellationModal();
+
+        await refreshAllData();
+
+        alert(
+            "Cancellation updated successfully."
+        );
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+        alert(
+            err.message ??
+            "Failed to update cancellation."
+        );
+
+    }
+
+}
+
+
+/* ==========================================================
+   REPORT SUBMIT
+========================================================== */
+
+async function handleReportSubmit(e) {
+
+    e.preventDefault();
+
+    const id =
+        document.getElementById(
+            "report-id"
+        ).value;
+
+    const status =
+        document.getElementById(
+            "report-status"
+        ).value;
+
+    const response =
+        document.getElementById(
+            "report-response"
+        ).value;
+
+    try {
+
+        await updateReport(id, {
+
+            status,
+
+            admin_response: response
+
+        });
+
+        closeReportModal();
+
+        await refreshAllData();
+
+        alert(
+            "Report updated successfully."
+        );
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+        alert(
+            err.message ??
+            "Failed to update report."
+        );
+
+    }
+
+}
+
+
+/* ==========================================================
+   GLOBAL HELPERS
+========================================================== */
+
+window.refreshAllData =
+    refreshAllData;
+
+window.renderActiveTab =
+    renderActiveTab;
+
+
+/* ==========================================================
+   SAFETY
+========================================================== */
+
+window.addEventListener(
+    "error",
+    e => {
+
+        console.error(
+            "Admin JS:",
+            e.error ?? e.message
+        );
+
+    }
+);
+
+
+/* ==========================================================
+   END
+========================================================== */
