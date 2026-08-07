@@ -512,16 +512,14 @@ class TransactionService:
 
                 if status == "approved":
 
-                    reservation = request
-
                     queries.cancel_reservation(
                         cursor,
-                        reservation["reservation_id"],
+                        request["reservation_id"],
                     )
 
                     ticket = queries.get_ticket_id_from_reservation(
                         cursor,
-                        reservation["reservation_id"],
+                        request["reservation_id"],
                     )
 
                     queries.increase_capacity(

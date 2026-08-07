@@ -15,6 +15,11 @@
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
 
     <!-- Tailwind Custom Config for Design Specs -->
     <script>
@@ -37,6 +42,39 @@
         }
     </script>
 </head>
+
+<script>
+    // 1. Define switchTab globally so buttons or external scripts can invoke it
+    window.switchTab = function(tabName) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('border-slate-900', 'text-slate-900', 'bg-white', 'shadow-sm');
+            btn.classList.add('border-transparent', 'text-slate-500');
+        });
+
+        const targetTab = document.getElementById(`tab-${tabName}`);
+        const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+
+        if (targetTab && activeBtn) {
+            targetTab.classList.remove('hidden');
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.add('border-slate-900', 'text-slate-900', 'bg-white', 'shadow-sm');
+        }
+    };
+
+    // 2. Read URL parameters on page load and switch tabs automatically (e.g. ?tab=reports)
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('tab');
+
+        if (activeTab) {
+            window.switchTab(activeTab);
+        }
+    });
+</script>
+</body>
+</html>
+
 <body class="bg-brandBg font-body text-slate-800 min-h-screen flex flex-col">
 
 <!-- Header Navigation -->
@@ -67,6 +105,10 @@
     <!-- Page Header & Metrics Summary -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
+            <!-- Added Back Button -->
+            <a href="dashboard.html" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 px-4 py-2 rounded-lg shadow-sm mb-4 transition">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Back to Dashboard
+            </a>
             <h1 class="font-heading text-3xl md:text-4xl uppercase tracking-wide text-slate-900">
                 Transactions & Support Dashboard
             </h1>
@@ -336,6 +378,6 @@
         activeBtn.classList.add('border-slate-900', 'text-slate-900', 'bg-white', 'shadow-sm');
     }
 </script>
-<script src="../js/admin.js"></script>
+<script type="module" src="../js/pages/admin.js"></script>
 </body>
 </html>
