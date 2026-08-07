@@ -551,10 +551,9 @@
                         <i class="bi bi-geo-alt-fill absolute left-4 top-3.5 text-gray-400 icon-hover"></i>
                         <select id="city" class="input-field w-full pl-11 pr-4 py-3 appearance-none bg-white/30 backdrop-blur-sm">
                             <option value="">Select your city</option>
-                            <option value="tehran">Tehran</option>
-                            <option value="mashhad">Mashhad</option>
-                            <option value="isfahan">Isfahan</option>
-                            <option value="shiraz">Shiraz</option>
+                            <option value="1">Tehran</option>
+                            <option value="2">Mashhad</option>
+                            <option value="3">Isfahan</option>
                         </select>
                     </div>
                 </div>
@@ -584,33 +583,6 @@
         </section>
     </main>
 
-    <script src="js/signup.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailOption = document.getElementById('email-option');
-            const phoneOption = document.getElementById('phone-option');
-            const emailGroup = document.getElementById('email-group');
-            const phoneGroup = document.getElementById('phone-group');
-
-            emailOption.addEventListener('click', function() {
-                this.classList.remove('active-phone');
-                this.classList.add('active-email');
-                phoneOption.classList.remove('active-email');
-                phoneOption.classList.remove('active-phone');
-                emailGroup.classList.remove('hidden');
-                phoneGroup.classList.add('hidden');
-            });
-
-            phoneOption.addEventListener('click', function() {
-                this.classList.remove('active-email');
-                this.classList.add('active-phone');
-                emailOption.classList.remove('active-phone');
-                emailOption.classList.remove('active-email');
-                phoneGroup.classList.remove('hidden');
-                emailGroup.classList.add('hidden');
-            });
-        });
-    </script>
+    <script type="module" src="js/pages/signup.js"></script>
 </body>
 </html>

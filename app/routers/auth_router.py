@@ -15,19 +15,17 @@ from app.schemas.auth_schema import (
     AuthResponse,
     ForgotPasswordRequest,
     ResetPasswordRequest,
-    VerifyResetOTPRequest
 )
 
 from app.services.auth_service import (
     signup,
     login_with_password,
     login_with_otp,
-    verify_login_otp,
+    verify_otp_code,
     update_profile,
     forgot_password,
     reset_password,
     verify_otp_code,
-    verify_reset_otp
 )
 
 router = APIRouter(

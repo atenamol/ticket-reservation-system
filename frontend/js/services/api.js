@@ -49,10 +49,8 @@ const request = async (endpoint,
         Object.assign(headers, authHeaders());
     }
 
-    const response = await fetch(
-        `${CONFIG.API_BASE_URL}${endpoint}`,
-        {method, headers, body: body ? JSON.stringify(body) : null}
-    );
+    const response = await fetch(buildURL(endpoint),{method, headers,
+        body: body ? JSON.stringify(body) : null});
 
     let data = null;
 
