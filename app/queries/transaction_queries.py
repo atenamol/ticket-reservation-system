@@ -169,7 +169,7 @@ def cancel_reservation(cursor, reservation_id):
         UPDATE Reservation
         SET status = 'cancelled'
         WHERE reservation_id = %s
-            AND status = 'reserved'
+          AND status IN ('reserved', 'paid')
         """,
         (reservation_id,),
     )
