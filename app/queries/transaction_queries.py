@@ -305,9 +305,12 @@ def get_pending_cancellation_by_reservation(
 def get_all_cancellation_requests(cursor):
     cursor.execute(
         """
-        SELECT *
-        FROM CancellationRequest
-        ORDER BY requested_at DESC
+        SELECT
+            cr.*,
+            CONCAT(u.first_name, ' ', u.last_name) AS user_name
+        FROM CancellationRequest cr
+                 JOIN User u ON cr.user_id = u.user_id
+        ORDER BY cr.requested_at DESC
         """
     )
     return cursor.fetchall()
@@ -408,9 +411,12 @@ def get_user_reports(cursor, user_id):
 def get_all_reports(cursor):
     cursor.execute(
         """
-        SELECT *
-        FROM Report
-        ORDER BY created_at DESC
+        SELECT
+            r.*,
+            CONCAT(u.first_name, ' ', u.last_name) AS user_name
+        FROM Report r
+                 JOIN User u ON r.user_id = u.user_id
+        ORDER BY r.created_at DESC
         """
     )
     return cursor.fetchall()
@@ -439,10 +445,13 @@ def update_report(
 def get_suspicious_payments(cursor):
     cursor.execute(
         """
-        SELECT *
-        FROM Payment
-        WHERE payment_status != 'completed'
-        ORDER BY transaction_date DESC
+        SELECT
+            p.*,
+            CONCAT(u.first_name, ' ', u.last_name) AS user_name
+        FROM Payment p
+                 JOIN User u ON p.user_id = u.user_id
+        WHERE p.payment_status != 'completed'
+        ORDER BY p.transaction_date DESC
         """
     )
     return cursor.fetchall()

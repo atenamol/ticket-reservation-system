@@ -60,22 +60,24 @@
 
     <!-- 1. Header -->
     <header class="bg-[#FBF9F5]/50 backdrop-blur-xl border-b border-stone-200/50 shadow-sm sticky top-0 z-50 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
 
-        <div class="w-28 sm:w-36">
+        <div class="w-24 sm:w-36">
             <a href="index.html" class="text-stone-600 hover:text-stone-900 font-medium text-xs sm:text-sm flex items-center gap-1.5 transition group">
                 <span class="group-hover:-translate-x-1 transition-transform">&larr;</span> 
                 <span>Home</span>
             </a>
         </div>
 
-        <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
-            <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+        <!-- Center Logo -->
+        <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group max-w-[120px] sm:max-w-none">
+            <img src="assets/images/header-logo.webp" alt="TicketHub Logo" class="h-18 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
         </a>
 
-        <div class="relative group">
+            <!-- Right Animated Login/Signup Button -->
+        <div class="relative group w-auto flex justify-end">
             <div class="absolute -inset-0.5 bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500 animated-gradient-btn animate-gradient-shift"></div>
-            <a href="login.html" class="relative bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] animated-gradient-btn animate-gradient-shift text-slate-950 font-chakra font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-300 shadow-md flex items-center hover:scale-105">
+            <a href="login.html" class="relative bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] animated-gradient-btn animate-gradient-shift text-slate-950 font-chakra font-bold text-[10px] sm:text-sm px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 shadow-md flex items-center hover:scale-105 whitespace-nowrap">
                 <span>Login / Signup</span>
             </a>
         </div>
