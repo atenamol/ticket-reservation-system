@@ -756,7 +756,12 @@ ${item.cancel_id}
 </td>
 
 <td class="p-4">
-${item.user_name ?? item.user_id}
+    <span
+        title="User ID: ${item.user_id}"
+        class="cursor-help"
+    >
+        ${item.user_name ?? item.user_id}
+    </span>
 </td>
 
 <td class="p-4">
@@ -873,7 +878,12 @@ ${item.report_id}
 </td>
 
 <td class="p-4">
-${item.user_name ?? item.user_id}
+    <span
+        title="User ID: ${item.user_id}"
+        class="cursor-help"
+    >
+        ${item.user_name ?? item.user_id}
+    </span>
 </td>
 
 <td class="p-4">
@@ -992,7 +1002,12 @@ ${item.payment_id}
 </td>
 
 <td class="p-4">
-${item.user_name ?? "-"}
+    <span
+        title="User ID: ${item.user_id}"
+        class="cursor-help"
+    >
+        ${item.user_name ?? item.user_id}
+    </span>
 </td>
 
 <td class="p-4">
