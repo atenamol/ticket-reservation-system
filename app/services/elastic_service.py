@@ -190,8 +190,9 @@ def delete_ticket(ticket_id: int):
         ignore=[404],
     )
 
-
 def sync_all():
+    create_index()
+
     con = get_connection()
 
     try:
