@@ -23,7 +23,7 @@ const CONFIG = {
     CATALOG: {
       CITIES: "/catalog/cities",
       VENUES: "/catalog/venues",
-      TICKETS_SEARCH: "/catalog/tickets/search",
+      TICKETS_SEARCH: "/tickets/search",
       TICKET_DETAIL: (id) => `/catalog/tickets/${id}`,
     },
     TRANSACTIONS: {
