@@ -1102,7 +1102,7 @@ function openReportModal(report) {
     document.getElementById("modal-report-id").textContent =
         report.report_id;
 
-    document.getElementById("report-id").value =
+    document.getElementById("modal-report-id-input").value =
         report.report_id;
 
     document.getElementById("modal-report-user").textContent =
@@ -1117,16 +1117,15 @@ function openReportModal(report) {
     document.getElementById("modal-report-description").textContent =
         report.description ?? "-";
 
-    document.getElementById("report-status").value =
+    document.getElementById("modal-report-status").value =
         report.status;
 
-    document.getElementById("report-response").value =
+    document.getElementById("modal-report-response").value =
         report.admin_response ?? "";
 
     document
         .getElementById("report-modal")
         .classList.remove("hidden");
-
 }
 
 function closeReportModal() {
@@ -1235,17 +1234,17 @@ async function handleReportSubmit(e) {
 
     const id =
         document.getElementById(
-            "report-id"
+            "modal-report-id-input"
         ).value;
 
     const status =
         document.getElementById(
-            "report-status"
+            "modal-report-status"
         ).value;
 
     const response =
         document.getElementById(
-            "report-response"
+            "modal-report-response"
         ).value;
 
     try {
@@ -1278,7 +1277,6 @@ async function handleReportSubmit(e) {
         );
 
     }
-
 }
 
 
