@@ -374,16 +374,19 @@ function initManagementPage() {
     const filter =
         document.getElementById("status-filter");
 
+    // Search
     search?.addEventListener(
         "input",
         renderActiveTab
     );
 
+    // Status filter
     filter?.addEventListener(
         "change",
         renderActiveTab
     );
 
+    // Tab buttons
     document
         .querySelectorAll(".tab-btn")
         .forEach(btn => {
@@ -396,12 +399,16 @@ function initManagementPage() {
                         ""
                     );
 
+                state.activeTab = tab;
+
                 switchTab(tab);
+                renderActiveTab();
 
             });
 
         });
 
+    // Cancellation form
     document
         .getElementById("cancellation-form")
         ?.addEventListener(
@@ -409,6 +416,7 @@ function initManagementPage() {
             handleCancellationSubmit
         );
 
+    // Report form
     document
         .getElementById("report-form")
         ?.addEventListener(
@@ -416,6 +424,7 @@ function initManagementPage() {
             handleReportSubmit
         );
 
+    // Open a specific tab from URL
     const params =
         new URLSearchParams(
             window.location.search
@@ -437,16 +446,34 @@ function initManagementPage() {
             requested;
 
         switchTab(requested);
-
     }
 
+    if (
+        requested &&
+        [
+            "cancellations",
+            "reports",
+            "payments"
+        ].includes(requested)
+    ) {
+
+        state.activeTab =
+            requested;
+
+        switchTab(requested);
+    }
+
+    // Initialize filter menu
+    setupFilterMenu();
+
+    // Initial data load
     refreshAllData();
 
+    // Refresh every 30 seconds
     setInterval(
         refreshAllData,
         30000
     );
-
 }
 
 /* ==========================================================
@@ -544,6 +571,8 @@ function switchTab(tab) {
 
     state.activeTab = tab;
 
+    updateFilterOptions();
+
     document
         .querySelectorAll(".tab-content")
         .forEach(section => {
@@ -617,61 +646,196 @@ function switchTab(tab) {
 function getFilteredItems(items) {
 
     const search =
-
-        document
-            .getElementById(
-                "global-search"
-            )
-            ?.value
+        (
+            document
+                .getElementById('global-search')
+                ?.value || ''
+        )
             .toLowerCase()
-            .trim()
-
-        || "";
+            .trim();
 
     const status =
-
         document
-            .getElementById(
-                "status-filter"
-            )
-            ?.value
-
-        || "all";
+            .getElementById('status-filter')
+            ?.value || 'all';
 
     return items.filter(item => {
 
+        const itemStatus =
+            item.status ?? item.payment_status ?? '';
+
         const statusMatch =
-
-            status === "all"
-
-            ||
-
-            item.status === status
-
-            ||
-
-            item.payment_status === status;
+            status === 'all' ||
+            itemStatus.toLowerCase() === status;
 
         const searchMatch =
-
             JSON.stringify(item)
-
                 .toLowerCase()
-
                 .includes(search);
 
-        return (
+        return statusMatch && searchMatch;
+    });
+}
 
-            statusMatch
+/* ============================================================
+   FILTER MENU
+============================================================ */
 
-            &&
+const filterOptionsByTab = {
+    cancellations: [
+        { value: 'all', label: 'All statuses' },
+        { value: 'pending', label: 'Pending' },
+        { value: 'approved', label: 'Approved' },
+        { value: 'rejected', label: 'Rejected' }
+    ],
 
-            searchMatch
+    reports: [
+        { value: 'all', label: 'All statuses' },
+        { value: 'open', label: 'Open' },
+        { value: 'in_progress', label: 'In Progress' },
+        { value: 'closed', label: 'Closed' }
+    ],
 
-        );
+    payments: [
+        { value: 'all', label: 'All statuses' },
+        { value: 'pending', label: 'Pending' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'failed', label: 'Failed' }
+    ]
+};
 
+function setupFilterMenu() {
+
+    const button = document.getElementById('filter-button');
+    const menu = document.getElementById('filter-menu');
+    const clearButton = document.getElementById('clear-filter');
+
+    if (!button || !menu) return;
+
+    button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        menu.classList.toggle('hidden');
     });
 
+    clearButton?.addEventListener('click', () => {
+        setStatusFilter('all');
+        menu.classList.add('hidden');
+    });
+
+    menu.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', () => {
+        menu.classList.add('hidden');
+    });
+}
+
+function updateFilterOptions() {
+
+    const container = document.getElementById('filter-options');
+    const hiddenInput = document.getElementById('status-filter');
+
+    if (!container || !hiddenInput) return;
+
+    const options =
+        filterOptionsByTab[state.activeTab] ||
+        filterOptionsByTab.cancellations;
+
+    // If current filter does not exist in the new tab,
+    // reset it automatically.
+    const currentValue = hiddenInput.value;
+
+    if (!options.some(option => option.value === currentValue)) {
+        hiddenInput.value = 'all';
+    }
+
+    container.innerHTML = options.map(option => {
+
+        const selected =
+            hiddenInput.value === option.value;
+
+        return `
+            <button
+                type="button"
+                data-filter-status="${option.value}"
+                class="w-full flex items-center justify-between
+                       px-3 py-2.5 rounded-xl text-sm
+                       transition
+                       ${selected
+            ? 'bg-slate-100 text-slate-900 font-semibold'
+            : 'text-slate-600 hover:bg-slate-50'}">
+
+                <span>${option.label}</span>
+
+                ${selected
+            ? `<i data-lucide="check" class="w-4 h-4 text-slate-900"></i>`
+            : ''}
+            </button>
+        `;
+    }).join('');
+
+    container.querySelectorAll('[data-filter-status]')
+        .forEach(button => {
+
+            button.addEventListener('click', () => {
+
+                setStatusFilter(
+                    button.dataset.filterStatus
+                );
+
+                document
+                    .getElementById('filter-menu')
+                    ?.classList.add('hidden');
+            });
+
+        });
+
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
+
+    updateFilterButton();
+}
+
+function setStatusFilter(status) {
+
+    const hiddenInput =
+        document.getElementById('status-filter');
+
+    if (!hiddenInput) return;
+
+    hiddenInput.value = status;
+
+    updateFilterOptions();
+    renderActiveTab();
+}
+
+function updateFilterButton() {
+
+    const hiddenInput =
+        document.getElementById('status-filter');
+
+    const label =
+        document.getElementById('filter-label');
+
+    if (!hiddenInput || !label) return;
+
+    const status = hiddenInput.value;
+
+    if (status === 'all') {
+        label.textContent = 'Filters';
+        return;
+    }
+
+    const options =
+        filterOptionsByTab[state.activeTab] || [];
+
+    const selected =
+        options.find(option => option.value === status);
+
+    label.textContent =
+        selected?.label || 'Filters';
 }
 
 /* ==========================================================

@@ -142,25 +142,105 @@
         </button>
     </div>
 
-    <!-- Global Table Controls (Search & Filter) -->
-    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
+    <!-- Global Table Controls -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6
+            flex flex-col sm:flex-row gap-4 items-center justify-between">
+
+        <!-- Search -->
         <div class="relative w-full sm:w-96">
-            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-            <input type="text" id="global-search" placeholder="Search by ID, User, or Subject..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-full text-sm focus:ring-2 focus:ring-slate-900 outline-none">
+            <i
+                    data-lucide="search"
+                    class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400">
+            </i>
+
+            <input
+                    type="text"
+                    id="global-search"
+                    placeholder="Search by ID, User, or Subject..."
+                    class="w-full pl-10 pr-4 py-2.5 border border-slate-200
+                   rounded-full text-sm bg-slate-50
+                   focus:ring-2 focus:ring-slate-900
+                   focus:border-transparent outline-none transition">
         </div>
+
+        <!-- Filter + Refresh -->
         <div class="flex items-center gap-3 w-full sm:w-auto">
-            <select id="status-filter" class="w-full sm:w-auto border border-slate-200 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-slate-50">
-                <option value="all">All Statuses</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-                <option value="open">Open</option>
-                <option value="in_progress">In Progress</option>
-                <option value="closed">Closed</option>
-            </select>
-            <button onclick="refreshActiveTab()" class="text-sm font-semibold flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white transition whitespace-nowrap">
-                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
+
+            <!-- Filter Dropdown -->
+            <div class="relative">
+
+                <input
+                        type="hidden"
+                        id="status-filter"
+                        value="all">
+
+                <button
+                        type="button"
+                        id="filter-button"
+                        class="inline-flex items-center gap-2 px-4 py-2.5
+                       rounded-full border border-slate-200
+                       bg-white hover:bg-slate-50
+                       text-sm font-semibold text-slate-700
+                       transition">
+
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+
+                    <span id="filter-label">Filters</span>
+
+                </span>
+
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+
+                <!-- Filter Menu -->
+                <div
+                        id="filter-menu"
+                        class="hidden absolute right-0 top-full mt-2
+                       w-64 bg-white rounded-2xl
+                       border border-slate-200 shadow-xl
+                       z-40 p-3">
+
+                    <div class="flex items-center justify-between mb-2 px-2">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-900">
+                                Filter by status
+                            </p>
+                            <p class="text-xs text-slate-400">
+                                Choose a status
+                            </p>
+                        </div>
+
+                        <button
+                                type="button"
+                                id="clear-filter"
+                                class="text-xs font-semibold text-slate-400
+                               hover:text-red-500 transition">
+                            Clear
+                        </button>
+                    </div>
+
+                    <div
+                            id="filter-options"
+                            class="space-y-1">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Refresh -->
+            <button
+                    type="button"
+                    onclick="refreshActiveTab()"
+                    class="inline-flex items-center justify-center gap-2
+                   px-4 py-2.5 rounded-full
+                   bg-slate-900 hover:bg-slate-800
+                   text-white text-sm font-semibold
+                   transition whitespace-nowrap">
+
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                Refresh
             </button>
+
         </div>
     </div>
 
