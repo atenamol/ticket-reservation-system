@@ -349,6 +349,22 @@ def reset_password(request: ResetPasswordRequest) -> MessageResponse:
         close(connection)
 
 
+def get_profile(user_id: int) -> UserResponse:
+    connection = get_connection()
+
+    try:
+        with connection.cursor() as cursor:
+            user = get_user_by_id(cursor=cursor,user_id=user_id)
+
+            if user is None:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                    detail="User not found.")
+
+            return UserResponse.model_validate(user)
+
+    finally:
+        close(connection)
+
 def update_profile(user_id: int, request: UpdateProfileRequest) -> UserResponse:
 
     connection = get_connection()

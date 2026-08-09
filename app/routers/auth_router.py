@@ -18,6 +18,7 @@ from app.schemas.auth_schema import (
 )
 
 from app.services.auth_service import (
+    get_profile,
     signup,
     login_with_password,
     login_with_otp,
@@ -74,6 +75,14 @@ def verify_otp_route(
 ):
 
     return verify_otp_code(request)
+
+
+@router.get("/profile", response_model=UserResponse, status_code=200,
+            summary="Get current user profile")
+def get_profile_route(current_user: dict[str, Any] = Depends(get_current_user)):
+
+    return get_profile(user_id=current_user["user_id"])
+
 
 @router.put("/profile", response_model=UserResponse, status_code=200, 
             summary="Update profile")
