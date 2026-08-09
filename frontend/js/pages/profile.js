@@ -1,4 +1,4 @@
-import {getProfile, updateProfile}from "./services/api.js";
+import {getProfile, updateProfile, getCities}from "./services/api.js";
 import {getUserData, setUserData}from "./utils/storage.js";
 import {isValidEmail, isValidPhone}from "./utils/validator.js";
 
@@ -44,7 +44,9 @@ async function initProfilePage() {
         saveBtn.disabled = true;
         saveBtn.innerHTML = `<i class="bi bi-hourglass-split"></i>Loading...`;
 
-        const profile = await getProfile();
+        const [profile, cities] = await Promise.all([getProfile(), getCities()]);
+    
+        fillCities(cities);
         fillProfileForm(profile);
     }catch (error){
         console.error("Failed to load profile:", error);
@@ -70,6 +72,20 @@ async function initProfilePage() {
     setupLabelZoom(emailInput, labelEmail);
     setupLabelZoom(phoneInput, labelPhone);
     setupLabelZoom(cityInput, labelCity);
+    
+    // Fill Cities
+    function fillCities(cities){
+        cityInput.innerHTML = `<option value="">Select City</option>`;
+
+        cities.forEach(city => {
+            const option = document.createElement("option");
+
+            option.value = city.city_id;
+            option.textContent = city.name;
+
+            cityInput.appendChild(option);
+        });
+    }
     
     // Fill Form
     function fillProfileForm(userData){

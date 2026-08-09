@@ -1,10 +1,11 @@
-import {signup} from "../services/api.js";
+import {signup, getCities} from "../services/api.js";
 import {setAuthData} from "../utils/storage.js";
 import {isValidEmail, isValidPhone, validatePassword, isValidName
 }from "../utils/validators.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     initContactToggle();
+    loadCities();
     initSignupForm();
 });
 
@@ -43,6 +44,34 @@ function initContactToggle() {
     });
 }
 
+async function loadCities() {
+    const citySelect = document.getElementById("city");
+
+    if (!citySelect) return;
+
+    try {
+        citySelect.innerHTML = `<option value="">Loading cities...</option>`;
+
+        const cities = await getCities();
+
+        citySelect.innerHTML = `<option value="">Select your city</option>`;
+
+        cities.forEach(city => {
+            const option = document.createElement("option");
+
+            option.value = city.city_id;
+            option.textContent = city.name;
+
+            citySelect.appendChild(option);
+        });
+
+    }catch (error){
+        console.error("Failed to load cities:", error);
+
+        citySelect.innerHTML = `<option value="">Failed to load cities</option>`;
+    }
+}
+
 /**
  * Signup form submit
  */
@@ -63,7 +92,7 @@ async function handleSignup(event) {
         const phone =document.getElementById("phone").value.trim();
         const password =document.getElementById("password").value;
         const confirmPassword =document.getElementById("confirm-password").value;
-        const city =document.getElementById("city").value;
+        const cityId = document.getElementById("city").value;
 
         // -------------------------
         // Validation
@@ -97,16 +126,14 @@ async function handleSignup(event) {
         // Prepare Request Body
         // -------------------------
 
-        const signupData = {first_name: firstName, last_name: lastName, password: password};
-        if (email) {
-            signupData.email = email;
-        }
-        if (phone) {
-            signupData.phone = phone;
-        }
-        if (city) {
-            signupData.city_id =Number(city);
-        }
+        const signupData = {
+            first_name: firstName, 
+            last_name: lastName, 
+            email: email || null,
+            phone: phone || null,
+            password: password,
+            city_id: cityId ? Number(cityId) : null
+        };
 
         // -------------------------
         // API Call
