@@ -86,7 +86,7 @@ def check_connection() -> bool:
 def create_index():
     if client.indices.exists(index=ELASTIC_INDEX):
         print(f"Index '{ELASTIC_INDEX}' already exists")
-        return
+        return False
 
     client.indices.create(
         index=ELASTIC_INDEX,
@@ -98,6 +98,7 @@ def create_index():
     )
 
     print(f"Index '{ELASTIC_INDEX}' created")
+    return True
 
 
 def prepare_ticket(ticket):
