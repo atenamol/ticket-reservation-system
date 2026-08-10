@@ -180,6 +180,45 @@ class TransactionService:
         finally:
             close(connection)
 
+
+    @staticmethod
+    def expire_reservations():
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                expired_reservations = queries.get_expired_reservations(cursor)
+
+                expired_count = 0
+
+                for reservation in expired_reservations:
+
+                    updated = queries.expire_reservation(
+                        cursor,
+                        reservation["reservation_id"],
+                    )
+
+                    # Only return capacity if reservation
+                    # was actually changed from reserved -> cancelled.
+                    if updated == 1:
+                        queries.increase_capacity(
+                            cursor,
+                            reservation["ticket_id"],
+                        )
+
+                        expired_count += 1
+
+                commit(connection)
+
+                return expired_count
+
+        except Exception:
+            rollback(connection)
+            raise
+
+        finally:
+            close(connection)
 # ---------- Payment ----------
 
     @staticmethod

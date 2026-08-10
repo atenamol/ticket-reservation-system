@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Checkout | Sports Ticket</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#FBF9F5',
+                        brandBlue: '#80B6E9',
+                        brandBlueDark: '#4A90E2',
+                        brandOrange: '#F6AD55',
+                        brandOrangeLight: '#FBD38D',
+                        brandOrangeDark: '#ED8936',
+                    },
+                    fontFamily: {
+                        chakra: ['"Chakra Petch"', 'sans-serif'],
+                        oswald: ['"Oswald"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-blue': '0 0 25px -5px rgba(128, 182, 233, 0.4)',
+                        'glow-emerald': '0 0 25px -5px rgba(52, 211, 153, 0.4)',
+                        'glow-orange': '0 0 25px -5px rgba(251, 146, 60, 0.4)',
+                        'glow-card': '0 15px 35px -10px rgba(0, 0, 0, 0.07)',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <style>
+        body {
+            background: #FBF9F5;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .ticket-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ticket-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .sticky-footer {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(251, 249, 245, 0.85);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .ticket-card-inner {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* Glow blobs in corners */
+        .glow-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+            width: 350px;
+            height: 350px;
+        }
+
+        .glow-blob-blue {
+            background: #80B6E9;
+            top: -100px;
+            left: -100px;
+        }
+
+        .glow-blob-orange {
+            background: #FBD38D;
+            top: -80px;
+            right: -80px;
+        }
+
+        .glow-blob-green {
+            background: #6EE7B7;
+            bottom: -80px;
+            left: -80px;
+        }
+
+        .glow-blob-mix {
+            background: #A78BFA;
+            bottom: -100px;
+            right: -100px;
+            opacity: 0.2;
+        }
+
+        @media (max-width: 640px) {
+            .glow-blob {
+                width: 200px;
+                height: 200px;
+                filter: blur(70px);
+            }
+            .glow-blob-blue {
+                top: -60px;
+                left: -60px;
+            }
+            .glow-blob-orange {
+                top: -40px;
+                right: -60px;
+            }
+            .glow-blob-green {
+                bottom: -40px;
+                left: -60px;
+            }
+            .glow-blob-mix {
+                bottom: -60px;
+                right: -60px;
+            }
+        }
+
+        /* Make ticket card sticky and below header */
+        .ticket-sticky {
+            position: sticky;
+            top: 5rem;
+            /* h-20 = 5rem */
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- GLOW BLOBS -->
+    <!-- ========================= -->
+
+    <div class="glow-blob glow-blob-blue"></div>
+    <div class="glow-blob glow-blob-orange"></div>
+    <div class="glow-blob glow-blob-green"></div>
+    <div class="glow-blob glow-blob-mix"></div>
+
+    <!-- ========================= -->
+    <!-- HEADER (z-50 always on top) -->
+    <!-- ========================= -->
+
+    <header class="relative z-50 bg-bgMain/80 backdrop-blur-xl border-b border-blue-200/50 shadow-sm sticky top-0">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+
+            <div class="w-28 sm:w-36 flex justify-start">
+                <a href="javascript:history.back()"
+                   class="bg-blue-100/80 border border-blue-300 text-blue-700
+                          font-chakra font-bold text-xs sm:text-sm
+                          px-4 sm:px-5 py-2.5 rounded-xl
+                          shadow-sm hover:bg-blue-200 hover:border-blue-400 hover:text-blue-800
+                          hover:-translate-x-1 transition-all duration-300
+                          flex items-center gap-2 whitespace-nowrap">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back</span>
+                </a>
+            </div>
+
+            <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
+                <img src="assets/images/header-logo.webp" alt="Sports Ticket Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+            </a>
+
+            <div class="w-28 sm:w-36"></div>
+
+        </div>
+    </header>
+
+    <!-- ========================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ========================= -->
+
+    <main class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14 pb-40">
+
+        <div class="text-center mb-10">
+            <p class="text-sm uppercase tracking-[0.2em] text-blue-600 font-bold mb-2">
+                Secure Checkout
+            </p>
+            <h1 class="font-oswald text-4xl sm:text-5xl font-bold text-slate-800">
+                Ticket Details
+            </h1>
+            <p class="mt-3 text-slate-500 text-sm sm:text-base">
+                Review your selected ticket before reserving or paying.
+            </p>
+        </div>
+
+        <!-- ========================= -->
+        <!-- TICKET CARD (sticky, below header) -->
+        <!-- ========================= -->
+
+        <div class="ticket-card ticket-sticky max-w-2xl mx-auto">
+
+            <div class="ticket-card-inner rounded-3xl border-2 border-blue-300 shadow-xl p-6 sm:p-8 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:border-blue-400">
+
+                <!-- Stub Cutouts -->
+                <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-bgMain border-r-2 border-blue-300"></div>
+                <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-bgMain border-l-2 border-blue-300"></div>
+
+                <!-- Inner decorative accents -->
+                <div class="absolute -right-10 -top-10 w-36 h-36 bg-blue-200/20 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-orange-200/15 rounded-full blur-2xl pointer-events-none"></div>
+
+                <!-- Top Badges -->
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                    <span id="match-sport-badge" class="px-3.5 py-1 rounded-xl text-xs font-bold bg-blue-500 text-white uppercase tracking-wider shadow-sm border border-blue-400">
+                        Football
+                    </span>
+                    <span id="match-league" class="text-xs font-bold text-orange-700 bg-orange-100 px-3 py-1 rounded-xl border border-orange-300">
+                        Premier League
+                    </span>
+                </div>
+
+                <!-- Teams VS -->
+                <div class="text-center py-5 border-y-2 border-dashed border-blue-300/50 my-4 relative z-10 bg-white/50 backdrop-blur-sm rounded-2xl px-3 shadow-inner">
+                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest block mb-1.5">Official Match Ticket</span>
+                    <h1 class="font-oswald text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 uppercase tracking-wide leading-snug">
+                        <span id="match-home-team" class="text-slate-900">Home Team</span>
+                        <span class="text-orange-400 italic font-black mx-1 animate-pulse">VS</span>
+                        <span id="match-away-team" class="text-slate-900">Away Team</span>
+                    </h1>
+                </div>
+
+                <!-- Event Info -->
+                <div class="space-y-3 text-xs sm:text-sm text-stone-700 py-2 relative z-10">
+                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-blue-200/70 bg-white/60 hover:bg-white/80 transition backdrop-blur-sm">
+                        <span class="text-stone-400 font-semibold">Date & Time</span>
+                        <strong id="match-date" class="text-slate-800 font-chakra">Aug 20, 2026 - 19:30</strong>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-blue-200/70 bg-white/60 hover:bg-white/80 transition backdrop-blur-sm">
+                        <span class="text-stone-400 font-semibold">Stadium</span>
+                        <strong id="match-venue" class="text-slate-800">Azadi Stadium</strong>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-blue-200/70 bg-white/60 hover:bg-white/80 transition backdrop-blur-sm">
+                        <span class="text-stone-400 font-semibold">City</span>
+                        <strong id="match-city" class="text-slate-800">Tehran</strong>
+                    </div>
+                    <div class="pt-2 text-xs">
+                        <span class="text-stone-400 font-semibold block mb-1">Location Address</span>
+                        <span id="match-address" class="text-stone-600 font-medium">Azadi Sport Complex, West Expressway, Tehran</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-blue-200/70 bg-white/60 hover:bg-white/80 transition backdrop-blur-sm">
+                        <span class="text-stone-400 font-semibold">Remaining Capacity</span>
+                        <strong id="ticket-capacity" class="text-slate-800 font-chakra">—</strong>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-orange-200/70 bg-orange-50/50 hover:bg-orange-100/60 transition backdrop-blur-sm">
+                        <span class="text-stone-400 font-semibold">Ticket Category</span>
+                        <strong id="ticket-category" class="text-orange-700 font-chakra">—</strong>
+                    </div>
+                    
+                </div>
+
+                <!-- Ticket Footer -->
+                <div class="mt-6 pt-4 border-t-2 border-blue-300/50 flex justify-between items-center text-[11px] text-stone-400 font-bold relative z-10">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1.5 text-emerald-600">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span> Verified Match
+                        </span>
+                        <button type="button" id="btn-report-ticket" class="text-rose-500 hover:text-rose-700 hover:underline flex items-center gap-1 transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span>Report Issue</span>
+                        </button>
+                    </div>
+                    <span>ID: #<strong id="match-id-display" class="text-slate-700">1042</strong></span>
+                </div>
+
+                <!-- Price -->
+                <div class="mt-6 pt-4 border-t-2 border-blue-300/50 relative z-10">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <p class="text-sm text-slate-500 font-semibold">Ticket Price</p>
+                            <p class="text-xs text-slate-400 mt-1">Final price for this selected ticket</p>
+                        </div>
+                        <div class="text-right">
+                            <span id="ticket-price" class="font-oswald text-3xl sm:text-4xl font-bold text-slate-900">—</span>
+                            <span class="text-sm text-slate-500 ml-1">Toman</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="text-center mt-8">
+            <p class="text-xs text-slate-400/80">
+                Please review the ticket information carefully before continuing.
+            </p>
+        </div>
+
+    </main>
+
+    <!-- ========================= -->
+    <!-- STICKY FOOTER -->
+    <!-- ========================= -->
+
+    <footer class="sticky-footer fixed bottom-0 left-0 right-0 z-40 px-4 sm:px-6 py-4 sm:py-5 border-t-2 border-blue-300/50">
+
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+
+            <div class="flex items-center gap-2 text-sm font-semibold text-slate-700 w-full sm:w-auto justify-center sm:justify-start">
+                <span class="text-slate-400">Price:</span>
+                <span id="footer-ticket-price" class="font-oswald text-xl sm:text-2xl font-bold text-slate-900">—</span>
+                <span class="text-sm text-slate-500">Toman</span>
+            </div>
+
+            <div class="flex-1 text-center w-full sm:w-auto">
+                <p id="footer-capacity-message" class="hidden text-sm text-red-500 font-semibold">
+                    ⚠️ This ticket is currently sold out.
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+
+                <button id="reserve-btn" type="button" class="group w-full sm:w-auto px-6 py-3 rounded-2xl bg-emerald-400/80 text-slate-900 font-chakra font-bold border border-emerald-300 shadow-glow-emerald hover:bg-emerald-500 hover:border-emerald-400 hover:text-slate-950 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base">
+                    <i class="bi bi-bookmark-check text-lg group-hover:scale-110 transition-transform"></i>
+                    Reserve
+                </button>
+
+                <button id="pay-btn" type="button" class="group w-full sm:w-auto px-6 py-3 rounded-2xl bg-orange-300/80 text-orange-900 font-chakra font-bold border border-orange-300 shadow-glow-orange hover:bg-orange-400 hover:border-orange-400 hover:text-orange-950 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base">
+                    <i class="bi bi-credit-card text-lg group-hover:scale-110 transition-transform"></i>
+                    Pay Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <!-- ========================= -->
+    <!-- SYNC SCRIPT -->
+    <!-- ========================= -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceEl = document.getElementById('ticket-price');
+            const footerPriceEl = document.getElementById('footer-ticket-price');
+            const capMsgCard = document.getElementById('capacity-message');
+            const capMsgFooter = document.getElementById('footer-capacity-message');
+
+            if (priceEl && footerPriceEl) {
+                const updatePrice = () => {
+                    footerPriceEl.textContent = priceEl.textContent;
+                };
+                updatePrice();
+                const observer = new MutationObserver(updatePrice);
+                observer.observe(priceEl, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+            }
+
+            if (capMsgCard && capMsgFooter) {
+                const updateCapMsg = () => {
+                    if (capMsgCard.classList.contains('hidden')) {
+                        capMsgFooter.classList.add('hidden');
+                    } else {
+                        capMsgFooter.classList.remove('hidden');
+                    }
+                };
+                updateCapMsg();
+                const observer = new MutationObserver(updateCapMsg);
+                observer.observe(capMsgCard, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            }
+        });
+    </script>
+
+    <script type="module" src="js/pages/checkout.js">
+    </script>
+
+</body>
+
+</html>
