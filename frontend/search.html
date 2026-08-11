@@ -63,8 +63,9 @@
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
 
             <div class="w-24 sm:w-36">
-                <a href="index.html" class="text-stone-600 hover:text-stone-900 font-medium text-xs sm:text-sm flex items-center gap-1.5 transition group">
-                    <span class="group-hover:-translate-x-1 transition-transform">&larr;</span> 
+                <a href="index.html"
+                   class="inline-flex items-center gap-2 bg-white/80 text-slate-950 font-chakra font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full transition-all duration-300 shadow-md hover:scale-105">
+                    <span>&larr;</span>
                     <span>Home</span>
                 </a>
             </div>
@@ -138,19 +139,19 @@
                         <label class="block font-bold text-stone-800 mb-2 text-xs uppercase tracking-wider">Sport Type</label>
                         <div class="grid grid-cols-3 gap-1.5 text-center font-bold text-xs">
                             <label class="cursor-pointer">
-                                <input type="radio" name="sport" value="football" class="peer hidden">
+                                <input type="radio" name="sport_type" value="Football" class="peer hidden">
                                 <span class="block py-2 rounded-xl bg-[#D6F5E3] text-emerald-900 border border-transparent peer-checked:border-emerald-600 peer-checked:ring-2 peer-checked:ring-emerald-400 transition">
                                     ⚽ Football
                                 </span>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="sport" value="volleyball" class="peer hidden">
+                                <input type="radio" name="sport_type" value="volleyball" class="peer hidden">
                                 <span class="block py-2 rounded-xl bg-[#D9EAFB] text-sky-900 border border-transparent peer-checked:border-sky-600 peer-checked:ring-2 peer-checked:ring-sky-400 transition">
                                     🏐 Volley
                                 </span>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="sport" value="basketball" class="peer hidden">
+                                <input type="radio" name="sport_type" value="basketball" class="peer hidden">
                                 <span class="block py-2 rounded-xl bg-[#FDE2D3] text-orange-900 border border-transparent peer-checked:border-orange-500 peer-checked:ring-2 peer-checked:ring-orange-400 transition">
                                     🏀 Basket
                                 </span>
@@ -169,13 +170,13 @@
                                 </span>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="category" value="Normal" class="peer hidden">
+                                <input type="radio" name="category" value="normal" class="peer hidden">
                                 <span class="block py-2 rounded-xl bg-[#EEF5FC] text-sky-900 border border-transparent peer-checked:border-sky-500 peer-checked:ring-2 peer-checked:ring-sky-300 transition">
                                     Normal
                                 </span>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="category" value="Special" class="peer hidden">
+                                <input type="radio" name="category" value="special" class="peer hidden">
                                 <span class="block py-2 rounded-xl bg-[#FFF2EC] text-orange-900 border border-transparent peer-checked:border-orange-400 peer-checked:ring-2 peer-checked:ring-orange-300 transition">
                                     Special
                                 </span>
@@ -184,52 +185,185 @@
                     </div>
 
                     <!-- 3. City -->
-                    <div>
-                        <label for="filter-city" class="block font-bold text-stone-800 mb-1.5 text-xs uppercase tracking-wider">City</label>
-                        <select id="filter-city" name="city" class="w-full bg-[#FBF9F5] border border-stone-300 rounded-xl px-3.5 py-2.5 text-stone-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#80B6E9]">
-                            <option value="">All Cities</option>
-                            <option value="tehran">Tehran</option>
-                            <option value="isfahan">Isfahan</option>
-                            <option value="mashhad">Mashhad</option>
-                            <option value="tabriz">Tabriz</option>
-                        </select>
+                    <div class="relative">
+                        <label class="block font-bold text-stone-800 mb-2 text-xs uppercase tracking-wider">
+                            City
+                        </label>
+
+                        <button
+                                type="button"
+                                id="city-dropdown-button"
+                                class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-left text-stone-600 font-medium shadow-sm hover:border-[#80B6E9] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#80B6E9]/30 transition-all duration-200 flex items-center justify-between"
+                        >
+                            <span id="city-dropdown-label">All Cities</span>
+
+                            <svg class="w-4 h-4 text-stone-400 transition-transform duration-200"
+                                 id="city-dropdown-arrow"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="m6 9 6 6 6-6"/>
+                            </svg>
+                        </button>
+
+                        <div
+                                id="city-dropdown-menu"
+                                class="hidden absolute left-0 right-0 mt-2 bg-[#FFFCF8] border border-stone-200 rounded-2xl shadow-lg overflow-hidden z-30"
+                        >
+                            <div id="city-dropdown-options" class="p-1.5 max-h-60 overflow-y-auto">
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="filter-city" name="city_id" value="">
                     </div>
 
                     <!-- 4. Venue -->
-                    <div>
-                        <label for="filter-venue" class="block font-bold text-stone-800 mb-1.5 text-xs uppercase tracking-wider">Venue</label>
-                        <select id="filter-venue" name="venue" class="w-full bg-[#FBF9F5] border border-stone-300 rounded-xl px-3.5 py-2.5 text-stone-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#80B6E9]">
-                            <option value="">All Venues</option>
-                            <option value="azadi">Azadi Stadium</option>
-                            <option value="freedom_hall">Freedom Hall</option>
-                            <option value="arena_hall">Arena Hall</option>
-                        </select>
+                    <div class="relative">
+                        <label class="block font-bold text-stone-800 mb-2 text-xs uppercase tracking-wider">
+                            Venue
+                        </label>
+
+                        <button
+                                type="button"
+                                id="venue-dropdown-button"
+                                class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-left text-stone-600 font-medium shadow-sm hover:border-[#80B6E9] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#80B6E9]/30 transition-all duration-200 flex items-center justify-between"
+                        >
+                            <span id="venue-dropdown-label">All Venues</span>
+
+                            <svg class="w-4 h-4 text-stone-400 transition-transform duration-200"
+                                 id="venue-dropdown-arrow"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="m6 9 6 6 6-6"/>
+                            </svg>
+                        </button>
+
+                        <div
+                                id="venue-dropdown-menu"
+                                class="hidden absolute left-0 right-0 mt-2 bg-[#FFFCF8] border border-stone-200 rounded-2xl shadow-lg overflow-hidden z-30"
+                        >
+                            <div id="venue-dropdown-options" class="p-1.5 max-h-60 overflow-y-auto">
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="filter-venue" name="venue_id" value="">
                     </div>
 
                     <!-- 5. Team -->
-                    <div>
-                        <label for="filter-team" class="block font-bold text-stone-800 mb-1.5 text-xs uppercase tracking-wider">Team</label>
-                        <select id="filter-team" name="team" class="w-full bg-[#FBF9F5] border border-stone-300 rounded-xl px-3.5 py-2.5 text-stone-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#80B6E9]">
-                            <option value="">All Teams</option>
-                            <option value="team_a">Team A</option>
-                            <option value="team_b">Team B</option>
-                            <option value="team_c">Team C</option>
-                            <option value="team_d">Team D</option>
-                        </select>
+                    <div class="relative">
+                        <label class="block font-bold text-stone-800 mb-2 text-xs uppercase tracking-wider">
+                            Team
+                        </label>
+
+                        <button
+                                type="button"
+                                id="team-dropdown-button"
+                                class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-left text-stone-600 font-medium shadow-sm hover:border-[#80B6E9] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#80B6E9]/30 transition-all duration-200 flex items-center justify-between"
+                        >
+                            <span id="team-dropdown-label">All Teams</span>
+
+                            <svg class="w-4 h-4 text-stone-400 transition-transform duration-200"
+                                 id="team-dropdown-arrow"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="m6 9 6 6 6-6"/>
+                            </svg>
+                        </button>
+
+                        <div
+                                id="team-dropdown-menu"
+                                class="hidden absolute left-0 right-0 mt-2 bg-[#FFFCF8] border border-stone-200 rounded-2xl shadow-lg overflow-hidden z-30"
+                        >
+                            <div id="team-dropdown-options" class="p-1.5 max-h-60 overflow-y-auto">
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="filter-team" name="team_id" value="">
                     </div>
 
                     <!-- 6. Date Range -->
                     <div class="bg-[#FBF9F5] p-3 rounded-2xl border border-stone-200">
-                        <label class="block font-bold text-stone-800 mb-2 text-xs uppercase tracking-wider">Date Range</label>
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold text-stone-400 uppercase w-8">From</span>
-                                <input type="date" id="filter-date-from" name="date_from" class="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 focus:outline-none focus:ring-2 focus:ring-[#80B6E9]">
+                        <label class="block font-bold text-stone-800 mb-3 text-xs uppercase tracking-wider">
+                            Date Range
+                        </label>
+
+                        <div class="space-y-3">
+
+                            <!-- From -->
+                            <div class="relative">
+                                <label class="block text-[10px] font-bold text-stone-400 uppercase mb-1.5">
+                                    From
+                                </label>
+
+                                <button
+                                        type="button"
+                                        id="date-from-button"
+                                        class="w-full bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-left text-stone-600 text-sm font-medium shadow-sm hover:border-[#80B6E9] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#80B6E9]/30 transition-all duration-200 flex items-center justify-between"
+                                >
+                                    <span id="date-from-label">Choose date</span>
+
+                                    <svg class="w-4 h-4 text-stone-400"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/>
+                                    </svg>
+                                </button>
+
+                                <div
+                                        id="date-from-picker"
+                                        class="hidden absolute left-0 mt-2 z-40"
+                                ></div>
+
+                                <input type="hidden" id="filter-date-from" name="date_from" value="">
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold text-stone-400 uppercase w-8">To</span>
-                                <input type="date" id="filter-date-to" name="date_to" class="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 focus:outline-none focus:ring-2 focus:ring-[#80B6E9]">
+
+                            <!-- To -->
+                            <div class="relative">
+                                <label class="block text-[10px] font-bold text-stone-400 uppercase mb-1.5">
+                                    To
+                                </label>
+
+                                <button
+                                        type="button"
+                                        id="date-to-button"
+                                        class="w-full bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-left text-stone-600 text-sm font-medium shadow-sm hover:border-[#80B6E9] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#80B6E9]/30 transition-all duration-200 flex items-center justify-between"
+                                >
+                                    <span id="date-to-label">Choose date</span>
+
+                                    <svg class="w-4 h-4 text-stone-400"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0-2 2Z"/>
+                                    </svg>
+                                </button>
+
+                                <div
+                                        id="date-to-picker"
+                                        class="hidden absolute left-0 mt-2 z-40"
+                                ></div>
+
+                                <input type="hidden" id="filter-date-to" name="date_to" value="">
                             </div>
+
                         </div>
                     </div>
 
@@ -287,7 +421,7 @@
     </footer>
 
     <!-- JS Files -->
-    <script src="js/services/api.js"></script>
-    <script src="js/pages/search.js"></script>
+    <script type="module" src="js/services/api.js"></script>
+    <script type="module" src="js/pages/search.js"></script>
 </body>
 </html>
