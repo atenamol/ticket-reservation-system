@@ -1,4 +1,4 @@
-import {loginWithOTP} from "../services/api.js";
+import {loginWithPassword} from "../services/api.js";
 import {setAuthData} from "../utils/storage.js";
 import {isValidEmail, isValidPhone} from "../utils/validators.js";
 

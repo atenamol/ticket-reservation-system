@@ -15,7 +15,7 @@ from app.schemas.catalog_schema import (
 from app.services import catalog_service as service
 
 router = APIRouter(
-    prefix="",
+    prefix="/catalog",
     tags=["Catalog"],
 )
 

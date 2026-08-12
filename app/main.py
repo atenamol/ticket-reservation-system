@@ -3,16 +3,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-<<<<<<< HEAD
-
-=======
 from app.services.elastic_service import (
     check_connection,
     create_index,
     sync_all,
 )
 from app.services.transaction_service import TransactionService
->>>>>>> c60e017572d28787177ca8db36572639501ba8f2
 from app.routers.transaction_router import router as transaction_router
 from app.routers.catalog_router import router as catalog_router
 from app.routers.auth_router import router as auth_router

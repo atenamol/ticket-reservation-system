@@ -243,16 +243,18 @@ def verify_otp_code(request: VerifyOTPRequest):
                     )
 
 
-                redis_client.setex(
+                redis_client.set_value(
                     f"reset_verified:{user['user_id']}",
-                    300,
-                    "true"
+                    "true",
+                    300
                 )
 
 
-                return MessageResponse(
-                    message="OTP verified successfully."
-                )
+                return {
+                    "success": True,
+                    "message": "OTP verified successfully.",
+                    "user_id": user["user_id"]
+    }
 
 
             else:
@@ -312,7 +314,7 @@ def reset_password(request: ResetPasswordRequest) -> MessageResponse:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                     detail="User not found.")
 
-            verified = redis_client.get(
+            verified = redis_client.get_value(
                 f"reset_verified:{user['user_id']}"
             )
 
@@ -332,7 +334,7 @@ def reset_password(request: ResetPasswordRequest) -> MessageResponse:
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                     detail="Password reset failed.")
 
-            redis_client.delete(
+            redis_client.delete_value(
                 f"reset_verified:{user['user_id']}"
             )
 

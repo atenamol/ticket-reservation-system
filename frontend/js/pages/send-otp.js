@@ -1,6 +1,6 @@
 import {loginWithOTP, verifyOTP, forgotPassword}from "../services/api.js";
 import {setAuthData}from "../utils/storage.js";
-import {isValidEmail, isValidPhone}from "../utils/validator.js";
+import {isValidEmail, isValidPhone}from "../utils/validators.js";
 
 document.addEventListener("DOMContentLoaded",() => {initOTPPage();});
 
@@ -64,6 +64,7 @@ async function sendCode(mode){
 
         if(mode === "reset"){
             response =await forgotPassword(contact);
+            sessionStorage.setItem("reset_contact", identifier);
         }else{
             response =await loginWithOTP(contact);
         }
@@ -119,10 +120,11 @@ async function verifyCode(event, mode){
             window.location.href ="index.html";
         }else{
             const userId = response?.user_id;
-            if(!userId){
+
+            if (!userId) {
                 throw new Error("User information was not returned.");
             }
-            // Save user information for reset-password page
+            
             sessionStorage.setItem("reset_user_id", userId);
             sessionStorage.setItem("reset_contact", identifier);
             

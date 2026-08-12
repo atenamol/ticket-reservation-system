@@ -60,10 +60,31 @@ const request = async (endpoint,
         data = null;
     }
 
-    if(!response.ok){
-        throw new Error(
-            data?.detail || "Something went wrong."
-        );
+    if (!response.ok) {
+
+        let message = "Something went wrong.";
+
+        if (typeof data?.detail === "string") {
+            message = data.detail;
+        }
+
+        else if (Array.isArray(data?.detail)) {
+            message = data.detail
+                .map(error => {
+                    if (typeof error === "string") {
+                        return error;
+                    }
+
+                    return error.msg || error.message || JSON.stringify(error);
+                })
+                .join(", ");
+        }
+
+        else if (typeof data?.message === "string") {
+            message = data.message;
+        }
+
+        throw new Error(message);
     }
 
     return data;

@@ -1,7 +1,7 @@
 // frontend/js/pages/reset-password.js
 
 import { resetPassword } from "../services/api.js";
-import { validatePassword } from "../utils/validator.js";
+import { validatePassword } from "../utils/validators.js";
 
 
 // =========================
@@ -51,6 +51,8 @@ function initResetPasswordPage() {
     const resetContact = sessionStorage.getItem("reset_contact");
     const resetUserId = sessionStorage.getItem("reset_user_id");
 
+    console.log("Reset contact:", resetContact);
+    console.log("Reset user ID:", resetUserId);
 
     // -------------------------
     // Make sure OTP flow exists
@@ -75,7 +77,10 @@ function initResetPasswordPage() {
     // -------------------------
 
     contactInput.value = resetContact;
+    contactInput.setAttribute("value", resetContact);
+    contactInput.readOnly = true;
 
+    console.log("Contact input value:", contactInput.value);
 
     // =========================
     // Form Submit
