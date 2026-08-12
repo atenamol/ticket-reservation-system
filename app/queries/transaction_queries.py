@@ -174,6 +174,33 @@ def cancel_reservation(cursor, reservation_id):
         (reservation_id,),
     )
 
+def get_expired_reservations(cursor):
+    cursor.execute(
+        """
+        SELECT
+            reservation_id,
+            ticket_id
+        FROM Reservation
+        WHERE status = 'reserved'
+        AND expires_at <= NOW()
+        """
+    )
+    return cursor.fetchall()
+
+def expire_reservation(cursor, reservation_id):
+    cursor.execute(
+        """
+        UPDATE Reservation
+        SET status = 'cancelled'
+        WHERE reservation_id = %s
+        AND status = 'reserved'
+        AND expires_at <= NOW()
+        """,
+        (reservation_id,),
+    )
+
+    return cursor.rowcount
+
 # ---------- Payment ----------
 
 

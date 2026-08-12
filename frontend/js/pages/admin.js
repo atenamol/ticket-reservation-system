@@ -362,6 +362,135 @@ function updateText(id, value) {
 
 }
 
+function setupModalStatusMenus() {
+
+    // =============================
+    // Cancellation Decision
+    // =============================
+
+    const cancelButton =
+        document.getElementById("cancel-status-button");
+
+    const cancelMenu =
+        document.getElementById("cancel-status-menu");
+
+    const cancelInput =
+        document.getElementById("modal-cancel-status");
+
+    const cancelLabel =
+        document.getElementById("cancel-status-label");
+
+
+    cancelButton?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cancelMenu?.classList.toggle("hidden");
+    });
+
+
+    document
+        .querySelectorAll(".cancel-status-option")
+        .forEach(option => {
+
+            option.addEventListener("click", () => {
+
+                const value = option.dataset.status;
+                const label = option.querySelector("span").textContent;
+
+                if (cancelInput) {
+                    cancelInput.value = value;
+                }
+
+                if (cancelLabel) {
+                    cancelLabel.textContent = label;
+                }
+
+                document
+                    .querySelectorAll(".cancel-status-option")
+                    .forEach(o => {
+                        o.classList.remove(
+                            "bg-slate-100",
+                            "font-semibold"
+                        );
+                    });
+
+                option.classList.add(
+                    "bg-slate-100",
+                    "font-semibold"
+                );
+
+                cancelMenu?.classList.add("hidden");
+            });
+        });
+
+
+    // =============================
+    // Report Status
+    // =============================
+
+    const reportButton =
+        document.getElementById("report-status-button");
+
+    const reportMenu =
+        document.getElementById("report-status-menu");
+
+    const reportInput =
+        document.getElementById("modal-report-status");
+
+    const reportLabel =
+        document.getElementById("report-status-label");
+
+
+    reportButton?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        reportMenu?.classList.toggle("hidden");
+    });
+
+
+    document
+        .querySelectorAll(".report-status-option")
+        .forEach(option => {
+
+            option.addEventListener("click", () => {
+
+                const value = option.dataset.status;
+                const label = option.querySelector("span").textContent;
+
+                if (reportInput) {
+                    reportInput.value = value;
+                }
+
+                if (reportLabel) {
+                    reportLabel.textContent = label;
+                }
+
+                document
+                    .querySelectorAll(".report-status-option")
+                    .forEach(o => {
+                        o.classList.remove(
+                            "bg-slate-100",
+                            "font-semibold"
+                        );
+                    });
+
+                option.classList.add(
+                    "bg-slate-100",
+                    "font-semibold"
+                );
+
+                reportMenu?.classList.add("hidden");
+            });
+        });
+
+
+    // Close dropdowns when clicking outside
+    document.addEventListener("click", () => {
+
+        cancelMenu?.classList.add("hidden");
+        reportMenu?.classList.add("hidden");
+
+    });
+}
+
 /* ==========================================================
    MANAGEMENT PAGE
 ========================================================== */
@@ -465,6 +594,7 @@ function initManagementPage() {
 
     // Initialize filter menu
     setupFilterMenu();
+    setupModalStatusMenus();
 
     // Initial data load
     refreshAllData();
@@ -1232,15 +1362,26 @@ function openCancellationModal(request) {
     document.getElementById("modal-cancel-refund").textContent =
         formatCurrency(request.refund_amount);
 
-    document.getElementById("modal-cancel-status").value =
+    const cancelStatus =
         request.status === "pending"
             ? "approved"
             : request.status;
+
+    document.getElementById("modal-cancel-status").value =
+        cancelStatus;
+
+    document.getElementById("cancel-status-label").textContent =
+        cancelStatus === "approved"
+            ? "Approve"
+            : "Reject";
 
     document
         .getElementById("cancellation-modal")
         .classList.remove("hidden");
 
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
 }
 
 function closeCancellationModal() {
@@ -1284,12 +1425,25 @@ function openReportModal(report) {
     document.getElementById("modal-report-status").value =
         report.status;
 
+    const reportStatusLabels = {
+        open: "Open",
+        in_progress: "In Progress",
+        closed: "Closed"
+    };
+
+    document.getElementById("report-status-label").textContent =
+        reportStatusLabels[report.status] ?? "Open";
+
     document.getElementById("modal-report-response").value =
         report.admin_response ?? "";
 
     document
         .getElementById("report-modal")
         .classList.remove("hidden");
+
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
 }
 
 function closeReportModal() {

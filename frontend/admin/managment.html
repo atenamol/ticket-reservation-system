@@ -371,11 +371,69 @@
         <form id="cancellation-form" class="mt-4 space-y-4">
             <input type="hidden" id="modal-cancel-id-input">
             <div>
-                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Decision</label>
-                <select id="modal-cancel-status" class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-slate-50">
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                </select>
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Decision</label><div class="relative">
+
+                <div class="relative">
+                    <input type="hidden" id="modal-cancel-status" value="approved">
+
+                    <button
+                            type="button"
+                            id="cancel-status-button"
+                            class="w-full flex items-center justify-between
+                                   px-4 py-3 rounded-xl
+                                   border border-slate-200
+                                   bg-slate-50
+                                   text-sm font-medium text-slate-700
+                                   hover:bg-white
+                                   focus:ring-2 focus:ring-slate-900/10
+                                   transition">
+
+                        <span id="cancel-status-label">Approve</span>
+
+                        <i
+                                data-lucide="chevron-down"
+                                class="w-4 h-4 text-slate-400">
+                        </i>
+                    </button>
+
+                    <div
+                            id="cancel-status-menu"
+                            class="hidden absolute left-0 right-0 top-full mt-2
+                                   bg-white rounded-2xl
+                                   border border-slate-200
+                                   shadow-xl
+                                   z-50 p-2">
+
+                        <button
+                                type="button"
+                                data-status="approved"
+                                class="cancel-status-option w-full flex items-center justify-between
+                                       px-3 py-2.5 rounded-xl text-sm
+                                       text-slate-700 hover:bg-slate-50 transition">
+
+                            <span>Approve</span>
+                        </button>
+
+                        <button
+                                type="button"
+                                data-status="rejected"
+                                class="cancel-status-option w-full flex items-center justify-between
+                                       px-3 py-2.5 rounded-xl text-sm
+                                       text-slate-700 hover:bg-slate-50 transition">
+
+                            <span>Reject</span>
+                        </button>
+
+                    </div>
+                </div>
+
+                <i
+                        data-lucide="chevron-down"
+                        class="pointer-events-none absolute right-3
+                               top-1/2 -translate-y-1/2
+                               w-4 h-4 text-slate-400">
+                </i>
+            </div>
             </div>
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeCancellationModal()" class="flex-1 py-2.5 rounded-full border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition">
@@ -422,11 +480,78 @@
             <input type="hidden" id="modal-report-id-input">
             <div>
                 <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Update Status</label>
-                <select id="modal-report-status" class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-slate-50">
-                    <option value="open">Open</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="closed">Closed</option>
-                </select>
+                <div class="relative">
+                    <div class="relative">
+                        <input type="hidden" id="modal-report-status" value="open">
+
+                        <button
+                                type="button"
+                                id="report-status-button"
+                                class="w-full flex items-center justify-between
+               px-4 py-3 rounded-xl
+               border border-slate-200
+               bg-slate-50
+               text-sm font-medium text-slate-700
+               hover:bg-white
+               focus:ring-2 focus:ring-slate-900/10
+               transition">
+
+                            <span id="report-status-label">Open</span>
+
+                            <i
+                                    data-lucide="chevron-down"
+                                    class="w-4 h-4 text-slate-400">
+                            </i>
+                        </button>
+
+                        <div
+                                id="report-status-menu"
+                                class="hidden absolute left-0 right-0 top-full mt-2
+               bg-white rounded-2xl
+               border border-slate-200
+               shadow-xl
+               z-50 p-2">
+
+                            <button
+                                    type="button"
+                                    data-status="open"
+                                    class="report-status-option w-full flex items-center justify-between
+                   px-3 py-2.5 rounded-xl text-sm
+                   text-slate-700 hover:bg-slate-50 transition">
+
+                                <span>Open</span>
+                            </button>
+
+                            <button
+                                    type="button"
+                                    data-status="in_progress"
+                                    class="report-status-option w-full flex items-center justify-between
+                   px-3 py-2.5 rounded-xl text-sm
+                   text-slate-700 hover:bg-slate-50 transition">
+
+                                <span>In Progress</span>
+                            </button>
+
+                            <button
+                                    type="button"
+                                    data-status="closed"
+                                    class="report-status-option w-full flex items-center justify-between
+                   px-3 py-2.5 rounded-xl text-sm
+                   text-slate-700 hover:bg-slate-50 transition">
+
+                                <span>Closed</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <i
+                            data-lucide="chevron-down"
+                            class="pointer-events-none absolute right-3
+                                   top-1/2 -translate-y-1/2
+                                   w-4 h-4 text-slate-400">
+                    </i>
+                </div>
             </div>
             <div>
                 <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Admin Response</label>

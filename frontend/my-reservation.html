@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>My Reservations | Sports Ticket</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet"
+    />
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#FBF9F5',
+                        brandBlue: '#80B6E9',
+                        brandBlueDark: '#4A90E2',
+                        brandOrange: '#F6AD55',
+                        brandOrangeLight: '#FBD38D',
+                        brandOrangeDark: '#ED8936',
+                    },
+
+                    fontFamily: {
+                        chakra: ['"Chakra Petch"', 'sans-serif'],
+                        oswald: ['"Oswald"', 'sans-serif'],
+                    },
+
+                    boxShadow: {
+                        'glow-blue':
+                            '0 0 25px -5px rgba(128, 182, 233, 0.4)',
+                        'glow-emerald':
+                            '0 0 25px -5px rgba(52, 211, 153, 0.4)',
+                        'glow-orange':
+                            '0 0 25px -5px rgba(251, 146, 60, 0.4)',
+                        'glow-card':
+                            '0 15px 35px -10px rgba(0, 0, 0, 0.07)',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: #FBF9F5;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Reservation Card */
+        .reservation-card {
+            transition:
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .reservation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12);
+        }
+
+        .reservation-card-inner {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Glow Blobs */
+        .glow-blob {
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .glow-blob-blue {
+            background: #80B6E9;
+            top: -100px;
+            left: -100px;
+        }
+
+        .glow-blob-orange {
+            background: #FBD38D;
+            top: -80px;
+            right: -80px;
+        }
+
+        .glow-blob-green {
+            background: #6EE7B7;
+            bottom: -80px;
+            left: -80px;
+        }
+
+        .glow-blob-mix {
+            background: #A78BFA;
+            bottom: -100px;
+            right: -100px;
+            opacity: 0.2;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Reservation Status */
+        .status-reserved {
+            background: rgba(254, 243, 199, 0.8);
+            color: #92400E;
+            border-color: #FCD34D;
+        }
+
+        .status-paid {
+            background: rgba(209, 250, 229, 0.8);
+            color: #065F46;
+            border-color: #6EE7B7;
+        }
+
+        .status-cancelled {
+            background: rgba(254, 226, 226, 0.8);
+            color: #991B1B;
+            border-color: #FCA5A5;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            .glow-blob {
+                width: 200px;
+                height: 200px;
+                filter: blur(70px);
+            }
+
+            .glow-blob-blue {
+                top: -60px;
+                left: -60px;
+            }
+
+            .glow-blob-orange {
+                top: -40px;
+                right: -60px;
+            }
+
+            .glow-blob-green {
+                bottom: -40px;
+                left: -60px;
+            }
+
+            .glow-blob-mix {
+                bottom: -60px;
+                right: -60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         GLOW BLOBS
+    ========================== -->
+
+    <div class="glow-blob glow-blob-blue"></div>
+    <div class="glow-blob glow-blob-orange"></div>
+    <div class="glow-blob glow-blob-green"></div>
+    <div class="glow-blob glow-blob-mix"></div>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header class="relative z-50 sticky top-0 bg-bgMain/80 backdrop-blur-xl border-b border-blue-200/50 shadow-sm">
+        <div class="relative flex items-center justify-between max-w-7xl h-20 mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Back Button -->
+            <div class="flex justify-start w-28 sm:w-36">
+                <a href="index.html"
+                    class="flex items-center gap-2 whitespace-nowrap px-4 sm:px-5 py-2.5 rounded-xl bg-blue-100/80 border
+                    border-blue-300 text-blue-700 font-chakra font-bold text-xs sm:text-sm shadow-sm transition-all 
+                    duration-300 hover:bg-blue-200 hover:border-blue-400 hover:text-blue-800 hover:-translate-x-1"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back</span>
+                </a>
+            </div>
+            <!-- Logo -->
+            <a href="index.html" class="absolute left-1/2 -translate-x-1/2 flex items-center group">
+                <img src="assets/images/header-logo.webp" alt="Sports Ticket Logo"
+                    class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                />
+            </a>
+            <!-- Right Empty Space -->
+            <div class="w-28 sm:w-36"></div>
+        </div>
+    </header>
+
+    <!--MAIN--> 
+    <main class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 pb-16">
+        <!-- Page Title -->
+        <section class="mb-10 text-center">
+            <p class="mb-2 text-sm uppercase tracking-[0.2em] text-blue-600 font-bold">
+                Your Tickets
+            </p>
+            <h1 class="font-oswald text-4xl sm:text-5xl font-bold text-slate-800">
+                My Reservations
+            </h1>
+            <p class="max-w-xl mx-auto mt-3 text-slate-500 text-sm sm:text-base">
+                View your reserved tickets, complete your payment,
+                or cancel an active reservation.
+            </p>
+        </section>
+
+        <!-- TOP INFORMATION -->
+        <section class="max-w-5xl mx-auto mb-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-4 rounded-2xl bg-white/60 backdrop-blur-md border border-blue-200/60 shadow-sm">
+                <!-- Reservation Count -->
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 text-blue-600">
+                        <i class="bi bi-ticket-perforated text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                            Reservations
+                        </p>
+                        <p id="reservation-count" class="font-chakra font-bold text-slate-800">
+                            0 tickets
+                        </p>
+                    </div>
+                </div>
+                <!-- Info -->
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <i class="bi bi-shield-check text-emerald-500"></i>
+                    <span>
+                        Your reservations are temporarily held
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOADING STATE -->
+        <section id="loading-state" class="hidden max-w-5xl mx-auto py-16 text-center">
+            <div class="flex items-center justify-center w-14 h-14 mx-auto mb-4 rounded-2xl bg-blue-100 text-blue-600">
+                <i class="bi bi-arrow-repeat text-2xl loading-spinner"></i>
+            </div>
+            <h2 class="font-oswald text-2xl font-bold text-slate-700">
+                Loading Reservations...
+            </h2>
+            <p class="mt-2 text-sm text-slate-400">
+                Please wait while we load your tickets.
+            </p>
+        </section>
+
+        <!-- ERROR STATE -->
+        <section id="error-state" class="hidden max-w-2xl mx-auto mb-8">
+            <div class="flex items-start gap-3 px-5 py-4 rounded-2xl bg-red-50/80 backdrop-blur-sm border border-red-200">
+                <i class="bi bi-exclamation-triangle-fill mt-0.5 text-xl text-red-500"></i>
+                <div>
+                    <h3 class="font-chakra font-bold text-red-800">
+                        Something went wrong
+                    </h3>
+                    <p id="error-message" class="mt-1 text-sm text-red-600">
+                        Failed to load reservations.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- EMPTY STATE -->
+        <section id="empty-state" class="hidden max-w-2xl mx-auto">
+            <div class="empty-state px-6 py-14 rounded-3xl border-2 border-blue-200/70 shadow-glow-card text-center">
+                <div class="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-3xl bg-blue-100 text-blue-500">
+                    <i class="bi bi-ticket-perforated text-4xl"></i>
+                </div>
+                <h2 class="font-oswald text-3xl font-bold text-slate-800">
+                    No Reservations Yet
+                </h2>
+                <p class="max-w-md mx-auto mt-3 text-sm text-slate-500">
+                    You don't have any active reservations.
+                    Browse available matches and reserve your ticket.
+                </p>
+                <a href="index.html"
+                    class="inline-flex items-center gap-2 mt-7 px-6 py-3 rounded-2xl bg-blue-400/80 
+                    text-slate-900 font-chakra font-bold border border-blue-300 shadow-glow-blue 
+                    transition-all duration-300 hover:bg-blue-500 hover:border-blue-400 hover:-translate-y-1"
+                >
+                    <i class="bi bi-search"></i>
+                    Browse Tickets
+                </a>
+            </div>
+        </section>
+
+
+        <!-- RESERVATIONS LIST -->
+        <section id="reservations-container" class="hidden max-w-5xl mx-auto">
+            <div id="reservations-list" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Reservation cards inserted by JS -->
+            </div>
+        </section>
+    </main>
+
+
+    <!-- RESERVATION CARD TEMPLATE -->
+    <template id="reservation-card-template">
+        <article class="reservation-card relative overflow-hidden rounded-3xl border-2 border-blue-200/70 shadow-glow-card">
+            <div class="reservation-card-inner relative p-5 sm:p-6">
+                <!-- Decorative Blobs -->
+                <div class="absolute -right-12 -top-12 w-36 h-36 rounded-full bg-blue-200/20 blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-12 -bottom-12 w-36 h-36 rounded-full bg-orange-200/15 blur-2xl pointer-events-none"></div>
+                <!-- Card Header -->
+                <div class="relative z-10 flex items-center justify-between gap-3 mb-5">
+                    <span data-field="sport"
+                        class="px-3 py-1.5 rounded-xl bg-blue-500 text-white text-xs font-bold uppercase tracking-wider shadow-sm"
+                    >
+                        Football
+                    </span>
+                    <span data-field="status" class="px-3 py-1.5 rounded-xl text-xs font-bold border">
+                        Reserved
+                    </span>
+                </div>
+
+                <!-- Match -->
+                <div class="relative z-10 px-3 py-5 rounded-2xl bg-white/60 border-y-2 border-dashed border-blue-300/50 shadow-inner text-center">
+                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
+                        Reserved Match
+                    </span>
+                    <h2 class="mt-2 font-oswald text-xl sm:text-2xl font-bold text-slate-900 uppercase tracking-wide leading-snug">
+                        <span data-field="home-team">
+                            Home Team
+                        </span>
+                        <span class="mx-1 text-orange-400 italic font-black">
+                            VS
+                        </span>
+                        <span data-field="away-team">
+                            Away Team
+                        </span>
+                    </h2>
+                </div>
+
+                <!-- Event Details -->
+                <div class="relative z-10 mt-5 space-y-2.5 text-xs sm:text-sm">
+                    <!-- Date -->
+                    <div class="flex items-center justify-between gap-4 p-2.5 rounded-xl bg-white/60 border border-blue-200/70">
+                        <span class="text-stone-400 font-semibold">
+                            Match Date
+                        </span>
+                        <strong data-field="match-date" class="text-right text-slate-800 font-chakra" >
+                            —
+                        </strong>
+                    </div>
+                    <!-- Ticket ID -->
+                    <div class="flex items-center justify-between gap-4 p-2.5 rounded-xl bg-white/60 border border-blue-200/70">
+                        <span class="text-stone-400 font-semibold">
+                            Ticket ID
+                        </span>
+                        <strong data-field="ticket-id" class="text-slate-800 font-chakra">
+                            —
+                        </strong>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="flex items-center justify-between gap-4 p-2.5 rounded-xl bg-orange-50/50 border border-orange-200/70">
+                        <span class="text-stone-400 font-semibold">
+                            Category
+                        </span>
+                        <strong data-field="category" class="text-orange-700 font-chakra">
+                            —
+                        </strong>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="flex items-center justify-between gap-4 p-2.5 rounded-xl bg-white/60 border border-blue-200/70">
+                        <span class="text-stone-400 font-semibold">
+                            Price
+                        </span>
+                        <strong data-field="price" class="font-oswald text-lg text-slate-900">
+                            —
+                            <span class="text-xs text-slate-400 font-chakra">
+                                Toman
+                            </span>
+                        </strong>
+                    </div>
+                </div>
+
+                <!-- Reservation Timer -->
+                <div data-expiration-container class="relative z-10 mt-5 p-3 rounded-2xl bg-orange-50/70 border border-orange-200">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 text-orange-700">
+                            <i class="bi bi-clock"></i>
+                            <span class="text-xs sm:text-sm font-semibold">
+                                Reservation expires in
+                            </span>
+                        </div>
+                        <strong data-field="countdown" class="font-chakra text-sm sm:text-base font-bold text-orange-700">
+                            10:00
+                        </strong>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="relative z-10 mt-5 pt-4 border-t-2 border-blue-300/50">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <!-- Reservation ID -->
+                        <div class="text-xs text-stone-400 font-semibold">
+                            Reservation #
+                            <strong data-field="reservation-id" class="text-slate-700" >
+                                —
+                            </strong>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Pay -->
+                            <button type="button" data-action="pay"
+                                class="flex-1 sm:flex-none flex items-center justify-center gap-2 
+                                px-4 py-2.5 rounded-xl bg-orange-300/80 text-orange-900 font-chakra 
+                                font-bold text-xs sm:text-sm border border-orange-300 shadow-glow-orange 
+                                transition-all duration-300 hover:bg-orange-400 hover:border-orange-400 
+                                hover:-translate-y-0.5"
+                            >
+                                <i class="bi bi-credit-card"></i>
+                                Pay
+                            </button>
+
+                            <!-- Cancel -->
+                            <button type="button" data-action="cancel"
+                                class="flex-1 sm:flex-none flex items-center justify-center 
+                                gap-2 px-4 py-2.5 rounded-xl bg-red-100 text-red-700 font-chakra 
+                                font-bold text-xs sm:text-sm border border-red-200 transition-all 
+                                duration-300 hover:bg-red-200 hover:border-red-300 hover:-translate-y-0.5"
+                            >
+                                <i class="bi bi-trash3"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <!-- GLOBAL MESSAGE -->
+    <div id="reservation-message"
+        class="hidden fixed top-24 left-1/2 -translate-x-1/2 z-[100] w-[90%] 
+        max-w-md px-5 py-4 rounded-2xl shadow-xl font-chakra font-bold text-sm 
+        text-center transition-all duration-300"
+    ></div>
+
+
+    <!-- CANCEL CONFIRMATION MODAL -->
+    <div id="cancel-modal"
+        class="hidden fixed inset-0 z-[200] items-center 
+        justify-center px-4 bg-slate-900/30 backdrop-blur-sm"
+    >
+        <div class="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-bgMain/95 backdrop-blur-xl border-2 border-red-200 shadow-2xl">
+            <div class="text-center">
+                <div class="flex items-center justify-center w-16 h-16 mx-auto mb-5 rounded-2xl bg-red-100 text-red-500">
+                    <i class="bi bi-trash3 text-2xl"></i>
+                </div>
+                <h2 class="font-oswald text-2xl font-bold text-slate-800">
+                    Cancel Reservation?
+                </h2>
+                <p class="mt-3 text-sm text-slate-500 leading-relaxed">
+                    Are you sure you want to cancel this reservation?
+                    The reserved ticket will become available again.
+                </p>
+
+                <!-- Modal Actions -->
+                <div class="flex gap-3 mt-6">
+                    <button id="cancel-modal-close" type="button"
+                        class="flex-1 px-5 py-3 rounded-2xl bg-slate-100 text-slate-700 
+                        font-chakra font-bold border border-slate-200 transition 
+                        hover:bg-slate-200"
+                    >
+                        Keep Reservation
+                    </button>
+                    <button id="cancel-modal-confirm" type="button"
+                        class="flex-1 px-5 py-3 rounded-2xl bg-red-400 text-white 
+                        font-chakra font-bold border border-red-400 transition hover:bg-red-500"
+                    >
+                        Yes, Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script type="module" src="js/pages/my-reservations.js"></script>
+</body>
+</html>

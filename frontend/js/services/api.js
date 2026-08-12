@@ -99,6 +99,11 @@ export const resetPassword = (resetData) =>
     request(CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD,
         {method: "POST", body: resetData});
 
+export const getProfile = () =>
+    request(CONFIG.ENDPOINTS.AUTH.PROFILE,
+        {method: "GET", auth: true}
+    );
+
 export const updateProfile = (profileData) =>
     request(CONFIG.ENDPOINTS.AUTH.PROFILE, 
         {method: "PUT", body: profileData, auth: true}
