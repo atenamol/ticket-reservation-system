@@ -142,8 +142,8 @@ def get_active_user_reservations(cursor, user_id):
             m.sport_type,
             m.match_date,
 
-            home_team.team_name AS home_team,
-            away_team.team_name AS away_team
+            home_team.name AS home_team,
+            away_team.name AS away_team
 
         FROM Reservation r
 

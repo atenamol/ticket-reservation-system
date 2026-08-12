@@ -174,10 +174,12 @@ class TransactionService:
                     for reservation in reservations
                 ]
 
-        except Exception:
+        except Exception as e:
+            print("GET ACTIVE RESERVATIONS ERROR:", repr(e))
+
             raise HTTPException(
                 status_code=500,
-                detail="Failed to retrieve active reservations.",
+                detail=str(e),
             )
 
         finally:

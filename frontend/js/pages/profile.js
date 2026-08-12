@@ -1,6 +1,6 @@
-import {getProfile, updateProfile, getCities}from "./services/api.js";
-import {getUserData, setUserData}from "./utils/storage.js";
-import {isValidEmail, isValidPhone}from "./utils/validator.js";
+import {getProfile, updateProfile, getCities}from "../services/api.js";
+import {getUserData, setUserData}from "../utils/storage.js";
+import {isValidEmail, isValidPhone}from "../utils/validators.js";
 
 document.addEventListener("DOMContentLoaded", () => {initProfilePage();});
 
