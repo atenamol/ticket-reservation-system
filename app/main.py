@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.services.search_service import (
+from app.services.elastic_service import (
     check_connection,
     create_index,
     sync_all,
