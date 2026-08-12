@@ -126,6 +126,50 @@ def get_user_ticket_reservation(cursor, user_id, ticket_id):
     )
     return cursor.fetchone()
 
+def get_active_user_reservations(cursor, user_id):
+    cursor.execute(
+        """
+        SELECT
+            r.reservation_id,
+            r.status,
+            r.reserved_at,
+            r.expires_at,
+
+            t.ticket_id,
+            t.price,
+            t.category,
+
+            m.sport_type,
+            m.match_date,
+
+            home_team.team_name AS home_team,
+            away_team.team_name AS away_team
+
+        FROM Reservation r
+
+        JOIN Ticket t
+            ON r.ticket_id = t.ticket_id
+
+        JOIN Matchh m
+            ON t.match_id = m.match_id
+
+        JOIN Team home_team
+            ON m.home_team_id = home_team.team_id
+
+        JOIN Team away_team
+            ON m.away_team_id = away_team.team_id
+
+        WHERE r.user_id = %s
+          AND r.status = 'reserved'
+          AND r.expires_at > NOW()
+
+        ORDER BY r.reserved_at DESC
+        """,
+        (user_id,),
+    )
+
+    return cursor.fetchall()
+
 def decrease_capacity(cursor, ticket_id):
     cursor.execute(
         """
@@ -173,6 +217,22 @@ def cancel_reservation(cursor, reservation_id):
         """,
         (reservation_id,),
     )
+
+def cancel_active_reservation(cursor, reservation_id, user_id):
+    cursor.execute(
+        """
+        UPDATE Reservation
+        SET status = 'cancelled'
+        WHERE reservation_id = %s
+          AND user_id = %s
+          AND status = 'reserved'
+          AND expires_at > NOW()
+        """,
+        (reservation_id, user_id),
+    )
+
+    return cursor.rowcount
+
 
 def get_expired_reservations(cursor):
     cursor.execute(

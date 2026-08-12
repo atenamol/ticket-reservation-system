@@ -47,6 +47,16 @@ def reserve_ticket(
         current_user["user_id"],
     )
 
+@router.get(
+    "/my-reservations",
+    response_model=list[ReservationHistoryItem],
+)
+def get_my_reservations(
+    current_user: dict[str, Any] = Depends(require_spectator),
+):
+    return TransactionService.get_active_reservations(
+        current_user["user_id"],
+    )
 # ---------- Payment ----------
 
 
@@ -84,6 +94,13 @@ def check_cancellation_penalty(
 ):
     return TransactionService.check_cancellation_penalty(
         reservation_id,
+        current_user["user_id"],
+    )
+@router.post("/my-reservations/cancel", response_model=MessageResponse)
+def cancel_my_reservation(request: CancellationRequestCreate,
+    current_user: dict[str, Any] = Depends(require_spectator)):
+    return TransactionService.cancel_active_reservation(
+        request.reservation_id,
         current_user["user_id"],
     )
 

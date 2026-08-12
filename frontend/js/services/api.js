@@ -165,6 +165,14 @@ export const reserveTicket = (reservationData) =>
     request(CONFIG.ENDPOINTS.TRANSACTIONS.RESERVE, 
         {method: "POST", body: reservationData, auth: true}
     );
+export const getMyReservations = () =>
+    request(
+        CONFIG.ENDPOINTS.TRANSACTIONS.MY_RESERVATIONS,
+        {
+            method: "GET",
+            auth: true
+        }
+    );
 
 export const payReservation = (paymentData) =>
     request(CONFIG.ENDPOINTS.TRANSACTIONS.PAY, 
@@ -182,6 +190,17 @@ export const getCancellationPenalty = (reservationId) =>
         {auth: true}
     );
 
+export const cancelMyReservation = (reservationId) =>
+    request(
+        CONFIG.ENDPOINTS.TRANSACTIONS.CANCEL_MY_RESERVATION,
+        {
+            method: "POST",
+            body: {
+                reservation_id: reservationId
+            },
+            auth: true
+        }
+    );
 export const cancelReservation = (reservationData) =>
     request(CONFIG.ENDPOINTS.TRANSACTIONS.CANCEL, 
         {method: "POST", body: reservationData, auth: true}

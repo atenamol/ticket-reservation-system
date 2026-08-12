@@ -155,6 +155,36 @@ class TransactionService:
             close(connection)
 
     @staticmethod
+    def get_active_reservations(
+        user_id: int,
+    ) -> list[ReservationHistoryItem]:
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                reservations = queries.get_active_user_reservations(
+                    cursor,
+                    user_id,
+                )
+
+                return [
+                    ReservationHistoryItem(**reservation)
+                    for reservation in reservations
+                ]
+
+        except Exception:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to retrieve active reservations.",
+            )
+
+        finally:
+            close(connection)
+
+
+    @staticmethod
     def get_user_history(user_id: int) -> list[ReservationHistoryItem]:
         connection = get_connection()
 
@@ -419,6 +449,79 @@ class TransactionService:
             raise HTTPException(
                 status_code=500,
                 detail="Failed to calculate cancellation penalty.",
+            )
+
+        finally:
+            close(connection)
+
+
+    @staticmethod
+    def cancel_active_reservation(
+        reservation_id: int,
+        user_id: int,
+    ) -> MessageResponse:
+
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cursor:
+
+                reservation = queries.get_reservation_by_user(
+                    cursor,
+                    reservation_id,
+                    user_id,
+                )
+
+                if reservation is None:
+                    raise HTTPException(
+                        status_code=404,
+                        detail="Reservation not found.",
+                    )
+
+                if reservation["status"] != "reserved":
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Only active reservations can be cancelled.",
+                    )
+
+                if reservation["expires_at"] <= datetime.now():
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Reservation has expired.",
+                    )
+
+                updated = queries.cancel_active_reservation(
+                    cursor,
+                    reservation_id,
+                    user_id,
+                )   
+
+                if updated == 0:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Reservation could not be cancelled.",
+                    )
+
+                queries.increase_capacity(
+                    cursor,
+                    reservation["ticket_id"],
+                )
+
+                commit(connection)
+
+                return MessageResponse(
+                    message="Reservation cancelled successfully."
+                )
+
+        except HTTPException:
+            rollback(connection)
+            raise
+
+        except Exception:
+            rollback(connection)
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to cancel reservation.",
             )
 
         finally:

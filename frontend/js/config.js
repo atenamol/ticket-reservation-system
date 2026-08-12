@@ -30,6 +30,8 @@ const CONFIG = {
       RESERVE: "/transactions/reserve",
       PAY: "/transactions/pay",
       BOOKINGS: "/transactions/bookings",
+      MY_RESERVATIONS: "/transactions/my-reservations",
+      CANCEL_MY_RESERVATION: "/transactions/my-reservations/cancel",
       CANCEL: "/transactions/cancel",
       PENALTY: "/transactions/cancellation-penalty",
       REPORT: "/transactions/report",
