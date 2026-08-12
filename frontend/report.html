@@ -154,11 +154,11 @@
 
                     <!-- Clean Pill Tabs -->
                     <div class="flex items-center p-1 bg-stone-100 rounded-2xl self-start sm:self-auto border border-stone-200">
-                        <button type="button" id="tab-btn-new" onclick="switchTab('new')" class="px-5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm">
+                        <button type="button" id="tab-btn-new" class="px-5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm">
                             Submit Issue
                         </button>
-                        <button type="button" id="tab-btn-history" onclick="switchTab('history')" class="px-5 py-2 rounded-xl text-xs font-bold transition-all text-stone-500 hover:text-stone-900">
-                            History <span class="bg-[#F69664] text-white text-[10px] px-2 py-0.5 rounded-full ml-1 font-bold">2</span>
+                        <button type="button" id="tab-btn-history" class="px-5 py-2 rounded-xl text-xs font-bold transition-all text-stone-500 hover:text-stone-900">
+                            History <span class="bg-[#F69664] text-white text-[10px] px-2 py-0.5 rounded-full ml-1 font-bold">0</span>
                         </button>
                     </div>
                 </div>
@@ -166,13 +166,27 @@
                 <!-- SECTION 1: New Report Form -->
                 <div id="tab-content-new">
                     <form id="report-form" class="space-y-6">
+                        <div
+                            id="report-message"
+                            class="hidden px-4 py-3 rounded-2xl text-sm font-bold"
+                        ></div>
                         
                         <!-- Ticket ID -->
                         <div>
                             <label for="ticket-id" class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">
-                                Associated Ticket ID
+                                Associated Ticket ID <span class="text-[#F69664]">*</span>
                             </label>
-                            <input type="text" id="ticket-id" name="ticketId" readonly class="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-stone-700 font-chakra font-bold text-sm cursor-not-allowed" value="Fetching ID...">
+
+                            <input
+                                type="number"
+                                id="ticket-id"
+                                name="ticket_id"
+                                min="1"
+                                step="1"
+                                required
+                                placeholder="Enter your ticket ID"
+                                class="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-stone-800 font-chakra font-bold text-sm focus:outline-none focus:border-[#80B6E9] focus:ring-2 focus:ring-[#80B6E9]/30 transition-all"
+                            >
                         </div>
 
                         <!-- Issue Subject / Category (Text Input) -->
@@ -180,7 +194,7 @@
                             <label for="issue-type" class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">
                                 Subject / Issue Category <span class="text-[#F69664]">*</span>
                             </label>
-                            <input type="text" id="issue-type" name="issueType" required 
+                            <input type="text" id="issue-type" name="subject" required 
                                 placeholder="e.g. Discrepancy in ticket price, Gate access issue..." 
                                 class="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-stone-800 font-medium text-sm focus:outline-none focus:border-[#80B6E9] focus:ring-2 focus:ring-[#80B6E9]/30 transition-all">
                         </div>
@@ -190,7 +204,16 @@
                             <label for="description" class="block text-xs font-bold text-stone-600 uppercase tracking-wider mb-2">
                                 Description <span class="text-[#F69664]">*</span>
                             </label>
-                            <textarea id="description" name="description" rows="4" required placeholder="Provide details about the problem..." class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 text-stone-800 font-medium text-sm focus:outline-none focus:border-[#80B6E9] focus:ring-2 focus:ring-[#80B6E9]/30 transition-all resize-none"></textarea>
+                            <textarea
+                                id="description"
+                                name="description"
+                                rows="4"
+                                minlength="10"
+                                maxlength="2000"
+                                required
+                                placeholder="Provide details about the problem..."
+                                class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 text-stone-800 font-medium text-sm focus:outline-none focus:border-[#80B6E9] focus:ring-2 focus:ring-[#80B6E9]/30 transition-all resize-none"
+                            ></textarea>
                         </div>
 
                         <!-- Submit Button -->
@@ -206,45 +229,7 @@
 
                 <!-- SECTION 2: History List -->
                 <div id="tab-content-history" class="hidden space-y-4">
-                    
-                    <!-- Item 1: Resolved -->
-                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 space-y-3 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-[#82D6A5]"></div>
-                        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-stone-200/60 pb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold text-stone-700">#R-8092</span>
-                                <span class="text-xs text-stone-400">| Match Ticket #1042</span>
-                            </div>
-                            <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#D6F5E3] text-[#276e44]">
-                                Resolved
-                            </span>
-                        </div>
-                        <p class="text-xs text-stone-600 font-medium">
-                            The stadium address on the ticket pass shows Azadi West Expressway, but the entry gate specifies Gate 2.
-                        </p>
-                        <div class="bg-white border border-stone-200 rounded-xl p-3 text-xs text-stone-700">
-                            <span class="font-bold text-[#80B6E9] block mb-1">Support Reply:</span>
-                            Gate 2 is the main entry for Normal Tribune ticket holders. The pass details have been refreshed.
-                        </div>
-                    </div>
-
-                    <!-- Item 2: In Review -->
-                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 space-y-3 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-[#F69664]"></div>
-                        <div class="flex items-center justify-between flex-wrap gap-2 border-b border-stone-200/60 pb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold text-stone-700">#R-8104</span>
-                                <span class="text-xs text-stone-400">| Match Ticket #1042</span>
-                            </div>
-                            <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#FDE8D3] text-[#b8501b]">
-                                In Review
-                            </span>
-                        </div>
-                        <p class="text-xs text-stone-600 font-medium">
-                            Payment failed during VIP selection but seats were temporarily locked.
-                        </p>
-                    </div>
-
+                    <div id="reports-list"></div>
                 </div>
 
             </div>
@@ -252,34 +237,8 @@
 
     </main>
 
-    <!-- Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const ticketId = urlParams.get('ticketId');
-            const ticketInput = document.getElementById('ticket-id');
-            ticketInput.value = ticketId ? '#' + ticketId : 'Not Specified';
-        });
-
-        function switchTab(tab) {
-            const tabNew = document.getElementById('tab-content-new');
-            const tabHistory = document.getElementById('tab-content-history');
-            const btnNew = document.getElementById('tab-btn-new');
-            const btnHistory = document.getElementById('tab-btn-history');
-
-            if (tab === 'new') {
-                tabNew.classList.remove('hidden');
-                tabHistory.classList.add('hidden');
-                btnNew.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm';
-                btnHistory.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all text-stone-500 hover:text-stone-900';
-            } else {
-                tabNew.classList.add('hidden');
-                tabHistory.classList.remove('hidden');
-                btnHistory.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm';
-                btnNew.className = 'px-5 py-2 rounded-xl text-xs font-bold transition-all text-stone-500 hover:text-stone-900';
-            }
-        }
-    </script>
+    <script type="module" src="./js/app.js"></script>
+    <script type="module" src="./js/pages/report.js"></script>
 
 </body>
 </html>
