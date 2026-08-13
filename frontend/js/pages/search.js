@@ -21,7 +21,12 @@ const state = {
     selectedDateFrom: "",
     selectedDateTo: "",
 
-    currentMonth: new Date()
+    currentMonth: new Date(),
+
+    // Pagination
+    searchResults: [],
+    currentPage: 1,
+    itemsPerPage: 9
 };
 
 
@@ -72,6 +77,7 @@ async function initSearchPage() {
     setupDropdowns();
     setupDatePickers();
     setupSearchForm();
+    setupResetButton();
 
     loadFiltersFromUrl();
 
@@ -104,6 +110,52 @@ function setupDropdown(button, menu, arrow) {
     });
 }
 
+function setupResetButton() {
+    const resetButton = document.getElementById("btn-reset-filters");
+
+    if (!resetButton) return;
+
+    resetButton.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        // Reset all normal form fields
+        searchForm?.reset();
+
+        // Reset custom dropdown state
+        state.selectedCityId = "";
+        state.selectedVenueId = "";
+        state.selectedTeamId = "";
+
+        $("filter-city").value = "";
+        $("filter-venue").value = "";
+        $("filter-team").value = "";
+
+        cityLabel.textContent = "All Cities";
+        venueLabel.textContent = "All Venues";
+        teamLabel.textContent = "All Teams";
+
+        // Reset custom date state
+        state.selectedDateFrom = "";
+        state.selectedDateTo = "";
+
+        $("filter-date-from").value = "";
+        $("filter-date-to").value = "";
+
+        dateFromLabel.textContent = "Choose date";
+        dateToLabel.textContent = "Choose date";
+
+        // Close dropdowns/calendars
+        closeAllDropdowns();
+        dateFromPicker.classList.add("hidden");
+        dateToPicker.classList.add("hidden");
+
+        // Rebuild venues for "All Cities"
+        await loadVenues("");
+
+        // Immediately search with empty filters
+        await executeSearch();
+    });
+}
 
 function closeAllDropdowns() {
     const dropdowns = [
@@ -771,6 +823,7 @@ function getResultsContainer() {
 
 function renderSearchResults(results) {
     const container = getResultsContainer();
+    const pagination = document.getElementById("search-pagination");
 
     if (!container) {
         console.error("Search results container not found.");
@@ -781,23 +834,147 @@ function renderSearchResults(results) {
 
     if (!results || results.length === 0) {
         container.innerHTML = `
-            <div class="bg-white border border-stone-200 rounded-2xl p-8 text-center shadow-sm">
+            <div class="col-span-full bg-white border border-stone-200 rounded-2xl p-8 text-center shadow-sm">
                 <div class="text-3xl mb-3">⌕</div>
+
                 <h3 class="text-lg font-bold text-stone-800 mb-1">
                     No tickets found
                 </h3>
+
                 <p class="text-sm text-stone-500">
                     Try changing your filters and search again.
                 </p>
             </div>
         `;
 
+        if (pagination) {
+            pagination.innerHTML = "";
+        }
+
         return;
     }
 
-    results.forEach((ticket) => {
+    const totalPages =
+        Math.ceil(results.length / state.itemsPerPage);
+
+    // Keep current page valid
+    if (state.currentPage > totalPages) {
+        state.currentPage = totalPages;
+    }
+
+    const startIndex =
+        (state.currentPage - 1) * state.itemsPerPage;
+
+    const endIndex =
+        startIndex + state.itemsPerPage;
+
+    const pageResults =
+        results.slice(startIndex, endIndex);
+
+    pageResults.forEach((ticket) => {
         container.appendChild(createTicketCard(ticket));
     });
+
+    renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+    const pagination =
+        document.getElementById("search-pagination");
+
+    if (!pagination) return;
+
+    pagination.innerHTML = "";
+
+    // No pagination needed for one page
+    if (totalPages <= 1) {
+        return;
+    }
+
+    const createPageButton = (
+        label,
+        page,
+        disabled = false,
+        active = false
+    ) => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.textContent = label;
+
+        button.disabled = disabled;
+
+        button.className = `
+            min-w-10
+            h-10
+            px-3
+            rounded-xl
+            border
+            text-sm
+            font-semibold
+            transition-all duration-150
+            ${
+            active
+                ? "bg-[#F4C7A1] border-[#EAB58A] text-stone-900 shadow-sm"
+                : "bg-white border-stone-200 text-stone-600 hover:bg-[#F8EDE0] hover:border-stone-300"
+        }
+            ${
+            disabled
+                ? "opacity-40 cursor-not-allowed"
+                : ""
+        }
+        `;
+
+        if (!disabled) {
+            button.addEventListener("click", () => {
+                state.currentPage = page;
+
+                renderSearchResults(
+                    state.searchResults
+                );
+
+                // Keep the results section visible
+                document
+                    .getElementById("search-results-container")
+                    ?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+            });
+        }
+
+        return button;
+    };
+
+    // Previous
+    pagination.appendChild(
+        createPageButton(
+            "←",
+            state.currentPage - 1,
+            state.currentPage === 1
+        )
+    );
+
+    // Page numbers
+    for (let page = 1; page <= totalPages; page++) {
+        pagination.appendChild(
+            createPageButton(
+                page,
+                page,
+                false,
+                page === state.currentPage
+            )
+        );
+    }
+
+    // Next
+    pagination.appendChild(
+        createPageButton(
+            "→",
+            state.currentPage + 1,
+            state.currentPage === totalPages
+        )
+    );
 }
 
 
@@ -813,6 +990,9 @@ function createTicketCard(ticket) {
         hover:shadow-md
         hover:-translate-y-0.5
         transition-all duration-200
+        flex
+        flex-col
+        h-full
     `;
 
     const date = ticket.match_date
@@ -843,68 +1023,152 @@ function createTicketCard(ticket) {
     const venue = ticket.venue_name || "Venue unavailable";
     const city = ticket.city_name || "";
 
+    const sport = (ticket.sport_type || "").toLowerCase();
+
+    let buttonStyle = `
+        bg-stone-100
+        border-stone-200
+        text-stone-700
+        hover:bg-stone-200
+    `;
+
+    if (sport === "football") {
+        buttonStyle = `
+            bg-green-100
+            border-green-200
+            text-green-800
+            hover:bg-green-200
+        `;
+    } else if (sport === "basketball") {
+        buttonStyle = `
+            bg-orange-100
+            border-orange-200
+            text-orange-800
+            hover:bg-orange-200
+        `;
+    } else if (sport === "volleyball") {
+        buttonStyle = `
+            bg-blue-100
+            border-blue-200
+            text-blue-800
+            hover:bg-blue-200
+        `;
+    }
+
     card.innerHTML = `
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex flex-col h-full">
 
-            <div class="min-w-0">
+            <!-- Sport / Category -->
+            <div class="flex items-center justify-between gap-3 mb-4">
 
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="px-2.5 py-1 rounded-full bg-[#F8EDE0] text-stone-700 text-[10px] font-bold uppercase tracking-wider">
-                        ${escapeHtml(category)}
-                    </span>
+                <span class="
+                    px-2.5
+                    py-1
+                    rounded-full
+                    bg-[#F8EDE0]
+                    text-stone-700
+                    text-[10px]
+                    font-bold
+                    uppercase
+                    tracking-wider
+                ">
+                    ${escapeHtml(category)}
+                </span>
 
-                    <span class="text-xs text-stone-400">
-                        ${escapeHtml(capacity)}
-                    </span>
-                </div>
+                <span class="text-xs text-stone-400 font-medium">
+                    ${escapeHtml(capacity)}
+                </span>
 
-                <h3 class="text-lg font-bold text-stone-900 truncate">
+            </div>
+
+
+            <!-- Teams -->
+            <div class="text-center px-2">
+
+                <h3 class="
+                    text-lg
+                    font-bold
+                    text-stone-900
+                    leading-snug
+                    break-words
+                ">
                     ${escapeHtml(homeTeam)}
-                    <span class="text-stone-400 font-medium mx-1">vs</span>
+                    <span class="text-stone-400 font-medium mx-1">
+                        vs
+                    </span>
                     ${escapeHtml(awayTeam)}
                 </h3>
 
-                <div class="mt-3 space-y-1.5 text-sm text-stone-500">
+            </div>
 
-                    <div class="flex items-center gap-2">
-                        <span class="text-stone-400">📅</span>
-                        <span>${escapeHtml(date)}</span>
-                    </div>
 
-                    <div class="flex items-center gap-2">
-                        <span class="text-stone-400">📍</span>
-                        <span>
-                            ${escapeHtml(venue)}
-                            ${city ? `, ${escapeHtml(city)}` : ""}
-                        </span>
-                    </div>
+            <!-- Match information -->
+            <div class="mt-4 space-y-2 text-sm text-stone-500">
 
+                <div class="flex items-center gap-2">
+                    <span class="text-stone-400">📅</span>
+                    <span>${escapeHtml(date)}</span>
+                </div>
+
+                <div class="flex items-start gap-2">
+                    <span class="text-stone-400">📍</span>
+                    <span class="break-words">
+                        ${escapeHtml(venue)}
+                        ${city ? `, ${escapeHtml(city)}` : ""}
+                    </span>
                 </div>
 
             </div>
 
-            <div class="flex flex-col items-end justify-between gap-4 shrink-0">
 
-                <div class="text-right">
-                    <div class="text-[10px] uppercase tracking-wider font-bold text-stone-400">
-                        From
-                    </div>
+            <!-- Price -->
+            <div class="mt-5 text-center">
 
-                    <div class="text-xl font-bold text-stone-900">
-                        ${escapeHtml(price)}
-                    </div>
+                <div class="
+                    text-[10px]
+                    uppercase
+                    tracking-wider
+                    font-bold
+                    text-stone-400
+                ">
+                    From
                 </div>
 
-                <button
-                    type="button"
-                    class="ticket-details-button inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#82D6A5] via-[#80B6E9] to-[#F69664] text-slate-950 text-xs font-bold shadow-sm hover:scale-105 transition-transform duration-200"
-                    data-ticket-id="${escapeHtml(ticket.ticket_id)}"
-                >
-                    View Details
-                    <span>→</span>
-                </button>
+                <div class="
+                    mt-0.5
+                    text-2xl
+                    font-bold
+                    text-stone-900
+                ">
+                    ${escapeHtml(price)}
+                </div>
 
             </div>
+
+
+            <!-- Details button -->
+            <button
+                type="button"
+                class="
+                    ticket-details-button
+                    w-full
+                    mt-auto
+                    pt-3
+                    pb-3
+                    px-4
+                    rounded-xl
+                    border
+                    font-semibold
+                    text-sm
+                    transition-all
+                    duration-200
+                    ${buttonStyle}
+                "
+                data-ticket-id="${escapeHtml(ticket.ticket_id)}"
+            >
+                View Details
+                <span class="ml-1">→</span>
+            </button>
 
         </div>
     `;
@@ -990,7 +1254,10 @@ async function executeSearch() {
     try {
         const results = await searchTickets(filters);
 
-        renderSearchResults(results);
+        state.searchResults = results || [];
+        state.currentPage = 1;
+
+        renderSearchResults(state.searchResults);
 
     } catch (error) {
         console.error("Search failed:", error);
