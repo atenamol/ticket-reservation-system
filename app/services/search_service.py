@@ -54,19 +54,19 @@ def search_tickets(filters: dict):
             }
         )
 
-    if filters.get("team_id"):
+    if filters.get("team_name"):
         filter_queries.append(
             {
                 "bool": {
                     "should": [
                         {
-                            "term": {
-                                "home_team_id": filters["team_id"]
+                            "match": {
+                                "home_team": filters["team_name"]
                             }
                         },
                         {
-                            "term": {
-                                "away_team_id": filters["team_id"]
+                            "match": {
+                                "away_team": filters["team_name"]
                             }
                         }
                     ],

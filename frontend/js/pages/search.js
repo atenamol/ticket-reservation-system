@@ -1,6 +1,7 @@
 import {
     getCities,
     getVenues,
+    getTeams,
     searchTickets
 } from "../services/api.js";
 
@@ -13,6 +14,7 @@ const state = {
     cities: [],
     venues: [],
     teams: [],
+    allSearchResults: [],
 
     selectedCityId: "",
     selectedVenueId: "",
@@ -84,7 +86,7 @@ async function initSearchPage() {
     await loadCities();
     await loadVenues("");
 
-    loadTeams();
+    await loadAllTeams();
 
     await executeSearch();
 }
@@ -364,7 +366,7 @@ async function loadVenues(cityId = "") {
 // Teams
 // ============================================================
 
-function loadTeams() {
+function loadTeams(results = []) {
     teamOptions.innerHTML = "";
 
     createDropdownOption({
@@ -374,21 +376,57 @@ function loadTeams() {
         selected: true,
         onSelect: (value, label) => {
             selectTeam(value, label);
+            executeSearch();
         }
     });
 
-    const message = document.createElement("div");
+    const teamsMap = new Map();
 
-    message.className = `
-        px-3.5 py-3
-        text-sm
-        text-stone-400
-    `;
+    results.forEach((ticket) => {
+        if (ticket.home_team) {
+            teamsMap.set(ticket.home_team, ticket.home_team);
+        }
 
-    message.textContent =
-        "Team filtering will be available soon.";
+        if (ticket.away_team) {
+            teamsMap.set(ticket.away_team, ticket.away_team);
+        }
+    });
 
-    teamOptions.appendChild(message);
+    const teams = Array.from(teamsMap.entries())
+        .sort((a, b) => a[1].localeCompare(b[1]));
+
+    state.teams = teams.map(([team_id, name]) => ({
+        team_id,
+        name
+    }));
+
+    teams.forEach(([teamId, teamName]) => {
+        createDropdownOption({
+            container: teamOptions,
+            label: teamName,
+            value: teamId,
+            onSelect: (value, label) => {
+                selectTeam(value, label);
+                executeSearch();
+            }
+        });
+    });
+}
+
+async function loadAllTeams() {
+    try {
+        const results = await searchTickets({});
+
+        console.log("ALL TEAM SEARCH RESULTS:", results);
+        console.log("FIRST TICKET:", results?.[0]);
+
+        loadTeams(results || []);
+
+    } catch (error) {
+        console.error("Failed to load teams:", error);
+
+        loadTeams([]);
+    }
 }
 // ============================================================
 // Custom Calendar
@@ -745,7 +783,7 @@ function buildSearchFilters() {
     }
 
     if (teamId) {
-        filters.team_id = Number(teamId);
+        filters.team_name = teamId;
     }
 
     if (dateFrom) {

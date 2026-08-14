@@ -157,6 +157,9 @@ export const getTicketDetail = (ticketId) =>
     request(CONFIG.ENDPOINTS.CATALOG.TICKET_DETAIL(ticketId)
 );
 
+export const getTeams = () =>
+    request(CONFIG.ENDPOINTS.CATALOG.TEAMS);
+
 /* ============================================================
     Transactions
 ============================================================ */

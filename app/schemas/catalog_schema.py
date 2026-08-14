@@ -31,7 +31,7 @@ class TicketSearchQuery(BaseModel):
     sport_type: Optional[Literal["Volleyball", "Basketball", "Football"]] = None
     city_id: Optional[int] = None
     venue_id: Optional[int] = None
-    team_id: Optional[int] = None
+    team_id: Optional[str] = None
     date_from: Optional[date] = None
     date_to: Optional[date] = None
     category: Optional[Literal["VIP", "normal", "special"]] = None
