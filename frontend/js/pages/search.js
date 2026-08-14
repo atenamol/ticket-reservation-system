@@ -383,12 +383,18 @@ function loadTeams(results = []) {
     const teamsMap = new Map();
 
     results.forEach((ticket) => {
-        if (ticket.home_team) {
-            teamsMap.set(ticket.home_team, ticket.home_team);
+        if (ticket.home_team_id != null && ticket.home_team) {
+            teamsMap.set(
+                String(ticket.home_team_id),
+                ticket.home_team
+            );
         }
 
-        if (ticket.away_team) {
-            teamsMap.set(ticket.away_team, ticket.away_team);
+        if (ticket.away_team_id != null && ticket.away_team) {
+            teamsMap.set(
+                String(ticket.away_team_id),
+                ticket.away_team
+            );
         }
     });
 
@@ -424,7 +430,6 @@ async function loadAllTeams() {
 
     } catch (error) {
         console.error("Failed to load teams:", error);
-
         loadTeams([]);
     }
 }
@@ -783,7 +788,7 @@ function buildSearchFilters() {
     }
 
     if (teamId) {
-        filters.team_name = teamId;
+        filters.team_id = Number(teamId);
     }
 
     if (dateFrom) {
