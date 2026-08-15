@@ -41,6 +41,26 @@
             }
         }
     </script>
+
+    <style>
+        .activity-highlight {
+            background-color: #fef3c7 !important;
+            box-shadow:
+                    inset 4px 0 0 #f59e0b,
+                    0 0 18px rgba(245, 158, 11, 0.35);
+            animation: activityPulse 1.2s ease-in-out 3;
+        }
+
+        @keyframes activityPulse {
+            0%, 100% {
+                background-color: #fef3c7;
+            }
+
+            50% {
+                background-color: #fff7d6;
+            }
+        }
+    </style>
 </head>
 
 <script>
