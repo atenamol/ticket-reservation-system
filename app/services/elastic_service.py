@@ -3,6 +3,7 @@ Service layer for Elasticsearch.
 """
 from decimal import Decimal
 from datetime import datetime
+import os
 
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError
@@ -13,7 +14,7 @@ from app.queries import catalog_queries as q
 
 
 client = Elasticsearch(
-    "http://localhost:9200",
+    os.getenv("ELASTIC_HOST", "http://localhost:9200"),
     request_timeout=60
 )
 
