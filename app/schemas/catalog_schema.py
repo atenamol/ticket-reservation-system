@@ -31,7 +31,7 @@ class TicketSearchQuery(BaseModel):
     sport_type: Optional[Literal["Volleyball", "Basketball", "Football"]] = None
     city_id: Optional[int] = None
     venue_id: Optional[int] = None
-    team_id: Optional[str] = None
+    team_id: Optional[int] = None
     date_from: Optional[date] = None
     date_to: Optional[date] = None
     category: Optional[Literal["VIP", "normal", "special"]] = None
@@ -41,7 +41,7 @@ class TicketSearchQuery(BaseModel):
 
 class TicketSearchResult(BaseModel):
     ticket_id: int
-    price: Decimal
+    price: float
     category: str
     remaining_capacity: int
     match_id: int
@@ -51,7 +51,10 @@ class TicketSearchResult(BaseModel):
     venue_name: str
     city_id: int
     city_name: str
+
+    home_team_id: int
     home_team: str
+    away_team_id: int
     away_team: str
 
 

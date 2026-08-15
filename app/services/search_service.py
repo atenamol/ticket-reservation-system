@@ -1,4 +1,3 @@
-
 from elasticsearch import Elasticsearch
 
 from app.config import ELASTIC_HOST, ELASTIC_INDEX
@@ -11,81 +10,73 @@ client = Elasticsearch(
 
 
 def search_tickets(filters: dict):
+    must = []
 
-    filter_queries = []
-
-    filter_queries.append(
-        {
-            "range": {
-                "remaining_capacity": {
-                    "gt": 0
-                }
+    if filters.get("sport_type") is not None:
+        must.append({
+            "term": {
+                "sport_type": filters["sport_type"]
             }
-        }
-    )
-    
-    # Sport type
-    if filters.get("sport_type"):
-        filter_queries.append(
-            {
-                "term": {
-                    "sport_type": filters["sport_type"]
-                }
-            }
-        )
+        })
 
-    # City
-    if filters.get("city_id"):
-        filter_queries.append(
-            {
-                "term": {
-                    "city_id": filters["city_id"]
-                }
+    if filters.get("city_id") is not None:
+        must.append({
+            "term": {
+                "city_id": filters["city_id"]
             }
-        )
+        })
 
-    # Venue
-    if filters.get("venue_id"):
-        filter_queries.append(
-            {
-                "term": {
-                    "venue_id": filters["venue_id"]
-                }
+    if filters.get("venue_id") is not None:
+        must.append({
+            "term": {
+                "venue_id": filters["venue_id"]
             }
-        )
+        })
 
-    if filters.get("team_name"):
-        filter_queries.append(
-            {
-                "bool": {
-                    "should": [
-                        {
-                            "match": {
-                                "home_team": filters["team_name"]
-                            }
-                        },
-                        {
-                            "match": {
-                                "away_team": filters["team_name"]
-                            }
+    if filters.get("team_id") is not None:
+        must.append({
+            "bool": {
+                "should": [
+                    {
+                        "term": {
+                            "home_team_id": filters["team_id"]
                         }
-                    ],
-                    "minimum_should_match": 1
+                    },
+                    {
+                        "term": {
+                            "away_team_id": filters["team_id"]
+                        }
+                    },
+                ],
+                "minimum_should_match": 1,
+            }
+        })
+
+    if filters.get("date_from") is not None:
+        must.append({
+            "range": {
+                "match_date": {
+                    "gte": filters["date_from"]
                 }
             }
-        )
+        })
 
-    # Category
-    if filters.get("category"):
-        filter_queries.append(
-            {
-                "term": {
-                    "category": filters["category"]
+    if filters.get("date_to") is not None:
+        must.append({
+            "range": {
+                "match_date": {
+                    "lte": filters["date_to"]
                 }
             }
-        )
+        })
 
-    # Price range
+    if filters.get("category") is not None:
+        must.append({
+            "term": {
+                "category": filters["category"]
+            }
+        })
+
     price_range = {}
 
     if filters.get("min_price") is not None:
@@ -95,41 +86,21 @@ def search_tickets(filters: dict):
         price_range["lte"] = float(filters["max_price"])
 
     if price_range:
-        filter_queries.append(
-            {
-                "range": {
-                    "price": price_range
-                }
+        must.append({
+            "range": {
+                "price": price_range
             }
-        )
+        })
 
-    # Match date range
-    date_range = {}
-
-    if filters.get("date_from"):
-        date_range["gte"] = filters["date_from"].isoformat()
-
-    if filters.get("date_to"):
-        date_range["lte"] = filters["date_to"].isoformat()
-
-    if date_range:
-        filter_queries.append(
-            {
-                "range": {
-                    "match_date": date_range
-                }
-            }
-        )
-
+    query = {
+        "bool": {
+            "must": must
+        }
+    }
 
     response = client.search(
         index=ELASTIC_INDEX,
-        query={
-            "bool": {
-                "filter": filter_queries
-            }
-        },
-        size=100
+        query=query,
     )
 
     return [

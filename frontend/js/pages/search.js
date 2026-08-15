@@ -383,12 +383,18 @@ function loadTeams(results = []) {
     const teamsMap = new Map();
 
     results.forEach((ticket) => {
-        if (ticket.home_team) {
-            teamsMap.set(ticket.home_team, ticket.home_team);
+        if (ticket.home_team_id != null && ticket.home_team) {
+            teamsMap.set(
+                String(ticket.home_team_id),
+                ticket.home_team
+            );
         }
 
-        if (ticket.away_team) {
-            teamsMap.set(ticket.away_team, ticket.away_team);
+        if (ticket.away_team_id != null && ticket.away_team) {
+            teamsMap.set(
+                String(ticket.away_team_id),
+                ticket.away_team
+            );
         }
     });
 
@@ -424,7 +430,6 @@ async function loadAllTeams() {
 
     } catch (error) {
         console.error("Failed to load teams:", error);
-
         loadTeams([]);
     }
 }
@@ -783,7 +788,7 @@ function buildSearchFilters() {
     }
 
     if (teamId) {
-        filters.team_name = teamId;
+        filters.team_id = Number(teamId);
     }
 
     if (dateFrom) {
@@ -1055,6 +1060,14 @@ function createTicketCard(ticket) {
         ? `${ticket.remaining_capacity} left`
         : "Availability unavailable";
 
+    const sportType = ticket.sport_type || "Sport";
+
+    const sportIcon = {
+        Football: "⚽",
+        Basketball: "🏀",
+        Volleyball: "🏐"
+    }[sportType] || "🎟️";
+
     const homeTeam = ticket.home_team || "Home Team";
     const awayTeam = ticket.away_team || "Away Team";
 
@@ -1098,7 +1111,19 @@ function createTicketCard(ticket) {
 
             <!-- Sport / Category -->
             <div class="flex items-center justify-between gap-3 mb-4">
-
+            
+                <!-- Sport -->
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">
+                        ${sportIcon}
+                    </span>
+            
+                    <span class="text-sm font-bold text-stone-800">
+                        ${escapeHtml(sportType)}
+                    </span>
+                </div>
+            
+                <!-- Category -->
                 <span class="
                     px-2.5
                     py-1
@@ -1112,11 +1137,7 @@ function createTicketCard(ticket) {
                 ">
                     ${escapeHtml(category)}
                 </span>
-
-                <span class="text-xs text-stone-400 font-medium">
-                    ${escapeHtml(capacity)}
-                </span>
-
+            
             </div>
 
 
@@ -1184,29 +1205,47 @@ function createTicketCard(ticket) {
             </div>
 
 
-            <!-- Details button -->
-            <button
-                type="button"
-                class="
-                    ticket-details-button
-                    w-full
-                    mt-auto
-                    pt-3
-                    pb-3
-                    px-4
-                    rounded-xl
-                    border
-                    font-semibold
-                    text-sm
-                    transition-all
-                    duration-200
-                    ${buttonStyle}
-                "
-                data-ticket-id="${escapeHtml(ticket.ticket_id)}"
-            >
-                View Details
-                <span class="ml-1">→</span>
-            </button>
+            <!-- Availability + Details -->
+            <div class="mt-auto pt-5 flex items-center justify-between gap-3">
+            
+                <div>
+                    <p class="
+                        text-[10px]
+                        uppercase
+                        tracking-wider
+                        font-semibold
+                        text-stone-400
+                    ">
+                        Availability
+                    </p>
+            
+                    <p class="text-sm font-semibold text-stone-700 mt-0.5">
+                        ${escapeHtml(capacity)}
+                    </p>
+                </div>
+            
+                <button
+                    type="button"
+                    class="
+                        ticket-details-button
+                        shrink-0
+                        px-4
+                        py-3
+                        rounded-xl
+                        border
+                        font-semibold
+                        text-sm
+                        transition-all
+                        duration-200
+                        ${buttonStyle}
+                    "
+                    data-ticket-id="${escapeHtml(ticket.ticket_id)}"
+                >
+                    View Details
+                    <span class="ml-1">→</span>
+                </button>
+
+            </div>
 
         </div>
     `;

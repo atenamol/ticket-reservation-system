@@ -51,27 +51,23 @@ def get_venues(
 
 @router.get("/tickets/search", response_model=list[TicketSearchResult])
 def search_tickets(
-    sport_type: Optional[Literal["Football", "Basketball", "Volleyball"]] = Query(
-        default=None
-    ),
-    city_id: Optional[int] = Query(default=None),
-    venue_id: Optional[int] = Query(default=None),
-    team_name: Optional[str] = Query(default=None),
-    date_from: Optional[date] = Query(default=None),
-    date_to: Optional[date] = Query(default=None),
-    category: Optional[str] = Query(default=None),
-    min_price: Optional[Decimal] = Query(default=None),
-    max_price: Optional[Decimal] = Query(default=None),
+        sport_type: Optional[Literal["Football", "Basketball", "Volleyball"]] = Query(
+            default=None
+        ),
+        city_id: Optional[int] = Query(default=None),
+        venue_id: Optional[int] = Query(default=None),
+        team_id: Optional[int] = Query(default=None),
+        date_from: Optional[date] = Query(default=None),
+        date_to: Optional[date] = Query(default=None),
+        category: Optional[str] = Query(default=None),
+        min_price: Optional[Decimal] = Query(default=None),
+        max_price: Optional[Decimal] = Query(default=None),
 ):
-    """
-    Search tickets using optional filters.
-    """
-
     filters = TicketSearchQuery(
         sport_type=sport_type,
         city_id=city_id,
         venue_id=venue_id,
-        team_name=team_name,
+        team_id=team_id,
         date_from=date_from,
         date_to=date_to,
         category=category,
@@ -80,7 +76,6 @@ def search_tickets(
     )
 
     return service.search_tickets(filters)
-
 
 # Ticket Details
 

@@ -149,7 +149,7 @@ export const searchTickets = (filters = {}) => {
     const query = buildQueryString(filters);
 
     return request(
-        `${CONFIG.ENDPOINTS.CATALOG.TICKETS_SEARCH}?${query}`
+        `${CONFIG.ENDPOINTS.CATALOG.TICKETS_SEARCH}${query ? `?${query}` : ""}`
     );
 };
 
