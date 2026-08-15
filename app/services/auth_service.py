@@ -1,6 +1,10 @@
 from fastapi import HTTPException, status
 from app.cache import redis_client
-from app.cache.profile_cache import set_cached_profile, invalidate_profile
+from app.cache.profile_cache import (
+    get_cached_profile,
+    set_cached_profile,
+    invalidate_profile,
+)
 from app.queries.auth_queries import (
     create_user,
     get_user_by_contact,
@@ -352,15 +356,27 @@ def reset_password(request: ResetPasswordRequest) -> MessageResponse:
 
 
 def get_profile(user_id: int) -> UserResponse:
+    cached = get_cached_profile(user_id)
+
+    if cached is not None:
+        return UserResponse.model_validate(cached)
+
     connection = get_connection()
 
     try:
         with connection.cursor() as cursor:
-            user = get_user_by_id(cursor=cursor,user_id=user_id)
+            user = get_user_by_id(
+                cursor=cursor,
+                user_id=user_id
+            )
 
             if user is None:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                    detail="User not found.")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="User not found."
+                )
+
+            set_cached_profile(user_id, user)
 
             return UserResponse.model_validate(user)
 

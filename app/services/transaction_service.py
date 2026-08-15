@@ -18,6 +18,10 @@ from app.schemas.transaction_schema import (
     UserReportItem,
 )
 from app.queries import transaction_queries as queries
+from app.cache.search_cache import (
+    invalidate_ticket_detail,
+    invalidate_all_search_cache,
+)
 from datetime import datetime
 from decimal import Decimal
 
@@ -86,6 +90,9 @@ class TransactionService:
                 )
 
                 commit(connection)
+
+                invalidate_ticket_detail(request.ticket_id)
+                invalidate_all_search_cache()
 
                 return ReservationResponse(
                     reservation_id=reservation["reservation_id"],
@@ -223,6 +230,7 @@ class TransactionService:
                 expired_reservations = queries.get_expired_reservations(cursor)
 
                 expired_count = 0
+                expired_ticket_ids = []
 
                 for reservation in expired_reservations:
 
@@ -239,9 +247,16 @@ class TransactionService:
                             reservation["ticket_id"],
                         )
 
+                        expired_ticket_ids.append(reservation["ticket_id"])
                         expired_count += 1
 
                 commit(connection)
+
+                for ticket_id in expired_ticket_ids:
+                    invalidate_ticket_detail(ticket_id)
+
+                if expired_ticket_ids:
+                    invalidate_all_search_cache()
 
                 return expired_count
 
@@ -511,6 +526,9 @@ class TransactionService:
 
                 commit(connection)
 
+                invalidate_ticket_detail(reservation["ticket_id"])
+                invalidate_all_search_cache()
+
                 return MessageResponse(
                     message="Reservation cancelled successfully."
                 )
@@ -679,6 +697,10 @@ class TransactionService:
                 )
 
                 commit(connection)
+
+                if status == "approved":
+                    invalidate_ticket_detail(ticket["ticket_id"])
+                    invalidate_all_search_cache()
 
                 return MessageResponse(
                     message="Cancellation request updated."

@@ -8,6 +8,7 @@ from app.services.elastic_service import (
     create_index,
     sync_all,
 )
+from app.cache.redis_client import check_redis
 from app.services.transaction_service import TransactionService
 from app.routers.transaction_router import router as transaction_router
 from app.routers.catalog_router import router as catalog_router
@@ -26,6 +27,12 @@ async def reservation_expiration_loop():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+
+    #Redis connection check
+    if check_redis():
+        print("Redis is connected.")
+    else:
+        print("Redis is not available.")
 
     # Elasticsearch Startup
     if not check_connection():
