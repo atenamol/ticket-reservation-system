@@ -745,7 +745,7 @@ function handleProceedToCheckout() {
      */
     const params =
         new URLSearchParams({
-            ticketId: String(ticketId)
+            ticket_id: String(ticketId)
         });
 
     window.location.href =

@@ -236,12 +236,14 @@ function setActionLoading(button, text){
 function restoreReserveButton(){
     const button = document.getElementById("reserve-btn");
     if (!button) return;
+    button.disabled = false;
     button.innerHTML = `<i class="bi bi-bookmark-check text-lg"></i> Reserve`;
 }
 
 function restorePayButton(){
     const button = document.getElementById("pay-btn");
     if (!button) return;
+    button.disabled = false;
     button.innerHTML = `<i class="bi bi-credit-card text-lg"></i> Pay Now`;
 }
 
