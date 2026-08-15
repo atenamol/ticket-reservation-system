@@ -1,6 +1,7 @@
 import {loginWithOTP, verifyOTP, forgotPassword}from "../services/api.js";
 import {setAuthData}from "../utils/storage.js";
 import {isValidEmail, isValidPhone}from "../utils/validators.js";
+import {isAdmin} from "../utils/authGuard";
 
 document.addEventListener("DOMContentLoaded",() => {initOTPPage();});
 
@@ -117,7 +118,10 @@ async function verifyCode(event, mode){
 
         if(mode === "login"){
             setAuthData(response);
-            window.location.href ="index.html";
+
+            window.location.href = isAdmin()
+                ? "admin/dashboard.html"
+                : "index.html";
         }else{
             const userId = response?.user_id;
 

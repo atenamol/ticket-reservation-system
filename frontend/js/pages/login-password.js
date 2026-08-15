@@ -1,6 +1,7 @@
 import {loginWithPassword} from "../services/api.js";
 import {setAuthData} from "../utils/storage.js";
 import {isValidEmail, isValidPhone} from "../utils/validators.js";
+import {isAdmin} from "../utils/authGuard.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     initLoginForm();
@@ -51,7 +52,11 @@ async function handleLogin(event){
         errorMessage.classList.add("show");
         errorMessage.textContent ="Login successful.";
 
-        setTimeout(() => {window.location.href = "index.html";}, 1000);
+        setTimeout(() => {
+            window.location.href = isAdmin()
+                ? "admin/dashboard.html"
+                : "index.html";
+        }, 1000);
 
     }catch (error){
         console.error("Login error:", error);
