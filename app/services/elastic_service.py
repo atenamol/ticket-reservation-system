@@ -13,7 +13,7 @@ from app.queries import catalog_queries as q
 
 
 client = Elasticsearch(
-    "http://elasticsearch:9200",
+    "http://localhost:9200",
     request_timeout=60
 )
 
