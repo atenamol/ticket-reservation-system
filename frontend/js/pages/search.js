@@ -154,6 +154,27 @@ function setupResetButton() {
         // Reset all normal form fields
         searchForm?.reset();
 
+        // Reset top search bar
+        if (searchInputField) {
+            searchInputField.value = "";
+        }
+
+        // Remove search query from URL
+        const params = new URLSearchParams(window.location.search);
+        params.delete("q");
+
+        window.history.replaceState(
+            {},
+            "",
+            `${window.location.pathname}${params.toString() ? `?${params}` : ""}`
+        );
+
+        // Reset search result description
+        if (searchQueryDisplay) {
+            searchQueryDisplay.textContent =
+                "Find your desired match by filtering details.";
+        }
+
         // Reset custom dropdown state
         state.selectedCityId = "";
         state.selectedVenueId = "";
