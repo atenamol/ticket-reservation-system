@@ -77,7 +77,7 @@ async function initDashboardPage() {
 
     await loadDashboard();
 
-    setInterval(loadDashboard, 30000);
+    setInterval(loadDashboard, 10000);
 
 }
 
@@ -252,10 +252,17 @@ function renderActivityFeed(
             color: "#80B6E9",
             bg: "#D9EAFB",
 
-            title: "New Report",
+            title: "New User Report",
 
             text:
-                `Report #${r.report_id}`
+                `Report #${r.report_id}`,
+
+            timestamp:
+            r.created_at,
+
+            tab: "reports",
+
+            id: r.report_id
 
         });
 
@@ -272,7 +279,14 @@ function renderActivityFeed(
             title: "Cancellation Request",
 
             text:
-                `Cancellation #${c.cancel_id}`
+                `Cancellation #${c.cancel_id}`,
+
+            timestamp:
+            c.created_at,
+
+            tab: "cancellations",
+
+            id: c.cancel_id
 
         });
 
@@ -289,13 +303,34 @@ function renderActivityFeed(
             title: "Suspicious Payment",
 
             text:
-                `Payment #${p.payment_id}`
+                `Payment #${p.payment_id}`,
+
+            timestamp:
+            p.payment_date,
+
+            tab: "payments",
+
+            id: p.payment_id
 
         });
 
     });
 
-    const recent = activity.slice(0, 5);
+    // Newest activity first
+    activity.sort((a, b) => {
+
+        const timeA =
+            new Date(a.timestamp || 0).getTime();
+
+        const timeB =
+            new Date(b.timestamp || 0).getTime();
+
+        return timeB - timeA;
+
+    });
+
+    const recent =
+        activity.slice(0, 5);
 
     if (!recent.length) {
 
@@ -311,37 +346,77 @@ function renderActivityFeed(
 
     container.innerHTML = recent.map(item => `
 
-<div class="flex items-center gap-3">
+        <button
+            type="button"
+            class="activity-item w-full flex items-center gap-3
+                   text-left p-2 rounded-xl
+                   hover:bg-slate-50 transition"
+            data-tab="${item.tab}"
+            data-id="${item.id}"
+        >
 
-<div
-class="w-10 h-10 rounded-full flex items-center justify-center"
-style="
-background:${item.bg};
-color:${item.color};
-">
+            <div
+                class="w-10 h-10 rounded-full flex-shrink-0
+                       flex items-center justify-center"
+                style="
+                    background:${item.bg};
+                    color:${item.color};
+                "
+            >
+                <i
+                    data-lucide="${item.icon}"
+                    class="w-5 h-5">
+                </i>
+            </div>
 
-<i
-data-lucide="${item.icon}"
-class="w-5 h-5">
-</i>
+            <div class="min-w-0 flex-1">
 
-</div>
+                <p class="font-semibold text-sm text-slate-800">
+                    ${item.title}
+                </p>
 
-<div>
+                <p class="text-xs text-slate-500">
+                    ${item.text}
+                </p>
 
-<p class="font-semibold">
-${item.title}
-</p>
+            </div>
 
-<p class="text-xs text-slate-500">
-${item.text}
-</p>
+            <div class="flex flex-col items-end gap-1 flex-shrink-0">
 
-</div>
+                <span class="text-[11px] text-slate-400">
+                    ${formatRelativeTime(item.timestamp)}
+                </span>
 
-</div>
+                <i
+                    data-lucide="chevron-right"
+                    class="w-4 h-4 text-slate-300">
+                </i>
 
-`).join("");
+            </div>
+
+        </button>
+
+    `).join("");
+
+    // Make each activity item open the relevant Management tab
+    container
+        .querySelectorAll(".activity-item")
+        .forEach(item => {
+
+            item.addEventListener("click", () => {
+
+                const tab =
+                    item.dataset.tab;
+
+                const id =
+                    item.dataset.id;
+
+                window.location.href =
+                    `managment.html?tab=${tab}&id=${id}`;
+
+            });
+
+        });
 
     if (window.lucide)
         lucide.createIcons();
@@ -351,6 +426,48 @@ ${item.text}
 /* ==========================================================
    SMALL HELPERS
 ========================================================== */
+
+function formatRelativeTime(timestamp) {
+
+    if (!timestamp)
+        return "Unknown time";
+
+    const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime()))
+        return "Unknown time";
+
+    const diff =
+        Math.floor(
+            (Date.now() - date.getTime()) / 1000
+        );
+
+    if (diff < 10)
+        return "Just now";
+
+    if (diff < 60)
+        return `${diff}s ago`;
+
+    const minutes =
+        Math.floor(diff / 60);
+
+    if (minutes < 60)
+        return `${minutes}m ago`;
+
+    const hours =
+        Math.floor(minutes / 60);
+
+    if (hours < 24)
+        return `${hours}h ago`;
+
+    const days =
+        Math.floor(hours / 24);
+
+    if (days < 7)
+        return `${days}d ago`;
+
+    return date.toLocaleDateString();
+}
 
 function updateText(id, value) {
 
@@ -597,12 +714,14 @@ function initManagementPage() {
     setupModalStatusMenus();
 
     // Initial data load
-    refreshAllData();
+    refreshAllData().then(() => {
+        openRequestedActivity();
+    });
 
-    // Refresh every 30 seconds
+    // Refresh every 20 seconds
     setInterval(
         refreshAllData,
-        30000
+        20000
     );
 }
 
@@ -648,6 +767,110 @@ async function refreshAllData() {
         console.error(err);
 
     }
+
+}
+
+function openRequestedActivity() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const tab =
+        params.get("tab");
+
+    const id =
+        params.get("id");
+
+    if (!tab || !id)
+        return;
+
+    const numericId =
+        Number(id);
+
+    if (Number.isNaN(numericId))
+        return;
+
+    if (tab === "reports") {
+
+        const report =
+            state.reports.find(
+                r =>
+                    Number(r.report_id) === numericId
+            );
+
+        if (report) {
+            highlightManagementRow(
+                "report",
+                numericId
+            );
+        }
+
+    }
+
+    else if (tab === "cancellations") {
+
+        const cancellation =
+            state.cancellations.find(
+                c =>
+                    Number(c.cancel_id) === numericId
+            );
+
+        if (cancellation) {
+            highlightManagementRow(
+                "cancellation",
+                numericId
+            );
+        }
+
+    }
+
+    else if (tab === "payments") {
+
+        const payment =
+            state.payments.find(
+                p =>
+                    Number(p.payment_id) === numericId
+            );
+
+        if (payment) {
+            highlightManagementRow(
+                "payment",
+                numericId
+            );
+        }
+
+    }
+
+}
+
+function highlightManagementRow(type, id) {
+
+    const row =
+        document.querySelector(
+            `[data-record-type="${type}"][data-record-id="${id}"]`
+        );
+
+    if (!row)
+        return;
+
+    row.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    row.classList.add(
+        "activity-highlight"
+    );
+
+    setTimeout(() => {
+
+        row.classList.remove(
+            "activity-highlight"
+        );
+
+    }, 5000);
 
 }
 
@@ -1006,8 +1229,61 @@ function renderActiveTab() {
    GLOBAL REFRESH BUTTON
 ========================================================== */
 
-window.refreshActiveTab =
-    refreshAllData;
+window.refreshActiveTab = async function () {
+
+    const button =
+        document.querySelector(
+            'button[onclick="refreshActiveTab()"]'
+        );
+
+    if (!button)
+        return;
+
+    const icon =
+        button.querySelector(
+            '[data-lucide="refresh-cw"]'
+        );
+
+    const originalText =
+        button.childNodes[
+        button.childNodes.length - 1
+            ];
+
+    button.disabled = true;
+
+    button.classList.add(
+        "opacity-70",
+        "cursor-not-allowed"
+    );
+
+    if (icon) {
+        icon.classList.add("animate-spin");
+    }
+
+    try {
+
+        await refreshAllData();
+
+    }
+
+    finally {
+
+        button.disabled = false;
+
+        button.classList.remove(
+            "opacity-70",
+            "cursor-not-allowed"
+        );
+
+        if (icon) {
+            icon.classList.remove(
+                "animate-spin"
+            );
+        }
+
+    }
+
+};
 
 /* ==========================================================
    CANCELLATION TABLE
@@ -1031,10 +1307,10 @@ function renderCancellations() {
 
         tbody.innerHTML = `
 <tr>
-<td colspan="7"
-class="p-8 text-center text-slate-400">
-No cancellation requests found.
-</td>
+    <td colspan="7"
+        class="p-8 text-center text-slate-400">
+        No cancellation requests found.
+    </td>
 </tr>
 `;
 
@@ -1043,7 +1319,11 @@ No cancellation requests found.
 
     tbody.innerHTML = rows.map(item => `
 
-<tr>
+<tr
+    data-record-type="cancellation"
+    data-record-id="${item.cancel_id}"
+    class="activity-target-row transition-all duration-500"
+>
 
 <td class="p-4 font-price">
 ${item.cancel_id}
@@ -1152,20 +1432,23 @@ function renderReports() {
 
         tbody.innerHTML = `
 <tr>
-<td colspan="7"
-class="p-8 text-center text-slate-400">
-No reports found.
-</td>
+    <td colspan="7"
+        class="p-8 text-center text-slate-400">
+        No reports found.
+    </td>
 </tr>
 `;
 
         return;
-
     }
 
     tbody.innerHTML = rows.map(item => `
 
-<tr>
+<tr
+    data-record-type="report"
+    data-record-id="${item.report_id}"
+    class="activity-target-row transition-all duration-500"
+>
 
 <td class="p-4">
 ${item.report_id}
@@ -1276,10 +1559,10 @@ function renderPayments() {
 
         tbody.innerHTML = `
 <tr>
-<td colspan="7"
-class="p-8 text-center text-slate-400">
-No suspicious payments found.
-</td>
+    <td colspan="7"
+        class="p-8 text-center text-slate-400">
+        No suspicious payments found.
+    </td>
 </tr>
 `;
 
@@ -1289,7 +1572,11 @@ No suspicious payments found.
 
     tbody.innerHTML = rows.map(item => `
 
-<tr>
+<tr
+    data-record-type="payment"
+    data-record-id="${item.payment_id}"
+    class="activity-target-row transition-all duration-500"
+>
 
 <td class="p-4">
 ${item.payment_id}
