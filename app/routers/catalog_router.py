@@ -62,8 +62,10 @@ def search_tickets(
         category: Optional[str] = Query(default=None),
         min_price: Optional[Decimal] = Query(default=None),
         max_price: Optional[Decimal] = Query(default=None),
+        q: Optional[str] = Query(default=None),
 ):
     filters = TicketSearchQuery(
+        q=q,
         sport_type=sport_type,
         city_id=city_id,
         venue_id=venue_id,

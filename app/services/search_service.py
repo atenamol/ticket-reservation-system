@@ -92,9 +92,30 @@ def search_tickets(filters: dict):
             }
         })
 
+    must_queries = []
+
+    if filters.get("q"):
+        must_queries.append(
+            {
+                "multi_match": {
+                    "query": filters["q"],
+                    "fields": [
+                        "home_team^3",
+                        "away_team^3",
+                        "venue_name^2",
+                        "city_name",
+                        "sport_type",
+                        "category"
+                    ],
+                    "type": "best_fields",
+                    "fuzziness": "AUTO"
+                }
+            }
+        )
+
     query = {
         "bool": {
-            "must": must
+            "must": must + must_queries
         }
     }
 

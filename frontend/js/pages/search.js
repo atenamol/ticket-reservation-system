@@ -40,6 +40,10 @@ const $ = (id) => document.getElementById(id);
 
 const searchForm = $("elasticsearch-filter-form");
 
+const topSearchForm = $("top-search-form");
+const searchInputField = $("search-input-field");
+const searchQueryDisplay = $("search-query-display");
+
 const cityButton = $("city-dropdown-button");
 const cityMenu = $("city-dropdown-menu");
 const cityLabel = $("city-dropdown-label");
@@ -79,6 +83,7 @@ async function initSearchPage() {
     setupDropdowns();
     setupDatePickers();
     setupSearchForm();
+    setupTopSearchForm();
     setupResetButton();
 
     loadFiltersFromUrl();
@@ -89,6 +94,32 @@ async function initSearchPage() {
     await loadAllTeams();
 
     await executeSearch();
+}
+
+function setupTopSearchForm() {
+    if (!topSearchForm) return;
+
+    topSearchForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const query = searchInputField?.value.trim() || "";
+        const params = new URLSearchParams(window.location.search);
+
+        if (query) {
+            params.set("q", query);
+        } else {
+            params.delete("q");
+        }
+
+        window.history.replaceState(
+            {},
+            "",
+            `${window.location.pathname}${params.toString() ? `?${params}` : ""}`
+        );
+
+        loadFiltersFromUrl();
+        await executeSearch();
+    });
 }
 
 // ============================================================
@@ -758,6 +789,12 @@ function getSelectedCategory() {
 function buildSearchFilters() {
     const filters = {};
 
+    const query = searchInputField?.value.trim() || "";
+
+    if (query) {
+        filters.q = query;
+    }
+
     const sportType = getSelectedSport();
     const category = getSelectedCategory();
 
@@ -819,6 +856,17 @@ function loadFiltersFromUrl() {
     const params = new URLSearchParams(window.location.search);
 
     const sport = params.get("sport");
+    const query = params.get("q")?.trim() || "";
+
+    if (searchInputField) {
+        searchInputField.value = query;
+    }
+
+    if (searchQueryDisplay) {
+        searchQueryDisplay.textContent = query
+            ? `Search results for "${query}"`
+            : "Find your desired match by filtering details.";
+    }
 
     if (sport) {
         const normalizedSport =

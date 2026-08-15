@@ -37,6 +37,7 @@ class TicketSearchQuery(BaseModel):
     category: Optional[Literal["VIP", "normal", "special"]] = None
     min_price: Optional[Decimal] = None
     max_price: Optional[Decimal] = None
+    q: Optional[str] = None
 
 
 class TicketSearchResult(BaseModel):
