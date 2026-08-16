@@ -122,6 +122,7 @@ def search_tickets(filters: dict):
     response = client.search(
         index=ELASTIC_INDEX,
         query=query,
+        size=100,
     )
 
     return [

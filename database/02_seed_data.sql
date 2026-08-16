@@ -163,7 +163,7 @@ INSERT INTO Payment (payment_id, reservation_id, user_id, amount, payment_status
     (11, 11, 1, 180000.00,'completed', 'CreditCard', 0),
     (12, 12, 4, 70000.00,'completed', 'Online', 70000.00),
     (13, 13, 1, 130000.00,'completed', 'CreditCard', 0),
-    (14, 14, 210000.00,1, 'completed', 'Online', 0),
+    (14, 14, 1, 210000.00, 'completed', 'Online', 0),
     (15, 17, 7, 120000.00,'completed', 'CreditCard', 0),
     (16, 18, 8, 160000.00,'completed', 'Online', 0),
     (17, 19, 9, 140000.00,'completed', 'CreditCard', 0),
