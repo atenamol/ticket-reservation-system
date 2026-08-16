@@ -7,9 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {initProfilePage();});
 // Initialize Profile Page
 async function initProfilePage() {
 
-    const upload = document.getElementById("profile-upload");
-    const image = document.getElementById("profile-image");
-
     const firstNameInput = document.getElementById("first-name");
     const lastNameInput = document.getElementById("last-name");
     const emailInput = document.getElementById("email");
@@ -24,20 +21,6 @@ async function initProfilePage() {
     const labelEmail = document.getElementById("label-email");
     const labelPhone = document.getElementById("label-phone");
     const labelCity = document.getElementById("label-city");
-
-    // Profile Image Preview    
-    upload.addEventListener("change", () => {
-
-        const file = upload.files[0];
-
-        if (!file)return;
-        if (!file.type.startsWith("image/")){
-            alert("Please select a valid image.");
-            upload.value = "";
-            return;
-        }
-        image.src = URL.createObjectURL(file);
-    });
 
     // Load Profile
     try {

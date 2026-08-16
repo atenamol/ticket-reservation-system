@@ -199,18 +199,24 @@
     <main class="flex-grow flex items-center justify-center px-4 py-8 sm:py-12 animate-fade-up">
         <div class="w-full max-w-3xl">
 
-            <!-- هدر پروفایل -->
+            <!-- Profile Header -->
             <section class="text-center mb-8">
                 <div class="relative w-32 mx-auto mb-4">
-                    <img src="assets/images/profile.png" id="profile-image" alt="Profile" class="w-32 h-32 rounded-full object-cover shadow-xl ring-4 ring-white/80" />
-                    <label for="profile-upload" class="absolute bottom-0 right-0 bg-gradient-to-r from-[#82D6A5] to-[#80B6E9] w-10 h-10 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg hover:scale-110 transition-all duration-300 ring-2 ring-white/80">
-                        <i class="bi bi-camera-fill text-sm"></i>
-                    </label>
-                    <input type="file" id="profile-upload" accept="image/*" hidden />
+                    <!-- Default Avatar -->
+                    <div
+                        id="profile-avatar"
+                        class="w-32 h-32 rounded-full bg-gradient-to-br from-[#D6F5E3] via-[#D9EAFB] to-[#FDE2D3] shadow-xl ring-4 ring-white/80 flex items-center justify-center"
+                    >
+                        <i class="bi bi-person-fill text-6xl text-stone-500"></i>
+                    </div>
                 </div>
-                <h1 id="user-name" class="font-oswald font-bold text-4xl sm:text-5xl text-stone-900 tracking-wide">User Name</h1>
+                <h1
+                    id="user-name"
+                    class="font-oswald font-bold text-4xl sm:text-5xl text-stone-900 tracking-wide"
+                >User Name</h1>
                 <p class="text-stone-500 mt-1 flex items-center justify-center gap-2">
-                    <i class="bi bi-person-badge"></i> Spectator
+                    <i class="bi bi-person-badge"></i>
+                    Spectator
                 </p>
             </section>
 
