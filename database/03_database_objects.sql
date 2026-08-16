@@ -1,5 +1,31 @@
 USE TicketSystem;
 
+-- Stored Procedure 1: Given a user's email or phone, list
+-- the tickets they purchased, ordered by purchase time
+
+DROP PROCEDURE IF EXISTS GetUserTicketsByContact;
+DELIMITER $$
+
+CREATE PROCEDURE GetUserTicketsByContact(IN p_contact VARCHAR(100))
+BEGIN
+    SELECT
+        t.ticket_id,
+        m.sport_type,
+        m.match_date,
+        t.category,
+        t.price,
+        p.transaction_date
+    FROM User u
+             JOIN Payment p ON p.user_id = u.user_id
+             JOIN Reservation r ON p.reservation_id = r.reservation_id
+             JOIN Ticket t ON r.ticket_id = t.ticket_id
+             JOIN Matchh m ON t.match_id = m.match_id
+    WHERE (u.email = p_contact OR u.phone = p_contact)
+      AND p.payment_status = 'completed'
+    ORDER BY p.transaction_date;
+END$$
+
+
 -- Stored Procedure 2: Given an admin's email or phone, list
 -- the names of users who've had a reservation cancelled by them
 
