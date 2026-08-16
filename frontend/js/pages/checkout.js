@@ -6,6 +6,7 @@ async function initCheckoutPage() {
 
     const reserveBtn = document.getElementById("reserve-btn");
     const payBtn = document.getElementById("pay-btn");
+    const reportBtn = document.getElementById("btn-report-ticket");
 
     if(!reserveBtn || !payBtn){
         console.error("Checkout buttons not found.");
@@ -54,6 +55,13 @@ async function initCheckoutPage() {
     payBtn.addEventListener("click", async () => {
         await handlePayment(Number(ticketId));
     });
+
+    // Report Issue
+    if (reportBtn) {
+        reportBtn.addEventListener("click", () => {
+            window.location.href = "report.html";
+        });
+}
 }
 
 
