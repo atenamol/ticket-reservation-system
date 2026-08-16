@@ -1343,7 +1343,7 @@ ${item.reservation_id}
 </td>
 
 <td class="p-4 text-red-600">
-${formatCurrency(item.penalty_amount)}
+${item.penalty_percent}%
 </td>
 
 <td class="p-4 text-emerald-600">
@@ -1644,7 +1644,7 @@ function openCancellationModal(request) {
         request.reservation_id;
 
     document.getElementById("modal-cancel-penalty").textContent =
-        formatCurrency(request.penalty_amount);
+        `${request.penalty_percent}%`;
 
     document.getElementById("modal-cancel-refund").textContent =
         formatCurrency(request.refund_amount);

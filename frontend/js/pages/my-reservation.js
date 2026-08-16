@@ -247,7 +247,7 @@ function startCountdown(element, container, expiresAt, reservationId) {
 
             // Reload reservations
             // after expiration
-            setTimeout(() => loadReservations(),1000);
+            setTimeout(() => loadReservations(),120000);
             return;
         }
 

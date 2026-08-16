@@ -2,7 +2,7 @@ import {
     getBookings,
     getTicketDetail,
     getCancellationPenalty,
-    cancelMyReservation
+    cancelReservation
 } from "../services/api.js";
 
 
@@ -1127,9 +1127,9 @@ async function submitCancellation() {
          * REAL cancellation request.
          */
         const response =
-            await cancelMyReservation(
-                reservationId
-            );
+            await cancelReservation({
+                reservation_id: reservationId
+            });
 
         /*
          * Keep the backend response in the
