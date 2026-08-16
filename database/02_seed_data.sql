@@ -43,7 +43,9 @@ VALUES
     (9, 'Nima', 'Naseri', 'nimanaseri@gmail.com', Null, 'spectator', 7, '$2b$12$U5HkTT72wsknydvU7m8i8OugVRJMPfSmFqxK9UKFjQdL8axCFmjnW', 'active'),
     (10, 'Milad', 'Karimi', 'miladkarimi@gmail.com', '09017531595', 'spectator', 10, '$2b$12$whv.H67D1KxVCu5l80OLquHpKFIOyE89yWIjW0wi1HWcgUT874YjS', 'active'),
     (11, 'Paria', 'Raad', 'pariraad@gmail.com', Null, 'spectator', 8, '$2b$12$pHo98m3Z21JxxNkgLZsFK.8.gu7T2TckJIPOQ4fJIpFbteedJbZa2', 'inactive'),
-    (12, 'Saman', 'Taheri', Null, '09034718629', 'spectator', 7, '$2b$12$HGsoTCOIzotpLoHMOBKWVe9yZHcSPLTmfHttuVkfin1jtf6.VIHnG', 'active');
+    (12, 'Saman', 'Taheri', Null, '09034718629', 'spectator', 7, '$2b$12$HGsoTCOIzotpLoHMOBKWVe9yZHcSPLTmfHttuVkfin1jtf6.VIHnG', 'active'),
+    (13,'System','Adminstrator','admin@ticketsystem.com',NULL,'admin',1,'$2b$12$TF8zZcHJVCEdha5eJ7B5huUvlMNqGumEvfw6lh.QuWz9oHOd8j2yC', 'active');
+
 
 INSERT INTO Venue (venue_id, name, city_id, capacity, address, refund_policy_rules) VALUES
     (1, 'Azadi Stadium', 1, 78000, 'Tehran, Azadi Sport Complex', 'Full refund 48h before'),
