@@ -1,7 +1,7 @@
 import {loginWithOTP, verifyOTP, forgotPassword}from "../services/api.js";
 import {setAuthData}from "../utils/storage.js";
 import {isValidEmail, isValidPhone}from "../utils/validators.js";
-import {isAdmin} from "../utils/authGuard";
+import {isAdmin} from "../utils/authGuard.js";
 
 document.addEventListener("DOMContentLoaded",() => {initOTPPage();});
 
