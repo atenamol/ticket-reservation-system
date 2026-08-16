@@ -262,16 +262,16 @@ INSERT INTO Venue (venue_id, name, city_id, capacity, address, refund_policy_rul
 (10, 'Ghadir Stadium', 10, 30000, 'Ahvaz, Golestan Blvd', 'Refund with 10% penalty');
 
 INSERT INTO Matchh (match_id, sport_type, home_team_id, away_team_id, venue_id, match_date) VALUES
-(1, 'Football', 1, 2, 1, '2025-06-15 18:30:00'),
-(2, 'Football', 3, 4, 3, '2025-06-16 20:00:00'),
-(3, 'Football', 5, 1, 5, '2025-06-18 17:00:00'),
-(4, 'Basketball', 2, 3, 2, '2025-06-20 19:00:00'),
-(5, 'Volleyball', 4, 5, 4, '2025-06-22 16:30:00'),
-(6, 'Football', 6, 7, 6, '2026-07-05 18:00:00'),
-(7, 'Football', 8, 9, 7, '2026-07-08 20:00:00'),
-(8, 'Basketball', 10, 2, 8, '2026-07-10 19:30:00'),
-(9, 'Volleyball', 3, 5, 9, '2026-07-12 17:00:00'),
-(10, 'Football', 4, 6, 10, '2026-07-15 21:00:00');
+(1, 'Football', 1, 2, 1, '2026-08-20 18:30:00'),
+(2, 'Football', 3, 4, 3, '2026-08-22 20:00:00'),
+(3, 'Football', 5, 1, 5, '2026-08-24 17:00:00'),
+(4, 'Basketball', 2, 3, 2, '2026-08-26 19:00:00'),
+(5, 'Volleyball', 4, 5, 4, '2026-08-28 16:30:00'),
+(6, 'Football', 6, 7, 6, '2026-08-30 18:00:00'),
+(7, 'Football', 8, 9, 7, '2026-09-02 20:00:00'),
+(8, 'Basketball', 10, 2, 8, '2026-09-05 19:30:00'),
+(9, 'Volleyball', 3, 5, 9, '2026-09-08 17:00:00'),
+(10, 'Football', 4, 6, 10, '2026-09-12 21:00:00');
 
 
 INSERT INTO Ticket (ticket_id, match_id, price, remaining_capacity, category, organizer_venue_id) VALUES
@@ -287,16 +287,16 @@ INSERT INTO Ticket (ticket_id, match_id, price, remaining_capacity, category, or
 (10, 10, 300000.00, 400, 'VIP', 10);
 
 INSERT INTO Reservation (reservation_id, ticket_id, user_id, status, reserved_at, expires_at) VALUES
-(1, 1, 1, 'paid', '2025-05-01 10:00:00', '2025-05-01 10:10:00'),
-(2, 2, 4, 'cancelled',    '2025-05-02 14:30:00', '2025-05-03 14:40:00'),
-(3, 3, 6, 'reserved','2025-05-03 09:15:00', '2025-05-03 09:25:00'),
-(4, 4, 2, 'cancelled', '2025-05-04 18:00:00', '2025-05-05 18:10:00'),
-(5, 5, 5, 'reserved',     '2025-05-05 12:00:00', '2025-05-06 12:10:00'),
-(6, 6, 7, 'cancelled', '2026-06-01 10:00:00', '2026-06-01 10:15:00'),
-(7, 7, 8, 'paid', '2026-06-02 11:30:00', '2026-06-03 11:45:00'),
-(8, 8, 9, 'paid', '2026-06-03 14:00:00', '2026-06-03 14:15:00'),
-(9, 9, 10, 'cancelled', '2026-06-04 16:20:00', '2026-06-04 16:35:00'),
-(10, 10, 12, 'paid', '2026-06-05 18:10:00', '2026-06-06 18:25:00');
+(1, 1, 1, 'paid', '2026-08-01 10:00:00', '2026-08-01 10:10:00'),
+(2, 2, 4, 'cancelled',    '2026-08-02 14:30:00', '2026-08-02 14:40:00'),
+(3, 3, 6, 'reserved','2026-08-16 07:15:00', '2026-08-16 07:25:00'),
+(4, 4, 2, 'cancelled', '2026-08-16 08:00:00', '2026-08-16 08:10:00'),
+(5, 5, 5, 'reserved',     '2026-08-16 09:00:00', '2026-08-16 09:10:00'),
+(6, 6, 7, 'cancelled', '2026-08-16 10:00:00', '2026-08-16 10:10:00'),
+(7, 7, 8, 'paid', '2026-08-16 11:30:00', '2026-08-16 11:40:00'),
+(8, 8, 9, 'paid', '2026-08-16 12:00:00', '2026-08-16 12:10:00'),
+(9, 9, 10, 'cancelled', '2026-08-16 13:20:00', '2026-08-16 13:30:00'),
+(10, 10, 12, 'paid', '2026-08-16 13:40:00', '2026-08-16 13:50:00');
 
 INSERT INTO Payment (payment_id, reservation_id, user_id, amount, payment_status, payment_method, refund_amount) VALUES
 (1, 1, 1, 250000.00, 'completed', 'CreditCard', 0),
@@ -324,14 +324,14 @@ INSERT INTO Report (report_id, user_id, ticket_id, subject, description, status,
 
 INSERT INTO CancellationRequest (cancel_id, reservation_id, user_id, penalty_percent, refund_amount, status, processed_at, admin_id) VALUES
 (1, 1, 1, 5.00, 237500.00, 'pending', NULL, NULL),
-(2, 2, 4, 0, 80000.00, 'approved', '2026-05-27 10:30:00', 2),
+(2, 2, 4, 0, 80000.00, 'approved', '2026-08-03 10:30:00', 2),
 (3, 3, 6, 15.00, 170000.00, 'pending', NULL, NULL),
-(4, 4, 2, 0, 60000.00, 'approved', '2026-05-27 11:00:00', 5),
-(5, 5, 5, 10.00, 135000.00, 'rejected', '2026-05-27 09:15:00', 2),
-(6, 6, 7, 0, 90000.00, 'approved', '2026-06-10 09:00:00', 2),
+(4, 4, 2, 0, 60000.00, 'approved', '2026-08-16 9:00:00', 5),
+(5, 5, 5, 10.00, 135000.00, 'rejected', '2026-08-16 09:15:00', 2),
+(6, 6, 7, 0, 90000.00, 'approved', '2026-08-16 11:00:00', 2),
 (7, 7, 8, 5.00, 209000.00, 'pending', NULL, NULL),
-(8, 8, 9, 10.00, 162000.00, 'rejected', '2026-06-11 14:00:00', 10),
-(9, 9, 10, 0, 120000.00, 'approved', '2026-06-12 11:30:00', 5),
+(8, 8, 9, 10.00, 162000.00, 'rejected', '2026-08-16 12:50:00', 10),
+(9, 9, 10, 0, 120000.00, 'approved', '2026-08-16 13:30:00', 5),
 (10, 10, 12, 15.00, 255000.00, 'pending', NULL, NULL);
 
 INSERT INTO FootballDetail (ticket_id, league_name, stadium_name, seat_section, seat_row, seat_number, ticket_type, amenities) VALUES
